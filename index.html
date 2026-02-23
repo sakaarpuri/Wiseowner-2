@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WiseOwner — Property Decision Tool</title>
+<title>Keep/Sell — Canadian Property Decision Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════════
-   WISEOWNER — GLASSMORPHISM / AI-ERA DESIGN
+   KEEP/SELL — CANADIAN PROPERTY DECISION TOOL
    ═══════════════════════════════════════════════ */
 :root {
   /* Brand colours — darkened for light background */
@@ -859,13 +859,65 @@ select option { background: #fff; color: var(--text); }
   .neg { color: #c0392b !important; }
   .warn-c { color: #8b6914 !important; }
 }
+
+/* ── KEEP/SELL — NEW COMPONENTS ── */
+
+/* Results hero */
+.rec-hero { border-radius: 24px; padding: 2.2rem 2rem; text-align: center; margin-bottom: 1.8rem; position: relative; overflow: hidden; }
+.rec-hero.keep { background: rgba(22,163,74,0.06); border: 2px solid rgba(22,163,74,0.25); }
+.rec-hero.sell { background: rgba(225,29,72,0.05); border: 2px solid rgba(225,29,72,0.2); }
+.rec-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+.rec-decision { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; line-height: 1; }
+.rec-hero.keep .rec-decision { color: var(--green); }
+.rec-hero.sell .rec-decision { color: var(--coral); }
+.rec-score { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.4rem; }
+.rec-sub { font-size: 0.9rem; color: var(--text-mid); margin-top: 0.7rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.rec-sub-tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 20px; margin-bottom: 0.5rem; }
+.rec-hero.keep .rec-sub-tag { background: rgba(22,163,74,0.10); color: var(--green); }
+.rec-hero.sell .rec-sub-tag { background: rgba(225,29,72,0.08); color: var(--coral); }
+
+/* Decision row */
+.decision-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 2rem; }
+.dec-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 18px; padding: 1.5rem; }
+.dec-card.winner { border-width: 2px; }
+.dec-card.keep.winner { border-color: rgba(22,163,74,0.3); }
+.dec-card.sell.winner { border-color: rgba(225,29,72,0.25); }
+.dec-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.8rem; }
+.dec-card.keep .dec-title { color: var(--green); }
+.dec-card.sell .dec-title { color: var(--coral); }
+.dec-para { font-size: 0.88rem; color: var(--text-mid); line-height: 1.7; }
+@media (max-width: 600px) { .decision-row { grid-template-columns: 1fr; } }
+
+/* Rental toggle */
+.rental-toggle { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+.rt-btn { flex: 1; padding: 0.65rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+  background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); }
+.rt-btn.active { background: rgba(22,163,74,0.08); border-color: rgba(22,163,74,0.3); color: var(--green); }
+
+/* Locate button */
+.btn-locate { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px;
+  padding: 0.6rem 0.8rem; font-size: 1rem; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+.btn-locate:hover { background: var(--blue-dim); border-color: var(--blue); }
+
+/* Step time badge */
+.step-time { font-size: 0.72rem; font-weight: 500; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 0.15rem 0.55rem; margin-left: 0.6rem; vertical-align: middle; }
+
+/* Advanced details toggle (mortgage collapse) */
+details summary { cursor: pointer; font-size: 0.83rem; font-weight: 600;
+  color: var(--blue); list-style: none; padding: 0.5rem 0; user-select: none; margin-top: 0.8rem; }
+details summary::-webkit-details-marker { display: none; }
+.adv-arrow { display: inline-block; transition: transform 0.2s; margin-right: 0.3rem; font-size: 0.7rem; }
+details[open] .adv-arrow { transform: rotate(90deg); }
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
 
 <header>
-  <div class="logo">🏠 Wise<em>Owner</em></div>
+  <div class="logo">🏠 Keep/<em>Sell</em></div>
   <div class="step-ctr" id="stepCtr"></div>
   <div class="country-sel">
     <div class="sel-wrap">
@@ -891,15 +943,15 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 0: INTRO -->
   <div class="step active" id="step-0">
     <div class="intro-hero">
-      <div class="big-logo">🏠 Wise<em>Owner</em></div>
-      <div class="intro-desc">Not sure what to do with your property? Answer a few quick questions — we'll compare all three paths and an AI will explain what the numbers actually mean for you.</div>
+      <div class="big-logo">🏠 Keep/<em>Sell</em></div>
+      <div class="intro-desc">Should you keep your property or sell it? Answer a few questions and we'll crunch the Canadian tax math, compare every path, and explain what the numbers actually mean for you.</div>
       <div class="path-row">
-        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">Cash out, move on</div></div>
-        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Earn monthly income</div></div>
-        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Keep Living Here</div><div class="pd">Stay put, build equity</div></div>
+        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">Cash out, invest the proceeds</div></div>
+        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Keep &amp; Rent</div><div class="pd">Long-term tenant or Airbnb</div></div>
+        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Keep &amp; Live</div><div class="pd">Stay put, build equity</div></div>
       </div>
       <div class="quick-badges">
-        <div class="qb">⏱️ ~5 minutes</div>
+        <div class="qb">⏱️ ~3 minutes</div>
         <div class="qb">🍁 Built for Canada</div>
         <div class="qb">🔒 Nothing is saved</div>
         <div class="qb">🤖 AI interpretation included</div>
@@ -915,7 +967,7 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 1: PROPERTY -->
   <div class="step" id="step-1">
     <div class="eyebrow">Step 1 of 5</div>
-    <h2 class="heading">Your property 🏠</h2>
+    <h2 class="heading">Your property 🏠 <span class="step-time">~1 min</span></h2>
     <p class="subtext">Just the basics. Ballpark numbers work fine here.</p>
 
     <div class="card">
@@ -953,6 +1005,55 @@ select option { background: #fff; color: var(--text); }
           <label>Style of property</label>
           <select id="propCat"><option value="detached">Detached House</option><option value="semi">Semi-Detached</option><option value="condo">Condo / Apartment</option><option value="townhouse">Townhouse</option><option value="multi">Multi-Unit (Duplex/Triplex)</option></select>
         </div>
+      </div>
+      <div class="field" style="margin-top:1.2rem;">
+        <label>Your neighbourhood or city <span style="font-weight:400;color:var(--text-muted)">(optional — auto-fills market hints)</span></label>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <select id="citySelect" onchange="updateCityHints()" style="flex:1;">
+            <option value="">Select your city or neighbourhood...</option>
+            <optgroup label="🏙 Toronto — by neighbourhood">
+              <option value="Toronto – Downtown Core">Downtown Core / Waterfront</option>
+              <option value="Toronto – King West / Liberty">King West / Liberty Village</option>
+              <option value="Toronto – Annex / Harbord">Annex / Harbord Village</option>
+              <option value="Toronto – Yorkville / Rosedale">Yorkville / Rosedale</option>
+              <option value="Toronto – Leslieville / Riverdale">Leslieville / Riverdale</option>
+              <option value="Toronto – North York / Midtown">North York / Midtown</option>
+              <option value="Toronto – Etobicoke / West End">Etobicoke / West End</option>
+              <option value="Toronto – Scarborough / East York">Scarborough / East York</option>
+            </optgroup>
+            <optgroup label="🌊 Vancouver — by neighbourhood">
+              <option value="Vancouver – Downtown / West End">Downtown / West End / Coal Harbour</option>
+              <option value="Vancouver – Kitsilano / Point Grey">Kitsilano / Point Grey / UBC</option>
+              <option value="Vancouver – East Van / Commercial">East Vancouver / Commercial Drive</option>
+              <option value="Vancouver – Mount Pleasant / Main">Mount Pleasant / Main Street</option>
+              <option value="Vancouver – Fairview / S Granville">Fairview / South Granville</option>
+              <option value="Vancouver – North Shore">North Shore (N/W Vancouver)</option>
+              <option value="Vancouver – Burnaby / Metrotown">Burnaby / Metrotown</option>
+            </optgroup>
+            <optgroup label="Other cities">
+              <option value="Calgary">Calgary</option>
+              <option value="Ottawa">Ottawa</option>
+              <option value="Montreal">Montréal</option>
+              <option value="Edmonton">Edmonton</option>
+              <option value="Mississauga">Mississauga / Peel</option>
+              <option value="Hamilton">Hamilton / Niagara</option>
+              <option value="Kitchener">Kitchener-Waterloo</option>
+              <option value="Halifax">Halifax</option>
+              <option value="Victoria">Victoria</option>
+              <option value="Kelowna">Kelowna</option>
+              <option value="London">London ON</option>
+              <option value="Winnipeg">Winnipeg</option>
+              <option value="Regina">Regina</option>
+              <option value="Saskatoon">Saskatoon</option>
+              <option value="Quebec">Québec City</option>
+            </optgroup>
+          </select>
+          <button type="button" class="btn-locate" onclick="detectCity()" title="Use my location">📍</button>
+        </div>
+      </div>
+      <div class="callout info" id="cityHintCard" style="display:none;margin-top:0.6rem;">
+        <span class="ci">📍</span>
+        <div id="cityHintText"></div>
       </div>
     </div>
 
@@ -1000,7 +1101,7 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 2: MORTGAGE -->
   <div class="step" id="step-2">
     <div class="eyebrow">Step 2 of 5</div>
-    <h2 class="heading">Your mortgage 💳</h2>
+    <h2 class="heading">Your mortgage 💳 <span class="step-time">~45 sec</span></h2>
     <p class="subtext">Check your latest mortgage statement — most of this is right on it.</p>
     <div class="step-note"><span class="sn-icon">💡</span><span>This step helps calculate your ownership costs, equity position, and mortgage break penalties. <strong>Skipping?</strong> We'll use typical Canadian defaults — results will be less precise for the sell vs. keep comparison.</span></div>
 
@@ -1018,24 +1119,29 @@ select option { background: #fff; color: var(--text); }
           <div class="wrap"><span class="pfx">$</span><input type="number" id="monthMort" class="has-pfx" placeholder="2,200"></div>
           <span class="hint">Principal + interest only. Don't include property tax or insurance if they're billed separately.</span>
         </div>
-        <div class="field">
-          <label>Interest rate</label>
-          <div class="wrap"><span class="sfx">%</span><input type="number" id="intRate" class="has-sfx" placeholder="5.2" step="0.05"></div>
-        </div>
-        <div class="field">
-          <label>Years left on your mortgage</label>
-          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="yrsLeft" class="has-sfx" placeholder="18" min="1" max="30"></div>
-        </div>
-        <div class="field">
-          <label>Is your mortgage open or closed?</label>
-          <select id="mortType"><option value="open">Open — I can pay it off anytime</option><option value="closed" selected>Closed — there's a penalty to break it</option><option value="variable">Variable rate</option></select>
-        </div>
-        <div class="field">
-          <label>Penalty if you break it early (if closed)</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="breakPen" class="has-pfx" placeholder="5,000"></div>
-          <div class="explain">Call your lender and ask: <em>"What's my prepayment penalty today?"</em> It's usually 3 months of interest, or an IRD calculation — whichever is higher. Enter $0 if your mortgage is open.</div>
-        </div>
       </div>
+      <details id="advancedMortgage">
+        <summary><span class="adv-arrow">›</span> Show advanced fields <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem;">(rate, amortization, lender)</span></summary>
+        <div class="grid g2" style="margin-top:1rem;">
+          <div class="field">
+            <label>Interest rate</label>
+            <div class="wrap"><span class="sfx">%</span><input type="number" id="intRate" class="has-sfx" placeholder="5.2" step="0.05"></div>
+          </div>
+          <div class="field">
+            <label>Years left on your mortgage</label>
+            <div class="wrap"><span class="sfx">yrs</span><input type="number" id="yrsLeft" class="has-sfx" placeholder="18" min="1" max="30"></div>
+          </div>
+          <div class="field">
+            <label>Is your mortgage open or closed?</label>
+            <select id="mortType"><option value="open">Open — I can pay it off anytime</option><option value="closed" selected>Closed — there's a penalty to break it</option><option value="variable">Variable rate</option></select>
+          </div>
+          <div class="field">
+            <label>Penalty if you break it early (if closed)</label>
+            <div class="wrap"><span class="pfx">$</span><input type="number" id="breakPen" class="has-pfx" placeholder="5,000"></div>
+            <div class="explain">Call your lender and ask: <em>"What's my prepayment penalty today?"</em> It's usually 3 months of interest, or an IRD calculation — whichever is higher. Enter $0 if your mortgage is open.</div>
+          </div>
+        </div>
+      </details>
     </div>
 
     <div class="card">
@@ -1053,34 +1159,64 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 3: RENTAL -->
   <div class="step" id="step-3">
     <div class="eyebrow">Step 3 of 5</div>
-    <h2 class="heading">The rental picture 🔑</h2>
+    <h2 class="heading">The rental picture 🔑 <span class="step-time">~1 min</span></h2>
     <p class="subtext">Fill this in even if renting isn't on your radar — it builds the full comparison. Estimates are totally fine.</p>
     <div class="step-note"><span class="sn-icon">💡</span><span>These fields determine whether renting your property is financially viable — cash flow, cap rate, and landlord costs. <strong>Skipping?</strong> We'll use conservative estimates, but the rental path comparison may not reflect your local market.</span></div>
 
-    <div class="card">
-      <div class="card-title">💵 What could you charge in rent?</div>
-      <div class="grid g2">
-        <div class="field" id="f-monthRent">
-          <label>Estimated monthly rent</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
-          <span class="hint">Check <a href="https://rentals.ca" target="_blank" style="color:var(--sage-d);font-weight:600;">rentals.ca</a> or Facebook Marketplace for what similar units in your area are going for.</span>
-          <span class="err-msg">Enter an estimated rent, even a rough guess</span>
+    <input type="hidden" id="rentalType" value="longterm">
+    <div class="rental-toggle">
+      <button class="rt-btn active" onclick="setRentalType('longterm', this)">🏠 Long-term tenant</button>
+      <button class="rt-btn" onclick="setRentalType('airbnb', this)">✈️ Airbnb / Short-term</button>
+    </div>
+
+    <div id="longtermFields">
+      <div class="card">
+        <div class="card-title">💵 What could you charge in rent?</div>
+        <div class="grid g2">
+          <div class="field" id="f-monthRent">
+            <label>Estimated monthly rent</label>
+            <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
+            <span class="hint">Check <a href="https://rentals.ca" target="_blank" style="color:var(--green);font-weight:600;">rentals.ca</a> or Facebook Marketplace for what similar units in your area are going for.</span>
+            <span class="err-msg">Enter an estimated rent, even a rough guess</span>
+          </div>
+          <div class="field">
+            <label>How often might it sit empty? (vacancy)</label>
+            <div class="wrap"><span class="sfx">%</span><input type="number" id="vacRate" class="has-sfx" placeholder="5" min="0" max="50"></div>
+            <div class="explain">This is the % of the year with no tenant. <strong>Tight market (Toronto, Vancouver)?</strong> Use 3–5%. <strong>Smaller city or uncertain?</strong> Use 8–10%.</div>
+          </div>
         </div>
-        <div class="field">
-          <label>How often might it sit empty? (vacancy)</label>
-          <div class="wrap"><span class="sfx">%</span><input type="number" id="vacRate" class="has-sfx" placeholder="5" min="0" max="50"></div>
-          <div class="explain">This is the % of the year with no tenant. <strong>Tight market (Toronto, Vancouver)?</strong> Use 3–5%. <strong>Smaller city or uncertain?</strong> Use 8–10%. It's basically: how many weeks per year without rent × (100 ÷ 52).</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
+        <div class="grid g2">
+          <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint">A rough rule: budget 1% of the property's value per year, divided by 12. So $600k property → ~$500/mo.</span></div>
+          <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd manage it yourself.</span></div>
+          <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="120"></div><span class="hint">Usually $100–$200/mo. A bit higher than regular home insurance.</span></div>
+          <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="50"></div><span class="hint">Tax filing, leases, occasional legal advice — roughly $50–$100/mo averaged out.</span></div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
-      <div class="grid g2">
-        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint">A rough rule: budget 1% of the property's value per year, divided by 12. So $600k property → ~$500/mo.</span></div>
-        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd manage it yourself.</span></div>
-        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="120"></div><span class="hint">Usually $100–$200/mo. A bit higher than regular home insurance.</span></div>
-        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="50"></div><span class="hint">Tax filing, leases, occasional legal advice — roughly $50–$100/mo averaged out.</span></div>
+    <div id="airbnbFields" style="display:none;">
+      <div class="card">
+        <div class="card-title">✈️ Airbnb / Short-term rental</div>
+        <div class="grid g2">
+          <div class="field">
+            <label>Average nightly rate</label>
+            <div class="wrap"><span class="pfx">$</span><input type="number" id="nightlyRate" class="has-pfx" placeholder="120"></div>
+            <div class="explain" id="nightlyHint">Check Airbnb for comparable listings nearby.</div>
+          </div>
+          <div class="field">
+            <label>Estimated occupancy</label>
+            <div class="wrap"><span class="sfx">%</span><input type="number" id="airbnbOcc" class="has-sfx" placeholder="60"></div>
+            <div class="explain" id="occHint">Major Canadian cities avg 55–65%. Cottage country can hit 70%+ in summer.</div>
+          </div>
+        </div>
+        <div class="callout maple" style="margin-top:1rem;">
+          <span class="ci">⚠️</span>
+          <div>Airbnb income is taxed as <strong>business income</strong> — not passive rental income — at your full marginal rate. Toronto, Vancouver, and Calgary require a short-term rental licence.</div>
+        </div>
       </div>
     </div>
 
@@ -1125,7 +1261,7 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 4: SELL -->
   <div class="step" id="step-4">
     <div class="eyebrow">Step 4 of 5</div>
-    <h2 class="heading">The selling picture 🏷️</h2>
+    <h2 class="heading">The selling picture 🏷️ <span class="step-time">~30 sec</span></h2>
     <p class="subtext">What it'd cost to sell, what tax you might owe, and what you'd do with the money.</p>
     <div class="step-note"><span class="sn-icon">💡</span><span>This refines your capital gains tax estimate and the sell-path reinvestment projection. <strong>Skipping?</strong> We'll use standard assumptions (4% commission, 7% reinvestment return, 10-year horizon). Your tax estimate may be less accurate.</span></div>
 
@@ -1187,7 +1323,7 @@ select option { background: #fff; color: var(--text); }
   <!-- STEP 5: PERSONAL -->
   <div class="step" id="step-5">
     <div class="eyebrow">Step 5 of 5 — Last one!</div>
-    <h2 class="heading">A bit about you 💰</h2>
+    <h2 class="heading">A bit about you 💰 <span class="step-time">~30 sec</span></h2>
     <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
     <div class="step-note"><span class="sn-icon">💡</span><span>Personal goals and financial situation help tailor the recommendation beyond just numbers. <strong>Skipping?</strong> The scores will lean more on financial metrics alone — the personal fit won't be factored in.</span></div>
 
@@ -1232,8 +1368,9 @@ select option { background: #fff; color: var(--text); }
 <!-- RESULTS -->
 <div id="results">
   <div class="main">
-    <div class="res-header"><h1>🏠 Your WiseOwner Report</h1><p>Based on your numbers and Canadian tax rules. The final call is always yours.</p></div>
-    <div class="sc-grid" id="scGrid"></div>
+    <div class="res-header"><h1>🏠 Your Keep/Sell Report</h1><p>Based on your numbers and Canadian tax rules. The final call is always yours.</p></div>
+    <div id="recHero"></div>
+    <div id="decisionRow"></div>
     <div id="improveCard"></div>
     <div class="ai-box" id="aiBox">
       <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
@@ -1407,6 +1544,154 @@ function goBackToStep(n){
   goTo(n);
 }
 
+// ===== CITY DATA =====
+const CITY_DATA = {
+  // ── TORONTO — neighbourhood level (Inside Airbnb 2024 + CMHC) ──
+  'Toronto – Downtown Core':           { city:'Toronto', apprec:4.5, rent1br:2650, rent2br:3350, airbnbNightly:175, airbnbOcc:68 },
+  'Toronto – King West / Liberty':     { city:'Toronto', apprec:4.5, rent1br:2550, rent2br:3200, airbnbNightly:162, airbnbOcc:66 },
+  'Toronto – Annex / Harbord':         { city:'Toronto', apprec:4.8, rent1br:2600, rent2br:3300, airbnbNightly:155, airbnbOcc:65 },
+  'Toronto – Yorkville / Rosedale':    { city:'Toronto', apprec:5.0, rent1br:2800, rent2br:3600, airbnbNightly:185, airbnbOcc:67 },
+  'Toronto – Leslieville / Riverdale': { city:'Toronto', apprec:4.3, rent1br:2400, rent2br:3000, airbnbNightly:140, airbnbOcc:62 },
+  'Toronto – North York / Midtown':    { city:'Toronto', apprec:4.0, rent1br:2200, rent2br:2850, airbnbNightly:125, airbnbOcc:58 },
+  'Toronto – Etobicoke / West End':    { city:'Toronto', apprec:3.8, rent1br:2100, rent2br:2700, airbnbNightly:118, airbnbOcc:55 },
+  'Toronto – Scarborough / East York': { city:'Toronto', apprec:3.5, rent1br:1950, rent2br:2500, airbnbNightly:108, airbnbOcc:52 },
+  // ── VANCOUVER — neighbourhood level (Inside Airbnb 2024 + CMHC) ──
+  'Vancouver – Downtown / West End':   { city:'Vancouver', apprec:4.2, rent1br:2850, rent2br:3700, airbnbNightly:195, airbnbOcc:72 },
+  'Vancouver – Kitsilano / Point Grey':{ city:'Vancouver', apprec:4.5, rent1br:2700, rent2br:3450, airbnbNightly:178, airbnbOcc:70 },
+  'Vancouver – East Van / Commercial': { city:'Vancouver', apprec:3.8, rent1br:2400, rent2br:3100, airbnbNightly:148, airbnbOcc:64 },
+  'Vancouver – Mount Pleasant / Main': { city:'Vancouver', apprec:4.0, rent1br:2500, rent2br:3200, airbnbNightly:158, airbnbOcc:66 },
+  'Vancouver – Fairview / S Granville':{ city:'Vancouver', apprec:4.2, rent1br:2600, rent2br:3350, airbnbNightly:165, airbnbOcc:68 },
+  'Vancouver – North Shore':           { city:'Vancouver', apprec:3.8, rent1br:2300, rent2br:2950, airbnbNightly:152, airbnbOcc:63 },
+  'Vancouver – Burnaby / Metrotown':   { city:'Vancouver', apprec:3.5, rent1br:2150, rent2br:2750, airbnbNightly:132, airbnbOcc:60 },
+  // ── OTHER CITIES — city level · CMHC 2024 ──
+  Calgary:     { city:'Calgary',    apprec:5.8, rent1br:1780, rent2br:2250, airbnbNightly:118, airbnbOcc:58, cityLevelOnly:true },
+  Ottawa:      { city:'Ottawa',     apprec:3.8, rent1br:1950, rent2br:2450, airbnbNightly:122, airbnbOcc:60, cityLevelOnly:true },
+  Montreal:    { city:'Montréal',   apprec:3.2, rent1br:1450, rent2br:1950, airbnbNightly:107, airbnbOcc:61, cityLevelOnly:true },
+  Edmonton:    { city:'Edmonton',   apprec:3.5, rent1br:1320, rent2br:1680, airbnbNightly:94,  airbnbOcc:54, cityLevelOnly:true },
+  Mississauga: { city:'Mississauga',apprec:4.0, rent1br:2200, rent2br:2800, airbnbNightly:125, airbnbOcc:58, cityLevelOnly:true },
+  Hamilton:    { city:'Hamilton',   apprec:3.5, rent1br:1800, rent2br:2200, airbnbNightly:108, airbnbOcc:55, cityLevelOnly:true },
+  Kitchener:   { city:'Kitchener',  apprec:3.8, rent1br:1750, rent2br:2150, airbnbNightly:99,  airbnbOcc:52, cityLevelOnly:true },
+  Halifax:     { city:'Halifax',    apprec:4.2, rent1br:1850, rent2br:2350, airbnbNightly:128, airbnbOcc:63, cityLevelOnly:true },
+  Victoria:    { city:'Victoria',   apprec:4.0, rent1br:1950, rent2br:2550, airbnbNightly:155, airbnbOcc:67, cityLevelOnly:true },
+  Kelowna:     { city:'Kelowna',    apprec:4.5, rent1br:1700, rent2br:2200, airbnbNightly:172, airbnbOcc:68, cityLevelOnly:true },
+  London:      { city:'London ON',  apprec:3.2, rent1br:1600, rent2br:2050, airbnbNightly:92,  airbnbOcc:50, cityLevelOnly:true },
+  Winnipeg:    { city:'Winnipeg',   apprec:2.8, rent1br:1280, rent2br:1620, airbnbNightly:88,  airbnbOcc:49, cityLevelOnly:true },
+  Regina:      { city:'Regina',     apprec:2.2, rent1br:1150, rent2br:1480, airbnbNightly:78,  airbnbOcc:46, cityLevelOnly:true },
+  Saskatoon:   { city:'Saskatoon',  apprec:2.5, rent1br:1200, rent2br:1550, airbnbNightly:82,  airbnbOcc:47, cityLevelOnly:true },
+  Quebec:      { city:'Québec City',apprec:3.0, rent1br:1250, rent2br:1650, airbnbNightly:98,  airbnbOcc:57, cityLevelOnly:true },
+};
+
+function updateCityHints() {
+  const key = gs('citySelect');
+  const d = CITY_DATA[key];
+  if (!d) return;
+  const isNeighbourhood = !d.cityLevelOnly;
+  const sourceTag = isNeighbourhood
+    ? 'Inside Airbnb 2024'
+    : 'CMHC 2024 · city-level — neighbourhood data not yet available';
+
+  // Snap appreciation tile to closest known value
+  const apprec = d.apprec;
+  const closest = [0, 3, 5, 8].reduce((a, b) => Math.abs(b - apprec) < Math.abs(a - apprec) ? b : a);
+  document.querySelectorAll('.ftile').forEach(t => {
+    t.classList.remove('selected');
+    if (parseFloat(t.dataset && t.dataset.val) === closest) t.classList.add('selected');
+  });
+  // Set the hidden apprec field to exact city value
+  const apprecEl = document.getElementById('apprec');
+  if (apprecEl) apprecEl.value = apprec;
+
+  // City hint callout
+  const hintCard = document.getElementById('cityHintCard');
+  const hintText = document.getElementById('cityHintText');
+  if (hintCard && hintText) {
+    hintText.innerHTML = `<strong>${key}</strong>: avg appreciation ~${apprec}%/yr · <em>${sourceTag}</em>`;
+    hintCard.style.display = 'flex';
+  }
+
+  // Rent estimate placeholder + hint
+  const rentEl = document.getElementById('monthRent');
+  if (rentEl && !rentEl.dataset.userEdited) {
+    rentEl.placeholder = d.rent2br.toString();
+    const hint = rentEl.closest('.field') && rentEl.closest('.field').querySelector('.hint');
+    if (hint) hint.innerHTML = `📍 ${key}: ~$${d.rent1br.toLocaleString()}/mo (1BR) · $${d.rent2br.toLocaleString()}/mo (2BR) · <em>${sourceTag}</em>`;
+  }
+
+  // Airbnb placeholders + hints
+  const nightly = document.getElementById('nightlyRate');
+  if (nightly && !nightly.dataset.userEdited) {
+    nightly.placeholder = d.airbnbNightly.toString();
+    const h = document.getElementById('nightlyHint');
+    if (h) h.innerHTML = `📍 ${key}: avg ~$${d.airbnbNightly}/night · <em>${sourceTag}</em>`;
+  }
+  const occ = document.getElementById('airbnbOcc');
+  if (occ && !occ.dataset.userEdited) {
+    occ.placeholder = d.airbnbOcc.toString();
+    const h = document.getElementById('occHint');
+    if (h) h.innerHTML = `📍 ${key}: avg ~${d.airbnbOcc}% occupancy · <em>${sourceTag}</em>`;
+  }
+}
+
+async function detectCity() {
+  if (!navigator.geolocation) { showToast('📍 Geolocation not supported in this browser'); return; }
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lon } = pos.coords;
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=14`);
+      const data = await res.json();
+      const addr = data.address || {};
+      const suburb = (addr.suburb || addr.neighbourhood || addr.quarter || '').toLowerCase();
+      const cityRaw = (addr.city || addr.town || addr.municipality || '').toLowerCase();
+      let matched = '';
+      const toMap = {
+        'downtown|waterfront|entertainment|st. lawrence|financial': 'Toronto – Downtown Core',
+        'king west|liberty|niagara|trinity|bathurst': 'Toronto – King West / Liberty',
+        'annex|harbord|palmerston|seaton|bloor west': 'Toronto – Annex / Harbord',
+        'yorkville|rosedale|moore park|summerhill': 'Toronto – Yorkville / Rosedale',
+        'leslieville|riverdale|playter|east end': 'Toronto – Leslieville / Riverdale',
+        'north york|midtown|davisville|yonge': 'Toronto – North York / Midtown',
+        'etobicoke|high park|runnymede|swansea': 'Toronto – Etobicoke / West End',
+        'scarborough|east york|wexford|agincourt': 'Toronto – Scarborough / East York',
+      };
+      const vanMap = {
+        'downtown|west end|coal harbour|gastown|yaletown|burrard': 'Vancouver – Downtown / West End',
+        'kitsilano|point grey|ubc|west point': 'Vancouver – Kitsilano / Point Grey',
+        'east vancouver|commercial|grandview|hastings|renfrew': 'Vancouver – East Van / Commercial',
+        'mount pleasant|main street|riley park|fraser': 'Vancouver – Mount Pleasant / Main',
+        'fairview|south granville|cambie|marpole|oakridge': 'Vancouver – Fairview / S Granville',
+        'north vancouver|west vancouver|north shore|lynn|deep cove': 'Vancouver – North Shore',
+        'burnaby|metrotown|new westminster|coquitlam|port moody': 'Vancouver – Burnaby / Metrotown',
+      };
+      const lookup = cityRaw.includes('toronto') ? toMap : cityRaw.includes('vancouver') ? vanMap : null;
+      if (lookup) {
+        for (const [pattern, key] of Object.entries(lookup)) {
+          if (new RegExp(pattern, 'i').test(suburb)) { matched = key; break; }
+        }
+        if (!matched) matched = cityRaw.includes('toronto') ? 'Toronto – Downtown Core' : 'Vancouver – Downtown / West End';
+      } else {
+        const allKeys = Object.keys(CITY_DATA);
+        matched = allKeys.find(k => cityRaw.includes(k.toLowerCase())) || '';
+      }
+      if (matched) {
+        document.getElementById('citySelect').value = matched;
+        updateCityHints();
+        showToast(`📍 Detected: ${matched}`);
+      } else {
+        showToast('📍 Location found but no data for your city yet');
+      }
+    } catch(e) { showToast('📍 Could not detect city — try selecting manually'); }
+  }, () => showToast('📍 Location access denied'));
+}
+
+function setRentalType(type, btn) {
+  document.getElementById('rentalType').value = type;
+  document.querySelectorAll('.rt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('airbnbFields').style.display = type === 'airbnb' ? 'block' : 'none';
+  document.getElementById('longtermFields').style.display = type === 'longterm' ? '' : 'none';
+  updateCityHints();
+}
+
 function goTo(n){
   // going forward: validate current step
   if(n > cur && !validateStep(cur)) return;
@@ -1472,6 +1757,19 @@ function calculate(){
   const coc=equity>0?(monthRentCF*12/equity*100):0;
   const futRent=curVal*Math.pow(1+apprec,hrz)-mortBal+annRentAT*hrz;
 
+  // Airbnb cash flow (if short-term rental mode selected)
+  const rentalType = gs('rentalType') || 'longterm';
+  let airbnbCF = 0;
+  if (rentalType === 'airbnb') {
+    const nightlyRate = gv('nightlyRate', 120);
+    const airbnbOccPct = gv('airbnbOcc', 60) / 100;
+    const grossMonthly = nightlyRate * 30 * airbnbOccPct;
+    const platformCost = grossMonthly * 0.03;
+    const cleaningCost = (30 * airbnbOccPct / 3) * (nightlyRate * 0.15);
+    const baseCosts = monthMort + propTax + homeIns + condoFee + gv('maint', 300);
+    airbnbCF = grossMonthly - platformCost - cleaningCost - baseCosts;
+  }
+
   const futKeep=curVal*Math.pow(1+apprec,hrz)-mortBal;
   const dti=monthInc>0?(totalMonthCost+otherDebt)/monthInc*100:0;
 
@@ -1504,6 +1802,13 @@ function calculate(){
   if(risk==='low')scores.keep.personal+=8;if(gCash)scores.keep.personal-=15;
   if(urg==='now')scores.keep.personal-=12;if(emerg==='none')scores.keep.personal-=5;
   if(preYrs>0)scores.keep.tax+=10;
+  // Airbnb mode score adjustments
+  if(rentalType==='airbnb'){
+    if(airbnbCF>600) scores.rent.financial+=15;
+    else if(airbnbCF>0) scores.rent.financial+=5;
+    else scores.rent.financial-=10;
+    scores.rent.personal-=8; // more active management than long-term
+  }
   // Clamp sub-scores 0-100
   for(const p of['sell','rent','keep'])for(const c of['financial','personal','tax'])scores[p][c]=Math.min(100,Math.max(0,scores[p][c]));
   // Weighted total: financial 40%, personal 35%, tax 25%
@@ -1518,42 +1823,48 @@ function calculate(){
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 
-  const scenarios=[
-    {key:'sell',icon:'🏷️',name:'Sell It',score:ss,rows:[
-      {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
-      {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
-      {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
-      {l:'Equity unlocked today',v:fmt(equity),c:''},
-    ]},
-    {key:'rent',icon:'🔑',name:'Rent It Out',score:rs,rows:[
-      {l:'Monthly cash flow (pre-tax)',v:fmt(monthRentCF),c:monthRentCF>=0?'pos':'neg'},
-      {l:'Cap rate',v:capRate.toFixed(1)+'%',c:capRate>=5?'pos':capRate>=3?'warn-c':'neg'},
-      {l:'Cash-on-cash return',v:coc.toFixed(1)+'%',c:coc>=6?'pos':''},
-      {l:`${hrz}-yr projected equity`,v:fmtK(futRent),c:'pos'},
-    ]},
-    {key:'keep',icon:'🏠',name:'Keep Living Here',score:ks,rows:[
-      {l:'Monthly ownership cost',v:fmt(totalMonthCost),c:'neg'},
-      {l:'Debt-to-income ratio',v:dti.toFixed(0)+'%',c:dti<35?'pos':dti<44?'warn-c':'neg'},
-      {l:`${hrz}-yr projected equity`,v:fmtK(futKeep),c:'pos'},
-      {l:'Annual appreciation gain',v:fmtK(curVal*apprec),c:'pos'},
-    ]},
-  ];
+  // Binary KEEP vs SELL hero card
+  const keepScore = Math.max(rs, ks);
+  const isKeep = keepScore >= ss;
+  const dp = buildDecisionParagraphs({
+    airbnbCF, monthRentCF, rentalType, capRate, totalMonthCost, dti,
+    futRent, futKeep, apprec, hrz, netProc, cgTax, reinvRet, futSell
+  });
+  const heroScore = isKeep ? keepScore : ss;
+  const heroClass = isKeep ? 'keep' : 'sell';
+  const subTagText = isKeep
+    ? (dp.bestKeep==='airbnb' ? '✈️ Best option: Airbnb'
+      : dp.bestKeep==='rent' ? '🔑 Best option: Long-term rental'
+      : '🏠 Best option: Stay and live here')
+    : '🏷️ Unlock your equity today';
+  const subBodyText = isKeep
+    ? (dp.bestKeep==='airbnb' ? `Projects ~${fmt(airbnbCF)}/mo after platform fees and cleaning.`
+      : dp.bestKeep==='rent' ? `Generates ~${fmt(monthRentCF)}/mo cash flow, ${capRate.toFixed(1)}% cap rate.`
+      : `Monthly costs ~${fmt(totalMonthCost)} · DTI ${dti.toFixed(0)}%.`)
+    : `Net proceeds ~${fmt(netProc)} — reinvests to ${fmtK(futSell)} over ${hrz} yrs.`;
 
-  document.getElementById('scGrid').innerHTML=scenarios.map(sc=>`
-    <div class="sc-card ${sc.key} ${sc.score===mx?'best':''}">
-      ${sc.score===mx?'<div class="best-tag">⭐ BEST MATCH</div>':''}
-      <div class="sc-icon">${sc.icon}</div>
-      <div class="sc-name">${sc.name}</div>
-      <div class="sc-slbl">Match Score</div>
-      <div class="sc-score">${sc.score}</div>
-      <div class="sc-bar"><div class="sc-fill" style="width:${sc.score}%"></div></div>
-      <div class="sc-subs">
-        <div class="sc-sub-row"><span class="sc-sub-label">Financial</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].financial}%"></div></div><span class="sc-sub-val">${scores[sc.key].financial}</span></div>
-        <div class="sc-sub-row"><span class="sc-sub-label">Personal</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].personal}%"></div></div><span class="sc-sub-val">${scores[sc.key].personal}</span></div>
-        <div class="sc-sub-row"><span class="sc-sub-label">Tax</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].tax}%"></div></div><span class="sc-sub-val">${scores[sc.key].tax}</span></div>
+  document.getElementById('recHero').innerHTML = `
+    <div class="rec-hero ${heroClass}">
+      <div class="rec-label">Our recommendation</div>
+      <div class="rec-decision">${isKeep ? '🏡 KEEP IT' : '🏷️ SELL IT'}</div>
+      <div class="rec-score">Match score: ${heroScore}/100 · ${isKeep ? 'holding' : 'selling'} edges it out</div>
+      <div class="rec-sub">
+        <div><span class="rec-sub-tag">${subTagText}</span></div>
+        ${subBodyText}
       </div>
-      <div class="sc-rows">${sc.rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('')}</div>
-    </div>`).join('');
+    </div>`;
+
+  document.getElementById('decisionRow').innerHTML = `
+    <div class="decision-row">
+      <div class="dec-card keep${isKeep ? ' winner' : ''}">
+        <div class="dec-title">🏡 Keep It</div>
+        <p class="dec-para">${dp.keepPara}</p>
+      </div>
+      <div class="dec-card sell${!isKeep ? ' winner' : ''}">
+        <div class="dec-title">🏷️ Sell It</div>
+        <p class="dec-para">${dp.sellPara}</p>
+      </div>
+    </div>`;
 
   // Render "Improve Your Results" card if steps were skipped
   const skippedInfo=getSkippedFieldInfo();
@@ -1658,7 +1969,7 @@ Write exactly 3 paragraphs separated by blank lines. Conversational, warm, and g
     futSell,futRent,futKeep,equity,monthSell,
     futPropVal:curVal*Math.pow(1+apprec,hrz),
     gStab,gCash,gInc,gSimp,gLong,gTax,landlord,risk,emerg,urg,
-    scores,ss,rs,ks
+    scores,ss,rs,ks,airbnbCF,rentalType
   });
   document.getElementById('aiBody').innerHTML=localParas.map(p=>`<p>${p}</p>`).join('');
   // Then attempt AI enhancement asynchronously
@@ -1715,6 +2026,38 @@ function generateLocalAnalysis(d){
   return paras;
 }
 
+function buildDecisionParagraphs(d) {
+  // Determine best keep option
+  let bestKeep;
+  if (d.rentalType === 'airbnb' && d.airbnbCF > 0) {
+    bestKeep = 'airbnb';
+  } else if (d.monthRentCF > 0) {
+    bestKeep = 'rent';
+  } else {
+    bestKeep = 'live';
+  }
+
+  let keepPara;
+  if (bestKeep === 'airbnb') {
+    keepPara = `Keeping and listing on Airbnb projects ~${fmt(d.airbnbCF)}/mo after platform fees and cleaning costs. `;
+  } else if (bestKeep === 'rent') {
+    keepPara = `Keeping and renting long-term generates ~${fmt(d.monthRentCF)}/mo pre-tax cash flow with a ${d.capRate.toFixed(1)}% cap rate. `;
+  } else {
+    keepPara = `Continuing to live here costs ~${fmt(d.totalMonthCost)}/mo with a ${d.dti.toFixed(0)}% debt-to-income ratio. `;
+  }
+  keepPara += `With ${(d.apprec*100).toFixed(1)}%/yr appreciation, the property projects ${fmtK(Math.max(d.futRent, d.futKeep))} in equity over ${d.hrz} years.`;
+
+  let sellPara = `Selling would net ~${fmt(d.netProc)} after all costs`;
+  if (d.cgTax === 0) {
+    sellPara += ` — zero capital gains tax thanks to your Principal Residence Exemption.`;
+  } else {
+    sellPara += ` with an estimated ${fmt(d.cgTax)} in capital gains tax.`;
+  }
+  sellPara += ` Reinvested at ${(d.reinvRet*100).toFixed(1)}%, that projects ${fmtK(d.futSell)} over ${d.hrz} years.`;
+
+  return { keepPara, sellPara, bestKeep };
+}
+
 async function callClaude(prompt){
   try{
     const res=await fetch('/.netlify/functions/analyze',{
@@ -1743,6 +2086,19 @@ function restart(){
   document.querySelector('.main').style.display='block';
   goTo(0);
 }
+
+// Mark fields as user-edited when touched (prevents city hints from overwriting)
+['monthRent','nightlyRate','airbnbOcc'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() { this.dataset.userEdited = '1'; });
+});
+
+// Wire forecast tile data-val attributes for updateCityHints snapping
+document.querySelectorAll('.ftile').forEach(t => {
+  const onclick = t.getAttribute('onclick') || '';
+  const m = onclick.match(/selectForecast\(this,\s*([-\d]+)\)/);
+  if (m) t.dataset.val = m[1];
+});
 </script>
 </body>
 </html>
