@@ -11,6 +11,9 @@
    KEEP/SELL — CANADIAN PROPERTY DECISION TOOL
    ═══════════════════════════════════════════════ */
 :root {
+  /* 2× type scaling (requested) */
+  font-size: 200%;
+
   /* Brand colours — darkened for light background */
   --green: #16a34a; --green-d: #15803d; --green-dim: rgba(22,163,74,0.10);
   --coral: #e11d48; --coral-d: #be123c; --coral-dim: rgba(225,29,72,0.08);
@@ -77,7 +80,7 @@ header {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--glass-border);
-  padding: 0 2rem; height: 62px;
+  padding: 0 2rem; height: 124px;
   display: flex; align-items: center; gap: 0.8rem;
   position: sticky; top: 0; z-index: 200;
 }
@@ -104,7 +107,7 @@ header {
 }
 
 /* ── PROGRESS ── */
-.prog-wrap { height: 2px; background: var(--glass-border); position: sticky; top: 62px; z-index: 199; }
+.prog-wrap { height: 2px; background: var(--glass-border); position: sticky; top: 124px; z-index: 199; }
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(22,163,74,0.4); }
 
 /* ── TABS ── */
@@ -114,7 +117,7 @@ header {
   border-bottom: 1px solid var(--glass-border);
   display: flex; padding: 0 2rem;
   overflow-x: auto; scrollbar-width: none;
-  position: sticky; top: 64px; z-index: 198;
+  position: sticky; top: 126px; z-index: 198;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
@@ -150,7 +153,7 @@ header {
 @keyframes pulse-dot {
   0%,100% { opacity: 1; } 50% { opacity: 0.4; box-shadow: 0 0 10px var(--green); }
 }
-.heading { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
+.heading { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
 .subtext { color: var(--text-mid); font-size: 0.93rem; line-height: 1.65; margin-bottom: 2rem; max-width: 540px; }
 
 /* ── GLASS CARDS ── */
@@ -312,6 +315,30 @@ select option { background: #fff; color: var(--text); }
 }
 .step-note .sn-icon { flex-shrink: 0; }
 
+.optional-card {
+  background: linear-gradient(135deg, rgba(217,119,6,0.10), rgba(124,58,237,0.05));
+  border-color: rgba(217,119,6,0.28);
+}
+.optional-details {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: rgba(217,119,6,0.06);
+  border: 1px dashed rgba(217,119,6,0.30);
+}
+.optional-details summary { margin-top: 0; padding: 0; }
+.optional-details[open] { background: rgba(217,119,6,0.08); border-style: solid; }
+
+/* Last 4 pages: make the top tip/disclaimer box more prominent */
+#step-2 .step-note,
+#step-3 .step-note,
+#step-4 .step-note,
+#step-5 .step-note {
+  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(124,58,237,0.08));
+  border: 1px solid rgba(37,99,235,0.25);
+  box-shadow: 0 12px 30px rgba(37,99,235,0.14);
+}
+
 .improve-card {
   background: linear-gradient(135deg, rgba(37,99,235,0.04), rgba(124,58,237,0.03));
   border: 1px solid rgba(37,99,235,0.15);
@@ -364,7 +391,7 @@ select option { background: #fff; color: var(--text); }
 }
 
 .big-logo {
-  font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 900;
+  font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 900;
   color: var(--text); margin-bottom: 0.5rem;
   display: flex; align-items: center; gap: 0.4rem;
   position: relative; z-index: 1;
@@ -432,7 +459,7 @@ select option { background: #fff; color: var(--text); }
 /* ── RESULTS ── */
 #results { display: none; }
 .res-header { text-align: center; padding: 2.5rem 0 1.5rem; position: relative; }
-.res-header h1 { font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
+.res-header h1 { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
 .res-header p { color: var(--text-mid); font-size: 0.93rem; }
 
 /* SCORE CARDS */
@@ -663,8 +690,8 @@ select option { background: #fff; color: var(--text); }
     --text-muted: rgba(26,26,46,0.52);
   }
   .sc-grid,.path-row,.charts,.ins-grid { grid-template-columns: 1fr; }
-  .big-logo { font-size: 2.1rem; }
-  .heading { font-size: 1.65rem; }
+  .big-logo { font-size: 1.05rem; }
+  .heading { font-size: 0.825rem; }
   .forecast-tiles { grid-template-columns: 1fr 1fr; }
   .sc-card.best { transform: none; box-shadow: 0 0 24px rgba(22,163,74,0.1); }
   header { padding: 0 1rem; }
@@ -724,6 +751,10 @@ select option { background: #fff; color: var(--text); }
 
 /* ── PRINT ── */
 @media print {
+  :root { font-size: 100% !important; }
+  .heading { font-size: 2rem !important; }
+  .res-header h1 { font-size: 2.3rem !important; }
+
   /* Hide interactive / nav elements */
   header, .tabs, .prog-wrap, .share-bar, .restart-btn,
   .btn-row, .disclaimer, .toast, .country-sel { display: none !important; }
@@ -1120,7 +1151,7 @@ details[open] .adv-arrow { transform: rotate(90deg); }
           <span class="hint">Principal + interest only. Don't include property tax or insurance if they're billed separately.</span>
         </div>
       </div>
-      <details id="advancedMortgage">
+      <details id="advancedMortgage" class="optional-details">
         <summary><span class="adv-arrow">›</span> Show advanced fields <span style="font-weight:400;color:var(--text-muted);font-size:0.8rem;">(rate, amortization, lender)</span></summary>
         <div class="grid g2" style="margin-top:1rem;">
           <div class="field">
@@ -1220,7 +1251,7 @@ details[open] .adv-arrow { transform: rotate(90deg); }
       </div>
     </div>
 
-    <div class="card">
+    <div class="card optional-card">
       <div class="card-title">🧮 The tax write-off (CCA) — optional</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">Landlords in Canada can write off the building's depreciation each year. This is called <strong>CCA (Capital Cost Allowance)</strong>. It's like a tax deduction that reduces your rental income on paper — but it comes with a catch when you eventually sell.</p>
       <div class="grid g2">
