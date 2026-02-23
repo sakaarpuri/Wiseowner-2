@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiseOwner — Property Decision Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════
+   WISEOWNER — GLASSMORPHISM / AI-ERA DESIGN
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Brand colours */
+  --green: #4ade80; --green-d: #22c55e; --green-dim: rgba(74,222,128,0.15);
+  --coral: #fb7185; --coral-d: #f43f5e; --coral-dim: rgba(251,113,133,0.15);
+  --blue: #60a5fa; --blue-d: #3b82f6; --blue-dim: rgba(96,165,250,0.15);
+  --gold: #fbbf24; --gold-dim: rgba(251,191,36,0.15);
+  --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.12);
+  /* Surface */
+  --bg: #0b0f1a;
+  --surface: rgba(255,255,255,0.06);
+  --surface-hover: rgba(255,255,255,0.10);
+  --surface-active: rgba(255,255,255,0.14);
+  --glass: rgba(255,255,255,0.10);
+  --glass-border: rgba(255,255,255,0.15);
+  --glass-border-hover: rgba(255,255,255,0.28);
+  /* Text */
+  --text: #f0f4ff; --text-mid: rgba(240,244,255,0.72); --text-muted: rgba(240,244,255,0.48);
+  /* Glow */
+  --glow-green: 0 0 24px rgba(74,222,128,0.25);
+  --glow-coral: 0 0 24px rgba(251,113,133,0.25);
+  --glow-blue: 0 0 24px rgba(96,165,250,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* ── ANIMATED BACKGROUND ORBS ── */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
+  top: -200px; left: -200px;
+  animation: drift1 18s ease-in-out infinite alternate;
+}
+body::after {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(96,165,250,0.1), transparent 70%);
+  bottom: -150px; right: -150px;
+  animation: drift2 22s ease-in-out infinite alternate;
+}
+@keyframes drift1 { to { transform: translate(80px,60px); } }
+@keyframes drift2 { to { transform: translate(-60px,-80px); } }
+
+/* ── HEADER ── */
+header {
+  background: rgba(11,15,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 2rem; height: 62px;
+  display: flex; align-items: center; gap: 0.8rem;
+  position: sticky; top: 0; z-index: 200;
+}
+.logo {
+  font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900;
+  color: var(--text); letter-spacing: -1px;
+  display: flex; align-items: center; gap: 0.35rem;
+}
+.logo em { color: var(--green); font-style: normal; }
+.step-ctr { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+.country-sel { margin-left: auto; }
+.country-sel .sel-wrap { position: relative; }
+.country-sel select {
+  border: 1px solid var(--glass-border); border-radius: 8px;
+  padding: 0.3rem 1.6rem 0.3rem 0.7rem;
+  font-size: 0.73rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-mid); background: var(--glass);
+  cursor: pointer; outline: none; appearance: none;
+}
+.country-sel .sel-wrap::after {
+  content: '▾'; position: absolute; right: 0.5rem; top: 50%;
+  transform: translateY(-50%); font-size: 0.6rem; color: var(--text-muted); pointer-events: none;
+}
+
+/* ── PROGRESS ── */
+.prog-wrap { height: 2px; background: var(--glass-border); position: sticky; top: 62px; z-index: 199; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.6); }
+
+/* ── TABS ── */
+.tabs {
+  background: rgba(11,15,26,0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex; padding: 0 2rem;
+  overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: 64px; z-index: 198;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 0.65rem 1rem; font-size: 0.72rem; font-weight: 600;
+  color: var(--text-muted); border-bottom: 2px solid transparent;
+  white-space: nowrap; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.tab.done { color: var(--green); }
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* ── LAYOUT ── */
+.main { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; position: relative; z-index: 1; }
+.step { display: none; }
+.step.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── TYPOGRAPHY ── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--green); margin-bottom: 0.9rem;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.2);
+  padding: 0.28rem 0.75rem; border-radius: 20px;
+}
+.eyebrow::before {
+  content: '';
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; } 50% { opacity: 0.4; box-shadow: 0 0 10px var(--green); }
+}
+.heading { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
+.subtext { color: var(--text-mid); font-size: 0.93rem; line-height: 1.65; margin-bottom: 2rem; max-width: 540px; }
+
+/* ── GLASS CARDS ── */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.7rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.card:hover {
+  border-color: var(--glass-border-hover);
+  background: var(--surface-hover);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.card-title {
+  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600;
+  color: var(--text); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.45rem;
+}
+
+/* ── GRID ── */
+.grid { display: grid; gap: 1rem; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 560px) { .g2,.g3 { grid-template-columns: 1fr; } }
+
+/* ── NEUMORPHIC INPUTS ── */
+.field { display: flex; flex-direction: column; gap: 0.32rem; }
+label { font-size: 0.76rem; font-weight: 600; color: var(--text-mid); letter-spacing: 0.3px; }
+.wrap { position: relative; }
+.pfx,.sfx {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-weight: 600; font-size: 0.88rem; pointer-events: none;
+}
+.pfx { left: 0.9rem; } .sfx { right: 0.9rem; }
+input[type="number"], select {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.04);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none; appearance: none;
+}
+input[type="number"]:focus, select:focus {
+  border-color: rgba(74,222,128,0.5);
+  background: rgba(74,222,128,0.05);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2), 0 0 0 3px rgba(74,222,128,0.12);
+}
+.has-pfx { padding-left: 1.7rem !important; }
+.has-sfx { padding-right: 1.9rem !important; }
+select option { background: #1a2035; color: var(--text); }
+
+/* ── HINT & EXPLAIN ── */
+.hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; margin-top: 0.2rem; }
+.explain {
+  background: rgba(255,255,255,0.05);
+  border-left: 2px solid rgba(74,222,128,0.35);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.85rem; margin-top: 0.4rem;
+  font-size: 0.74rem; color: var(--text-mid); line-height: 1.55;
+}
+.explain a { color: var(--green); font-weight: 600; text-decoration: none; }
+.explain a:hover { text-decoration: underline; }
+
+/* ── FORECAST TILES ── */
+.forecast-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-top: 0.6rem; }
+.ftile {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 0.9rem 0.6rem;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.ftile:hover { border-color: var(--glass-border-hover); background: var(--surface-hover); }
+.ftile.selected {
+  border-color: rgba(74,222,128,0.5);
+  background: rgba(74,222,128,0.07);
+  box-shadow: 0 0 20px rgba(74,222,128,0.12);
+}
+.ftile .ft-emoji { font-size: 1.5rem; margin-bottom: 0.3rem; display: block; }
+.ftile .ft-label { font-size: 0.76rem; font-weight: 700; color: var(--text); }
+.ftile .ft-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.12rem; }
+.ftile.selected .ft-label { color: var(--green); }
+.forecast-custom { margin-top: 1rem; display: none; }
+.forecast-custom.show { display: block; }
+
+/* ── CALLOUTS ── */
+.callout {
+  border-radius: 12px; padding: 0.85rem 1rem;
+  font-size: 0.8rem; line-height: 1.55; margin-top: 1rem;
+  display: flex; gap: 0.6rem;
+  backdrop-filter: blur(10px);
+}
+.callout .ci { flex-shrink: 0; }
+.info { background: rgba(96,165,250,0.08); color: var(--blue); border-left: 2px solid rgba(96,165,250,0.4); }
+.maple { background: rgba(251,113,133,0.08); color: #fca5a5; border-left: 2px solid rgba(251,113,133,0.4); }
+.forest { background: rgba(74,222,128,0.07); color: var(--green); border-left: 2px solid rgba(74,222,128,0.35); }
+
+/* ── CHECKBOXES ── */
+.checks { display: flex; flex-direction: column; gap: 0.65rem; }
+.chk-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.9rem; color: var(--text-mid); cursor: pointer;
+  padding: 0.5rem 0.7rem; border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+}
+.chk-item:hover { background: var(--surface-hover); border-color: var(--glass-border); }
+.chk-item input { width: 16px; height: 16px; accent-color: var(--green); flex-shrink: 0; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 0.8rem; margin-top: 2rem; align-items: center; }
+.btn-next {
+  background: linear-gradient(135deg, var(--green-d), #16a34a);
+  color: #0b1a0f; border: none; border-radius: 12px;
+  padding: 0.82rem 2rem; font-size: 0.95rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  box-shadow: 0 0 20px rgba(74,222,128,0.3);
+  transition: all 0.2s;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 4px 28px rgba(74,222,128,0.45); }
+.btn-back {
+  background: transparent; color: var(--text-muted);
+  border: 1px solid var(--glass-border); border-radius: 12px;
+  padding: 0.82rem 1.5rem; font-size: 0.9rem; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--glass-border-hover); color: var(--text); }
+.btn-cta {
+  background: linear-gradient(135deg, var(--green-d), #15803d);
+  color: #0b1a0f; border: none; border-radius: 14px;
+  padding: 0.95rem 2.5rem; font-size: 1rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  box-shadow: 0 0 28px rgba(74,222,128,0.35), 0 4px 20px rgba(0,0,0,0.3);
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.btn-cta::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.btn-cta:hover::before { left: 100%; }
+.btn-cta:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(74,222,128,0.5), 0 8px 30px rgba(0,0,0,0.3); }
+
+/* ── INTRO PAGE ── */
+/* ── HERO MESH ── */
+.intro-hero {
+  position: relative;
+  padding: 3.5rem 0 1rem;
+}
+.intro-hero::before {
+  content: '';
+  position: absolute; top: -60px; left: -80px; right: -80px; height: 400px;
+  background: radial-gradient(ellipse at 30% 40%, rgba(74,222,128,0.08) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.07) 0%, transparent 50%),
+              radial-gradient(ellipse at 60% 80%, rgba(251,113,133,0.05) 0%, transparent 45%);
+  pointer-events: none; z-index: 0;
+}
+
+.big-logo {
+  font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 900;
+  color: var(--text); margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.4rem;
+  position: relative; z-index: 1;
+}
+.big-logo em {
+  color: var(--green); font-style: normal;
+  position: relative;
+}
+.big-logo em::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(74,222,128,0.5);
+}
+.intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin-bottom: 1.8rem; }
+
+.path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+.path-item {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 1.4rem 1rem; text-align: center;
+  position: relative; overflow: hidden; transition: all 0.25s;
+}
+.path-item::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  border-radius: 0 0 18px 18px; opacity: 0; transition: opacity 0.25s;
+}
+.path-item.sell::after { background: var(--coral); }
+.path-item.rent::after { background: var(--green); }
+.path-item.keep::after { background: var(--blue); }
+.path-item:hover { border-color: var(--glass-border-hover); }
+.path-item:hover::after { opacity: 1; }
+.path-item .pi { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+.path-item .pn { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; }
+.path-item.sell .pn { color: var(--coral); }
+.path-item.rent .pn { color: var(--green); }
+.path-item.keep .pn { color: var(--blue); }
+.path-item .pd { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.qb {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 0.32rem 0.85rem;
+  font-size: 0.73rem; font-weight: 600; color: var(--text-mid);
+  display: flex; align-items: center; gap: 0.3rem;
+  backdrop-filter: blur(10px);
+}
+
+.ai-intro-card {
+  background: linear-gradient(135deg, rgba(74,222,128,0.07), rgba(96,165,250,0.05));
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 18px; padding: 1.2rem 1.4rem;
+  display: flex; gap: 0.9rem; align-items: center; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.ai-intro-card::before {
+  content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.ai-intro-card .ai-icon { font-size: 1.8rem; flex-shrink: 0; }
+.ai-intro-card strong { display: block; font-size: 0.86rem; font-weight: 700; color: var(--green); margin-bottom: 0.2rem; }
+.ai-intro-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
+/* ── RESULTS ── */
+#results { display: none; }
+.res-header { text-align: center; padding: 2.5rem 0 1.5rem; position: relative; }
+.res-header h1 { font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
+.res-header p { color: var(--text-mid); font-size: 0.93rem; }
+
+/* SCORE CARDS */
+.sc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.1rem; margin-bottom: 2rem; }
+.sc-card {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 22px; padding: 1.7rem;
+  text-align: center; position: relative;
+  overflow: hidden; transition: all 0.3s;
+}
+.sc-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+.sc-card.best {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.sc-card.best.sell { border-color: rgba(251,113,133,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-coral); }
+.sc-card.best.rent { border-color: rgba(74,222,128,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-green); }
+.sc-card.best.keep { border-color: rgba(96,165,250,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-blue); }
+/* Glow orb behind best card */
+.sc-card.best::after {
+  content: '';
+  position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 120px; border-radius: 50%;
+  filter: blur(30px); opacity: 0.3;
+}
+.sc-card.best.sell::after { background: var(--coral); }
+.sc-card.best.rent::after { background: var(--green); }
+.sc-card.best.keep::after { background: var(--blue); }
+
+.best-tag {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+  padding: 0.22rem 0.9rem; border-radius: 0 0 10px 10px; white-space: nowrap;
+  color: #0b1a0f;
+}
+.sell .best-tag { background: var(--coral); }
+.rent .best-tag { background: var(--green); }
+.keep .best-tag { background: var(--blue); }
+
+.sc-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+.sc-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+.sell .sc-name { color: var(--coral); }
+.rent .sc-name { color: var(--green); }
+.keep .sc-name { color: var(--blue); }
+.sc-slbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+.sc-score { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; line-height: 1; margin: 0.2rem 0 0.8rem; }
+.sell .sc-score { color: var(--coral); }
+.rent .sc-score { color: var(--green); }
+.keep .sc-score { color: var(--blue); }
+.sc-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-bottom: 1.2rem; overflow: hidden; }
+.sc-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+.sell .sc-fill { background: linear-gradient(90deg, var(--coral-d), var(--coral)); }
+.rent .sc-fill { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.keep .sc-fill { background: linear-gradient(90deg, var(--blue-d), var(--blue)); }
+.sc-rows { text-align: left; }
+.sc-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+.sc-row:last-child { border-bottom: none; }
+.sc-row .rl { color: var(--text-muted); }
+.sc-row .rv { font-weight: 700; color: var(--text); }
+.pos { color: var(--green) !important; }
+.neg { color: var(--coral) !important; }
+.warn-c { color: var(--gold) !important; }
+
+/* ── SUB-SCORE BREAKDOWN ── */
+.sc-subs { margin: 0.8rem 0 0.4rem; padding: 0.6rem 0 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.sc-sub-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; }
+.sc-sub-label { font-size: 0.65rem; color: var(--text-muted); width: 68px; flex-shrink: 0; text-align: right; }
+.sc-sub-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+.sc-sub-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+.sell .sc-sub-fill { background: var(--coral); }
+.rent .sc-sub-fill { background: var(--green); }
+.keep .sc-sub-fill { background: var(--blue); }
+.sc-sub-val { font-size: 0.65rem; font-weight: 700; color: var(--text-mid); width: 22px; text-align: right; }
+
+/* AI BOX */
+.ai-box {
+  background: linear-gradient(145deg, rgba(74,222,128,0.06), rgba(96,165,250,0.04));
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 20px; padding: 1.8rem; margin-bottom: 1.8rem;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+.ai-box::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px; width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(74,222,128,0.08), transparent 70%);
+  border-radius: 50%;
+}
+.ai-hdr { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
+.ai-hdr .ao { font-size: 1.5rem; }
+.ai-hdr h3 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700; color: var(--green); }
+.ai-hdr .al {
+  margin-left: auto; background: rgba(74,222,128,0.15);
+  color: var(--green); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
+  padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.25);
+}
+.ai-body { font-size: 0.9rem; color: var(--text-mid); line-height: 1.8; }
+.ai-body p { margin-bottom: 0.9rem; }
+.ai-body p:last-child { margin-bottom: 0; }
+.ai-loading { display: flex; align-items: center; gap: 0.8rem; color: var(--text-muted); font-size: 0.88rem; }
+.dots span {
+  display: inline-block; width: 6px; height: 6px;
+  background: var(--green); border-radius: 50%; margin: 0 2px;
+  animation: bounce 1.2s infinite;
+}
+.dots span:nth-child(2){animation-delay:0.2s;} .dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
+
+/* TAX BOX */
+.tax-box {
+  background: rgba(251,191,36,0.05);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+.tax-box h4 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; }
+.t-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.38rem 0; border-bottom: 1px solid rgba(251,191,36,0.1); }
+.t-row:last-child { border-bottom: none; font-weight: 700; font-size: 0.9rem; }
+.t-row .tl { color: var(--text-muted); }
+.t-row .tv { font-weight: 600; color: var(--text); }
+
+/* SECTION HEADINGS */
+.sec { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
+
+/* INSIGHTS */
+.ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.ins-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 1.1rem; display: flex; gap: 0.8rem;
+  backdrop-filter: blur(16px); transition: border-color 0.2s;
+}
+.ins-card:hover { border-color: var(--glass-border-hover); }
+.ins-card .ii { font-size: 1.4rem; flex-shrink: 0; }
+.ins-card .it { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 0.22rem; }
+.ins-card .ib { font-size: 0.76rem; color: var(--text-mid); line-height: 1.5; }
+
+/* CHARTS */
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+.chart-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 1.4rem;
+  backdrop-filter: blur(16px);
+}
+.chart-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); margin-bottom: 1rem; }
+
+/* TABLE */
+.tbl {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  font-size: 0.83rem; margin-bottom: 2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+.tbl th {
+  padding: 0.9rem 1rem; font-weight: 700; text-align: center;
+  font-family: 'Fraunces', serif; font-size: 0.92rem;
+  background: rgba(255,255,255,0.04);
+}
+.tbl th:first-child { text-align: left; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.tbl th.ts { color: var(--coral); }
+.tbl th.tr { color: var(--green); }
+.tbl th.tk { color: var(--blue); }
+.tbl td { padding: 0.7rem 1rem; border-top: 1px solid rgba(255,255,255,0.04); text-align: center; font-weight: 600; color: var(--text); }
+.tbl td:first-child { text-align: left; font-weight: 400; color: var(--text-mid); }
+.tbl tr:hover td { background: rgba(255,255,255,0.025); }
+
+/* DISCLAIMER */
+.disclaimer {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 1rem 1.2rem;
+  font-size: 0.74rem; color: var(--text-muted); line-height: 1.6;
+}
+.restart-btn {
+  display: block; text-align: center; margin: 1.5rem auto;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;
+}
+
+/* VALIDATION */
+.field-err input, .field-err select {
+  border-color: rgba(251,113,133,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(251,113,133,0.1) !important;
+}
+.err-msg { font-size: 0.72rem; color: var(--coral); font-weight: 600; margin-top: 0.25rem; display: none; }
+.field-err .err-msg { display: block; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(30,40,60,0.95);
+  backdrop-filter: blur(20px);
+  color: var(--text); padding: 0.8rem 1.4rem; border-radius: 14px;
+  font-size: 0.84rem; font-weight: 500; z-index: 999;
+  border: 1px solid var(--glass-border);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); white-space: nowrap; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* SHARE BAR */
+.share-bar { display: flex; gap: 0.75rem; align-items: center; justify-content: center; margin: 1.5rem 0 0.5rem; flex-wrap: wrap; }
+.share-btn {
+  display: flex; align-items: center; gap: 0.45rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass); border-radius: 10px;
+  padding: 0.6rem 1.1rem; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-mid); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+  backdrop-filter: blur(10px);
+}
+.share-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.share-btn.print-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  :root {
+    --glass: rgba(255,255,255,0.13);
+    --glass-border: rgba(255,255,255,0.18);
+    --text-mid: rgba(240,244,255,0.78);
+    --text-muted: rgba(240,244,255,0.55);
+  }
+  .sc-grid,.path-row,.charts,.ins-grid { grid-template-columns: 1fr; }
+  .big-logo { font-size: 2.1rem; }
+  .heading { font-size: 1.65rem; }
+  .forecast-tiles { grid-template-columns: 1fr 1fr; }
+  .sc-card.best { transform: none; box-shadow: 0 0 24px rgba(74,222,128,0.15); }
+  header { padding: 0 1rem; }
+  .tabs { padding: 0 0.5rem; }
+  .main { padding: 2rem 1rem 5rem; }
+  .tbl { font-size: 0.72rem; }
+  .tbl th, .tbl td { padding: 0.55rem 0.5rem; }
+  .share-bar { gap: 0.5rem; }
+  .share-btn { font-size: 0.74rem; padding: 0.5rem 0.8rem; }
+  .quick-badges { gap: 0.4rem; }
+  .qb { font-size: 0.68rem; }
+  input[type="number"], select {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.16);
+  }
+}
+
+/* ── SCAN LINE ON AI BOX ── */
+.ai-box::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(74,222,128,0.6), transparent);
+  animation: scan 4s linear infinite;
+}
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ── GRADIENT BORDER CARDS (RESULTS) ── */
+.sc-card.best::before {
+  background: none;
+}
+.sc-card.best.rent > *:first-child { display: none; }
+
+/* ── RESULTS SECTION HEADER ── */
+.sec {
+  font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; color: var(--text);
+  margin: 2.5rem 0 1.1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ── GLOW ON FOCUSED FIELD LABELS ── */
+.field:focus-within label { color: var(--green); transition: color 0.2s; }
+
+/* ── RESULT HEADER GLOW ── */
+.res-header h1 {
+  background: linear-gradient(135deg, var(--text) 40%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── PRINT ── */
+@media print {
+  /* Hide interactive / nav elements */
+  header, .tabs, .prog-wrap, .share-bar, .restart-btn,
+  .btn-row, .disclaimer, .toast, .country-sel { display: none !important; }
+
+  /* Reset background and orbs */
+  body {
+    background: white !important;
+    background-image: none !important;
+    color: #111 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  body::before, body::after { display: none !important; }
+
+  /* Remove all glassmorphism */
+  .card, .sc-card, .ai-box, .tax-box, .ins-card, .chart-card, .tbl {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    border-radius: 8px !important;
+  }
+
+  /* Remove glow effects */
+  .sc-card.best { transform: none !important; box-shadow: 0 0 0 2px #333 !important; }
+  .sc-card.best::after { display: none !important; }
+  .sc-card::before { display: none !important; }
+  .ai-box::before, .ai-box::after { display: none !important; }
+  .card::before { display: none !important; }
+
+  /* Text: high contrast */
+  .text, .sc-name, .heading, .res-header h1, .card-title,
+  .sec, .ai-hdr h3, .ins-card .it {
+    color: #111 !important;
+    background: none !important;
+    -webkit-text-fill-color: #111 !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+  }
+  .res-header p, .subtext, .ai-body, .ai-body p,
+  .ins-card .ib, .sc-row .rl, .t-row .tl, label {
+    color: #444 !important;
+  }
+  .sc-row .rv, .t-row .tv { color: #111 !important; }
+
+  /* Score colors: print-safe */
+  .sell .sc-name, .sell .sc-score { color: #c0392b !important; }
+  .rent .sc-name, .rent .sc-score { color: #1e7e34 !important; }
+  .keep .sc-name, .keep .sc-score { color: #2471a3 !important; }
+  .sc-slbl { color: #666 !important; }
+
+  /* Score bars */
+  .sc-bar { background: #e0e0e0 !important; height: 6px !important; }
+  .sell .sc-fill { background: #c0392b !important; }
+  .rent .sc-fill { background: #1e7e34 !important; }
+  .keep .sc-fill { background: #2471a3 !important; }
+
+  /* Sub-score bars */
+  .sc-subs { border-top-color: #ddd !important; }
+  .sc-sub-bar { background: #e0e0e0 !important; height: 4px !important; }
+  .sell .sc-sub-fill { background: #c0392b !important; }
+  .rent .sc-sub-fill { background: #1e7e34 !important; }
+  .keep .sc-sub-fill { background: #2471a3 !important; }
+  .sc-sub-label, .sc-sub-val { color: #444 !important; }
+
+  /* Tax box */
+  .tax-box { border: 1px solid #c9a227 !important; background: #fffef5 !important; }
+  .tax-box h4 { color: #8b6914 !important; }
+  .t-row { border-bottom: 1px solid #e0e0e0 !important; }
+  .t-row .tl { color: #555 !important; }
+  .t-row .tv { color: #111 !important; }
+
+  /* Table */
+  .tbl { border: 1px solid #999 !important; }
+  .tbl th {
+    background: #f5f5f5 !important;
+    color: #111 !important;
+    border-bottom: 2px solid #999 !important;
+    padding: 0.6rem 0.8rem !important;
+  }
+  .tbl th.ts { color: #c0392b !important; }
+  .tbl th.tr { color: #1e7e34 !important; }
+  .tbl th.tk { color: #2471a3 !important; }
+  .tbl td {
+    border-top: 1px solid #ddd !important;
+    color: #111 !important;
+    padding: 0.5rem 0.8rem !important;
+  }
+  .tbl td:first-child { color: #444 !important; }
+  .tbl tr:hover td { background: transparent !important; }
+
+  /* AI box */
+  .ai-box { background: #f8faf8 !important; border: 1px solid #999 !important; }
+  .ai-hdr .al { background: #eee !important; color: #333 !important; border: 1px solid #ccc !important; }
+  .ai-hdr .ao { filter: none !important; }
+
+  /* Insight cards */
+  .ins-card { background: #fafafa !important; border: 1px solid #ddd !important; }
+
+  /* Charts */
+  .charts { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
+  .chart-card { page-break-inside: avoid; }
+  .chart-card h4 { color: #333 !important; }
+  canvas { max-height: 200px !important; }
+
+  /* Callout print colors */
+  .callout { backdrop-filter: none !important; }
+  .info { background: #eef5ff !important; color: #1a5276 !important; border-left-color: #2471a3 !important; }
+  .maple { background: #fff5f5 !important; color: #922b21 !important; border-left-color: #c0392b !important; }
+  .forest { background: #f0faf0 !important; color: #1e7e34 !important; border-left-color: #27ae60 !important; }
+
+  /* Layout */
+  .main { max-width: 100% !important; padding: 0.5rem 1rem !important; margin: 0 !important; }
+  .sc-grid { grid-template-columns: 1fr 1fr 1fr !important; gap: 0.8rem !important; }
+
+  /* Page break control */
+  .sc-grid { page-break-inside: avoid; }
+  .tax-box { page-break-inside: avoid; }
+  .ins-grid { page-break-inside: avoid; }
+  .tbl { page-break-inside: avoid; }
+  .ai-box { page-break-inside: avoid; }
+  .sec { page-break-after: avoid; }
+
+  /* Best tag: print-safe */
+  .best-tag { color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sell .best-tag { background: #c0392b !important; }
+  .rent .best-tag { background: #1e7e34 !important; }
+  .keep .best-tag { background: #2471a3 !important; }
+
+  /* Utility colors */
+  .pos { color: #1e7e34 !important; }
+  .neg { color: #c0392b !important; }
+  .warn-c { color: #8b6914 !important; }
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<header>
+  <div class="logo">🏠 Wise<em>Owner</em></div>
+  <div class="step-ctr" id="stepCtr"></div>
+  <div class="country-sel">
+    <div class="sel-wrap">
+      <select onchange="void(0)" title="Country">
+        <option value="CA">🍁 Canada</option>
+        <option value="coming" disabled>🌍 More coming soon</option>
+      </select>
+    </div>
+  </div>
+</header>
+<div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+<div class="tabs" id="tabs">
+  <div class="tab active" data-s="0">🏠 Start</div>
+  <div class="tab" data-s="1">📍 Property</div>
+  <div class="tab" data-s="2">💳 Mortgage</div>
+  <div class="tab" data-s="3">🔑 Rental</div>
+  <div class="tab" data-s="4">🏷️ Sale</div>
+  <div class="tab" data-s="5">💰 You</div>
+</div>
+
+<div class="main">
+
+  <!-- STEP 0: INTRO -->
+  <div class="step active" id="step-0">
+    <div class="intro-hero">
+      <div class="big-logo">🏠 Wise<em>Owner</em></div>
+      <div class="intro-desc">Not sure what to do with your property? Answer a few quick questions — we'll compare all three paths and an AI will explain what the numbers actually mean for you.</div>
+      <div class="path-row">
+        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">Cash out, move on</div></div>
+        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Earn monthly income</div></div>
+        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Keep Living Here</div><div class="pd">Stay put, build equity</div></div>
+      </div>
+      <div class="quick-badges">
+        <div class="qb">⏱️ ~5 minutes</div>
+        <div class="qb">🍁 Built for Canada</div>
+        <div class="qb">🔒 Nothing is saved</div>
+        <div class="qb">🤖 AI interpretation included</div>
+      </div>
+      <div class="ai-intro-card">
+        <div class="ai-icon">🤖</div>
+        <div><strong>More than just a calculator</strong><p>Once you fill in your numbers, Claude AI writes a plain-English read of your specific situation — not just scores and tables.</p></div>
+      </div>
+      <div class="btn-row" style="margin-top:1.5rem;"><button class="btn-cta" onclick="goTo(1)">Let's figure this out →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: PROPERTY -->
+  <div class="step" id="step-1">
+    <div class="eyebrow">Step 1 of 5</div>
+    <h2 class="heading">Your property 🏠</h2>
+    <p class="subtext">Just the basics. Ballpark numbers work fine here.</p>
+
+    <div class="card">
+      <div class="card-title">💰 What's it worth?</div>
+      <div class="grid g2">
+        <div class="field" id="f-curVal">
+          <label>What do you think it's worth today?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000"></div>
+          <span class="hint">Your best guess is fine — check Realtor.ca or Zolo for recent comps nearby.</span>
+          <span class="err-msg">Please enter a property value to continue</span>
+        </div>
+        <div class="field" id="f-purPrice">
+          <label>What did you pay for it?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="purPrice" class="has-pfx" placeholder="500,000"></div>
+          <span class="err-msg">Please enter your original purchase price</span>
+        </div>
+        <div class="field">
+          <label>Year you bought it</label>
+          <input type="number" id="purYear" placeholder="2015" min="1950" max="2025">
+        </div>
+        <div class="field">
+          <label>Province</label>
+          <select id="prov">
+            <option value="ON">Ontario</option><option value="BC">British Columbia</option><option value="AB">Alberta</option>
+            <option value="QC">Québec</option><option value="MB">Manitoba</option><option value="SK">Saskatchewan</option>
+            <option value="NS">Nova Scotia</option><option value="NB">New Brunswick</option>
+            <option value="NL">Newfoundland & Labrador</option><option value="PE">PEI</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Type of property</label>
+          <select id="propType"><option value="primary">My main home</option><option value="investment">Rental / investment property</option><option value="vacation">Cottage / vacation home</option></select>
+        </div>
+        <div class="field">
+          <label>Style of property</label>
+          <select id="propCat"><option value="detached">Detached House</option><option value="semi">Semi-Detached</option><option value="condo">Condo / Apartment</option><option value="townhouse">Townhouse</option><option value="multi">Multi-Unit (Duplex/Triplex)</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔮 Where do you see the value going?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">Pick the scenario that best matches your gut feeling about your neighbourhood over the next few years.</p>
+      <div class="forecast-tiles" id="forecastTiles">
+        <div class="ftile" onclick="selectForecast(this, -1)"><div class="ft-emoji">📉</div><div class="ft-label">Going down</div><div class="ft-sub">Market cooling</div></div>
+        <div class="ftile" onclick="selectForecast(this, 0)"><div class="ft-emoji">➡️</div><div class="ft-label">Staying flat</div><div class="ft-sub">Not much change</div></div>
+        <div class="ftile" onclick="selectForecast(this, 3)"><div class="ft-emoji">📈</div><div class="ft-label">Growing steadily</div><div class="ft-sub">~3% / year</div></div>
+        <div class="ftile selected" onclick="selectForecast(this, 5)"><div class="ft-emoji">🚀</div><div class="ft-label">Growing well</div><div class="ft-sub">~5% / year</div></div>
+        <div class="ftile" onclick="selectForecast(this, 8)"><div class="ft-emoji">🔥</div><div class="ft-label">Hot market</div><div class="ft-sub">~8%+ / year</div></div>
+        <div class="ftile" onclick="selectForecast(this, 'custom')"><div class="ft-emoji">✏️</div><div class="ft-label">I'll type it in</div><div class="ft-sub">Custom %</div></div>
+      </div>
+      <div class="forecast-custom" id="forecastCustom">
+        <div class="field" style="max-width:200px;">
+          <label>Your annual appreciation estimate</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="apprecCustom" class="has-sfx" placeholder="4.5" step="0.5"></div>
+        </div>
+      </div>
+      <input type="hidden" id="apprec" value="5">
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍁 Did you live there as your main home?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">This affects how much tax you'd owe if you sell. Canada's <strong>Principal Residence Exemption (PRE)</strong> can eliminate capital gains tax entirely — if this was your main home.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>How many years did you live there as your main home?</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="preYrs" class="has-sfx" placeholder="7" min="0" oninput="checkCcaPreInteraction()"></div>
+          <div class="explain">Enter <strong>0</strong> if it was always a rental or cottage. Enter the full number if you always lived there. Partial years count — round to the nearest year.</div>
+        </div>
+        <div class="field">
+          <label>How many years have you owned it in total?</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="totalYrs" class="has-sfx" placeholder="8" min="1"></div>
+          <div class="explain">From the year you bought to today. E.g. bought in 2016 = ~9 years.</div>
+        </div>
+      </div>
+      <div class="callout maple"><span class="ci">⚠️</span><div>You can only claim PRE on one property per year per family. If you own multiple properties, a tax advisor can help you decide which one to designate.</div></div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(0)">← Back</button><button class="btn-next" onclick="goTo(2)">Next: Mortgage →</button></div>
+  </div>
+
+  <!-- STEP 2: MORTGAGE -->
+  <div class="step" id="step-2">
+    <div class="eyebrow">Step 2 of 5</div>
+    <h2 class="heading">Your mortgage 💳</h2>
+    <p class="subtext">Check your latest mortgage statement — most of this is right on it.</p>
+
+    <div class="card">
+      <div class="card-title">📋 Loan basics</div>
+      <div class="grid g2">
+        <div class="field" id="f-mortBal">
+          <label>How much do you still owe?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000"></div>
+          <span class="hint">The remaining balance on your mortgage statement.</span>
+          <span class="err-msg">Enter your mortgage balance ($0 if it's paid off)</span>
+        </div>
+        <div class="field">
+          <label>Your monthly mortgage payment</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthMort" class="has-pfx" placeholder="2,200"></div>
+          <span class="hint">Principal + interest only. Don't include property tax or insurance if they're billed separately.</span>
+        </div>
+        <div class="field">
+          <label>Interest rate</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="intRate" class="has-sfx" placeholder="5.2" step="0.05"></div>
+        </div>
+        <div class="field">
+          <label>Years left on your mortgage</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="yrsLeft" class="has-sfx" placeholder="18" min="1" max="30"></div>
+        </div>
+        <div class="field">
+          <label>Is your mortgage open or closed?</label>
+          <select id="mortType"><option value="open">Open — I can pay it off anytime</option><option value="closed" selected>Closed — there's a penalty to break it</option><option value="variable">Variable rate</option></select>
+        </div>
+        <div class="field">
+          <label>Penalty if you break it early (if closed)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="breakPen" class="has-pfx" placeholder="5,000"></div>
+          <div class="explain">Call your lender and ask: <em>"What's my prepayment penalty today?"</em> It's usually 3 months of interest, or an IRD calculation — whichever is higher. Enter $0 if your mortgage is open.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧾 What you pay each month to own it</div>
+      <div class="grid g3">
+        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Annual bill ÷ 12</span></div>
+        <div class="field"><label>Home insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="homeIns" class="has-pfx" placeholder="180"></div></div>
+        <div class="field"><label>Condo / strata fees</label><div class="wrap"><span class="pfx">$</span><input type="number" id="condoFee" class="has-pfx" placeholder="0"></div><span class="hint">$0 if not applicable</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(1)">← Back</button><button class="btn-next" onclick="goTo(3)">Next: Rental →</button></div>
+  </div>
+
+  <!-- STEP 3: RENTAL -->
+  <div class="step" id="step-3">
+    <div class="eyebrow">Step 3 of 5</div>
+    <h2 class="heading">The rental picture 🔑</h2>
+    <p class="subtext">Fill this in even if renting isn't on your radar — it builds the full comparison. Estimates are totally fine.</p>
+
+    <div class="card">
+      <div class="card-title">💵 What could you charge in rent?</div>
+      <div class="grid g2">
+        <div class="field" id="f-monthRent">
+          <label>Estimated monthly rent</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
+          <span class="hint">Check <a href="https://rentals.ca" target="_blank" style="color:var(--sage-d);font-weight:600;">rentals.ca</a> or Facebook Marketplace for what similar units in your area are going for.</span>
+          <span class="err-msg">Enter an estimated rent, even a rough guess</span>
+        </div>
+        <div class="field">
+          <label>How often might it sit empty? (vacancy)</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="vacRate" class="has-sfx" placeholder="5" min="0" max="50"></div>
+          <div class="explain">This is the % of the year with no tenant. <strong>Tight market (Toronto, Vancouver)?</strong> Use 3–5%. <strong>Smaller city or uncertain?</strong> Use 8–10%. It's basically: how many weeks per year without rent × (100 ÷ 52).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
+      <div class="grid g2">
+        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint">A rough rule: budget 1% of the property's value per year, divided by 12. So $600k property → ~$500/mo.</span></div>
+        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd manage it yourself.</span></div>
+        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="120"></div><span class="hint">Usually $100–$200/mo. A bit higher than regular home insurance.</span></div>
+        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="50"></div><span class="hint">Tax filing, leases, occasional legal advice — roughly $50–$100/mo averaged out.</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧮 The tax write-off (CCA) — optional</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">Landlords in Canada can write off the building's depreciation each year. This is called <strong>CCA (Capital Cost Allowance)</strong>. It's like a tax deduction that reduces your rental income on paper — but it comes with a catch when you eventually sell.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>How much of the property is the building? (not land)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="buildingVal" class="has-pfx" placeholder="400,000"></div>
+          <div class="explain">You can only depreciate the building — not the land underneath it. In most Canadian cities, the building is roughly <strong>70–85% of total value</strong>. So a $600k property might have ~$420k in building value. Your accountant or a property appraiser can give you the exact split.</div>
+        </div>
+        <div class="field">
+          <label>Annual CCA claim (building value × 4%)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="ccaAnn" class="has-pfx" placeholder="8,000" oninput="checkCcaPreInteraction()"></div>
+          <div class="explain">If you're not sure, multiply your building value by 4%. E.g. $400k building → ~$16,000/yr max, but often only half in year 1. <strong>Leave at $0 if you prefer to skip it</strong> — many landlords do, to keep things simple at sale time.</div>
+        </div>
+      </div>
+      <div class="callout maple"><span class="ci">⚠️</span><div><strong>The catch:</strong> Whatever CCA you claim, the CRA will "recapture" it as income when you eventually sell. Many Canadian landlords skip CCA entirely to avoid this complexity. Talk to an accountant if unsure.</div></div>
+      <div class="callout maple" id="ccaPreWarning" style="display:none; margin-top:0.5rem;"><span class="ci">🚨</span><div><strong>CCA + Principal Residence Conflict:</strong> You indicated this property was your principal residence for some years. Claiming CCA on a property that was also your main home can reduce or disqualify your Principal Residence Exemption for the years CCA was claimed — potentially increasing your capital gains tax when you sell. Consider speaking with a CPA before claiming CCA on a property where you've lived.</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏛️ A couple of quick ones</div>
+      <div class="grid g2">
+        <div class="field">
+          <label>Is your property subject to rent control?</label>
+          <select id="rentCtrl"><option value="yes">Yes</option><option value="no" selected>No / not sure</option></select>
+          <div class="explain">Ontario buildings <strong>built before Nov 2018</strong> are rent-controlled (max ~2.5% increases/yr). BC has similar rules. New builds generally aren't. If unsure, check your province's tenancy authority website.</div>
+        </div>
+        <div class="field">
+          <label>Are you in a city with a vacancy tax?</label>
+          <select id="vacTax"><option value="yes">Yes (Vancouver, Toronto, Ottawa)</option><option value="no" selected>No</option></select>
+          <span class="hint">If yes, you'll need to declare annual occupancy to avoid a 1–3% annual tax on empty properties.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(2)">← Back</button><button class="btn-next" onclick="goTo(4)">Next: Sale →</button></div>
+  </div>
+
+  <!-- STEP 4: SELL -->
+  <div class="step" id="step-4">
+    <div class="eyebrow">Step 4 of 5</div>
+    <h2 class="heading">The selling picture 🏷️</h2>
+    <p class="subtext">What it'd cost to sell, what tax you might owe, and what you'd do with the money.</p>
+
+    <div class="card">
+      <div class="card-title">💸 Cost of selling</div>
+      <div class="grid g2">
+        <div class="field"><label>Agent commission</label><div class="wrap"><span class="sfx">%</span><input type="number" id="agentComm" class="has-sfx" placeholder="4" step="0.25" value="4"></div><span class="hint">Typically 3.5–5% in Canada. Can sometimes be negotiated.</span></div>
+        <div class="field"><label>Lawyer + closing costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="legalCosts" class="has-pfx" placeholder="2,500"></div><span class="hint">Typically $1,500–$3,500 for lawyer fees, title insurance, and disbursements.</span></div>
+        <div class="field"><label>Staging & prep costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="staging" class="has-pfx" placeholder="4,000"></div><span class="hint">Photography, staging, cleaning, etc. $0 if selling as-is.</span></div>
+        <div class="field"><label>Repairs before listing</label><div class="wrap"><span class="pfx">$</span><input type="number" id="repairs" class="has-pfx" placeholder="0"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍁 How much tax would you pay when you sell?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">In Canada, when you sell a property for more than you paid, the profit is called a <strong>capital gain</strong>. The first $250,000 of taxable gains is included at <strong>50%</strong>; any amount above that is included at <strong>66.7%</strong>. If you lived there as your main home, the PRE from Step 1 can reduce or eliminate the gain entirely. We'll calculate this automatically.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>Your annual income from work / other sources</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="annInc" class="has-pfx" placeholder="95,000"></div>
+          <div class="explain">We use this to figure out your <strong>tax bracket</strong> — the rate you'd pay on the taxable portion of your gain. You don't need to be exact; a rough number is fine. Check last year's T4 or Notice of Assessment.</div>
+        </div>
+        <div class="field">
+          <label>Have you done major renovations? (adds to your cost)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="acbAdd" class="has-pfx" placeholder="0"></div>
+          <div class="explain">A kitchen gut-job, a new addition, finished basement — these increase your <strong>Adjusted Cost Base (ACB)</strong> and reduce your taxable gain. Include the total cost of capital improvements (not repairs). Keep receipts! Check <a href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12700-capital-gains/principal-residence-other-real-estate/when-you-sell-your-principal-residence.html" target="_blank">CRA's guide</a> for what qualifies.</div>
+        </div>
+      </div>
+      <div class="callout forest"><span class="ci">🧮</span><div>We calculate your capital gain automatically: Sale price minus what you paid minus renovations. Then we apply your PRE from Step 1, take 50% of what's left, and apply your provincial tax bracket. It's all shown in the results.</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🌱 If you sell — what then?</div>
+      <div class="grid g2">
+        <div class="field">
+          <label>If you invest the proceeds, what return do you expect?</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
+          <span class="hint">TSX index fund historical avg ~7–8%. Balanced portfolio ~5%. GIC/bonds ~4.5%. Savings account ~3%.</span>
+        </div>
+        <div class="field">
+          <label>How many years ahead are you comparing?</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
+          <span class="hint">10 years is a common planning horizon. Use 5 if you're deciding soon, 20 if you're thinking retirement.</span>
+        </div>
+        <div class="field">
+          <label>TFSA or RRSP room to shelter the proceeds?</label>
+          <select id="taxShelter"><option value="full">Yes — plenty of room</option><option value="partial" selected>Some room available</option><option value="no">No — mostly used up</option></select>
+        </div>
+        <div class="field">
+          <label>Buying another home with the money?</label>
+          <select id="buyAnother"><option value="yes">Yes — buying another property</option><option value="maybe">Maybe, in a few years</option><option value="no" selected>No — investing or renting</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(3)">← Back</button><button class="btn-next" onclick="goTo(5)">Almost there →</button></div>
+  </div>
+
+  <!-- STEP 5: PERSONAL -->
+  <div class="step" id="step-5">
+    <div class="eyebrow">Step 5 of 5 — Last one!</div>
+    <h2 class="heading">A bit about you 💰</h2>
+    <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
+
+    <div class="card">
+      <div class="card-title">🎯 What matters most to you right now?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;">Check everything that applies — no judgement, just helps the recommendation fit you.</p>
+      <div class="checks">
+        <label class="chk-item"><input type="checkbox" id="g_cash"> 💵 I need cash — liquidity matters right now</label>
+        <label class="chk-item"><input type="checkbox" id="g_income"> 📬 I want monthly income coming in</label>
+        <label class="chk-item"><input type="checkbox" id="g_longterm"> 📈 Building wealth over time is the priority</label>
+        <label class="chk-item"><input type="checkbox" id="g_simplify"> 🧘 I want simplicity — less to think about</label>
+        <label class="chk-item"><input type="checkbox" id="g_stability"> 🛡️ I want to stay in this home</label>
+        <label class="chk-item"><input type="checkbox" id="g_tax"> 📋 Keeping my tax bill low matters to me</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎛️ How do you feel about risk?</div>
+      <div class="grid g2">
+        <div class="field"><label>Risk comfort level</label><select id="riskTol"><option value="low">Low — I'd rather play it safe</option><option value="medium" selected>Medium — balanced</option><option value="high">High — I'm comfortable with uncertainty</option></select></div>
+        <div class="field"><label>Emergency savings situation</label><select id="emergFund"><option value="strong">Solid — 6+ months of expenses saved</option><option value="ok" selected>OK — roughly 3 months</option><option value="weak">Tight — less than 3 months</option><option value="none">None right now</option></select></div>
+        <div class="field"><label>Would you be comfortable being a landlord?</label><select id="landlordRdy"><option value="yes">Yes — I've done it or I'm up for it</option><option value="maybe">Maybe — I'm on the fence</option><option value="no">No — not my thing</option></select></div>
+        <div class="field"><label>How soon do you need to decide?</label><select id="urgency"><option value="now">ASAP — decision is pressing</option><option value="months">Within a few months</option><option value="flexible" selected>No rush — just exploring</option></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏦 Quick financial snapshot</div>
+      <div class="grid g2">
+        <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div></div>
+        <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Car payments, student loans, lines of credit.</span></div>
+        <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
+        <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(4)">← Back</button><button class="btn-cta" onclick="calculate()">🏠 Show My Results</button></div>
+  </div>
+
+</div><!-- end .main -->
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="main">
+    <div class="res-header"><h1>🏠 Your WiseOwner Report</h1><p>Based on your numbers and Canadian tax rules. The final call is always yours.</p></div>
+    <div class="sc-grid" id="scGrid"></div>
+    <div class="ai-box" id="aiBox">
+      <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
+      <div class="ai-body" id="aiBody"></div>
+    </div>
+    <div id="taxBlock"></div>
+    <div class="sec">💡 Key Insights</div>
+    <div class="ins-grid" id="insGrid"></div>
+    <div class="sec">📊 Visual Comparison</div>
+    <div class="charts">
+      <div class="chart-card"><h4>Projected Net Value Over Time</h4><canvas id="chart1" height="210"></canvas></div>
+      <div class="chart-card"><h4>Monthly Cash Position</h4><canvas id="chart2" height="210"></canvas></div>
+    </div>
+    <div class="sec">📋 Side-by-Side</div>
+    <table class="tbl" id="cmpTable"></table>
+    <div class="share-bar">
+      <button class="share-btn" onclick="copyLink()">🔗 Copy link to share</button>
+      <button class="share-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+    <div class="disclaimer">⚠️ <strong>Decision-support tool — not tax or financial advice.</strong> Canadian tax rules (PRE, CCA, 50% inclusion, provincial brackets) are approximated. Actual tax liability depends on your full situation and CRA interpretation. Claude's analysis is informational only. Always consult a CPA or financial advisor before major property decisions.</div>
+    <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
+  </div>
+</div>
+
+<script>
+const TAX_CONFIG = {
+  year: 2024,
+  federal: {
+    inclusionRate: 0.50,
+    inclusionRateHigh: 0.6667,
+    inclusionThreshold: 250000,
+  },
+  cca: { rate: 0.04, halfYearRule: true },
+  pre: { plusOneRule: true },
+  provincial: {
+    ON:[[0,15000,0],[15000,51446,0.205],[51446,55867,0.2915],[55867,100392,0.3148],[100392,150000,0.4341],[150000,220000,0.4797],[220000,1e9,0.5353]],
+    BC:[[0,15000,0],[15000,45654,0.205],[45654,91310,0.278],[91310,104835,0.3288],[104835,172602,0.407],[172602,240716,0.4416],[240716,1e9,0.5353]],
+    AB:[[0,15000,0],[15000,148269,0.25],[148269,177922,0.305],[177922,237230,0.36],[237230,355845,0.39],[355845,1e9,0.48]],
+    QC:[[0,17183,0],[17183,51780,0.2753],[51780,100000,0.3753],[100000,112655,0.4753],[112655,1e9,0.5353]],
+    MB:[[0,15000,0],[15000,36842,0.278],[36842,79625,0.3278],[79625,1e9,0.4353]],
+    SK:[[0,15000,0],[15000,49720,0.255],[49720,142058,0.2975],[142058,1e9,0.4775]],
+    NS:[[0,15000,0],[15000,29590,0.2379],[29590,59180,0.2979],[59180,93000,0.3379],[93000,1e9,0.54]],
+    NB:[[0,15000,0],[15000,44715,0.242],[44715,89431,0.322],[89431,1e9,0.522]],
+    NL:[[0,15000,0],[15000,43198,0.278],[43198,86395,0.338],[86395,1e9,0.488]],
+    PE:[[0,15000,0],[15000,32656,0.2475],[32656,64313,0.3175],[64313,1e9,0.4875]],
+  },
+};
+function marginal(income,prov){const b=TAX_CONFIG.provincial[prov]||TAX_CONFIG.provincial.ON;for(let i=b.length-1;i>=0;i--)if(income>=b[i][0])return b[i][2];return 0.25;}
+function calcInclusion(taxableGain){
+  const cfg=TAX_CONFIG.federal;
+  if(taxableGain<=cfg.inclusionThreshold) return taxableGain*cfg.inclusionRate;
+  return cfg.inclusionThreshold*cfg.inclusionRate+(taxableGain-cfg.inclusionThreshold)*cfg.inclusionRateHigh;
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ===== VALIDATION =====
+function clearErr(id) {
+  const f = document.getElementById('f-'+id);
+  if(f) f.classList.remove('field-err');
+}
+function setErr(id) {
+  const f = document.getElementById('f-'+id);
+  if(f) { f.classList.add('field-err'); f.querySelector('input,select')?.focus(); }
+}
+function validateStep(n) {
+  let ok = true;
+  const checks = {
+    1: [
+      { id:'curVal',   test: v => v > 0,   msg: '👆 Property value is needed to run any calculations' },
+      { id:'purPrice', test: v => v > 0,   msg: '👆 Original purchase price is needed for capital gains' },
+    ],
+    2: [
+      { id:'mortBal', test: v => v >= 0 && !isNaN(v), msg: '👆 Enter your mortgage balance — $0 if fully paid off' },
+    ],
+    3: [
+      { id:'monthRent', test: v => v > 0, msg: '👆 A rough rent estimate is needed to compare the rental path' },
+    ],
+  };
+  const stepChecks = checks[n];
+  if (!stepChecks) return true;
+  // clear all first
+  stepChecks.forEach(c => clearErr(c.id));
+  for (const c of stepChecks) {
+    const el = document.getElementById(c.id);
+    const val = el ? parseFloat(el.value) : NaN;
+    if (!c.test(val)) {
+      setErr(c.id);
+      if (ok) showToast(c.msg); // only toast first error
+      ok = false;
+    }
+  }
+  return ok;
+}
+
+// ===== COPY LINK =====
+function copyLink() {
+  const url = window.location.href.split('?')[0];
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('✅ Link copied — share it with a partner or advisor');
+  }).catch(() => {
+    showToast('📋 Copy this URL from your address bar to share');
+  });
+}
+
+let cur=0;
+function gv(id,fb=0){const e=document.getElementById(id);if(!e)return fb;const n=parseFloat(e.value);return isNaN(n)?fb:n;}
+function gs(id){const e=document.getElementById(id);return e?e.value:'';}
+function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
+function fmt(n){if(!isFinite(n))return'$0';return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString('en-CA');}
+function fmtK(n){if(!isFinite(n))return'$0';const sg=n<0?'-':'';const a=Math.abs(n);if(a>=1e6)return sg+'$'+(a/1e6).toFixed(2)+'M';if(a>=1000)return sg+'$'+(a/1000).toFixed(0)+'K';return fmt(n);}
+
+// Forecast tiles
+function selectForecast(el, val) {
+  document.querySelectorAll('.ftile').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  const custom = document.getElementById('forecastCustom');
+  if(val==='custom'){
+    custom.classList.add('show');
+    document.getElementById('apprec').value='';
+  } else {
+    custom.classList.remove('show');
+    document.getElementById('apprec').value=val;
+  }
+}
+
+function checkCcaPreInteraction(){
+  const ccaVal=gv('ccaAnn',0);
+  const preYrs=gv('preYrs',0);
+  const w=document.getElementById('ccaPreWarning');
+  if(w) w.style.display=(ccaVal>0&&preYrs>0)?'flex':'none';
+}
+
+function goTo(n){
+  // going forward: validate current step
+  if(n > cur && !validateStep(cur)) return;
+  // sync custom forecast value
+  const customVal = gv('apprecCustom', -999);
+  if(customVal !== -999 && document.getElementById('forecastCustom').classList.contains('show')){
+    document.getElementById('apprec').value = customVal;
+  }
+  document.getElementById('step-'+cur)?.classList.remove('active');
+  cur=n;
+  document.getElementById('step-'+cur)?.classList.add('active');
+  document.getElementById('pbar').style.width=(n/5*100)+'%';
+  const sc=document.getElementById('stepCtr');
+  if(sc)sc.textContent=n>0?`Step ${n} of 5`:'';
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goTo(parseInt(t.dataset.s))));
+
+function calculate(){
+  if(!validateStep(5)) return; // final check — shouldn't be needed but safety net
+  const curVal=gv('curVal',750000), purPrice=gv('purPrice',500000);
+  let apprecVal=gv('apprec',5);
+  if(document.getElementById('forecastCustom').classList.contains('show')) apprecVal=gv('apprecCustom',5);
+  const apprec=apprecVal/100;
+  const province=gs('prov')||'ON', preYrs=gv('preYrs',0), totalYrs=Math.max(1,gv('totalYrs',1));
+  const mortBal=gv('mortBal',420000), monthMort=gv('monthMort',2200);
+  const propTax=gv('propTax',500), homeIns=gv('homeIns',180), condoFee=gv('condoFee',0);
+  const breakPen=gv('breakPen',0);
+  const monthRent=gv('monthRent',3200), vacRate=gv('vacRate',5)/100;
+  const maint=gv('maint',300), mgmtFee=gv('mgmtFee',0), llIns=gv('llIns',120), renAdmin=gv('renAdmin',50);
+  const ccaAnn=gv('ccaAnn',0);
+  const agentComm=gv('agentComm',4)/100, legalCosts=gv('legalCosts',2500), staging=gv('staging',4000), repairs=gv('repairs',0);
+  const annInc=gv('annInc',95000), acbAdd=gv('acbAdd',0);
+  const reinvRet=gv('reinvRet',7)/100, hrz=Math.max(1,gv('horizon',10));
+  const monthInc=gv('monthInc',8500), otherDebt=gv('otherDebt',600);
+
+  const equity=curVal-mortBal;
+  const totalMonthCost=monthMort+propTax+homeIns+condoFee;
+
+  const propType=gs('propType')||'primary';
+  const rawGain=Math.max(0,curVal-purPrice-acbAdd);
+  const preExempt=(propType==='primary')?Math.min(rawGain,rawGain*((1+Math.min(preYrs,totalYrs))/totalYrs)):0;
+  const taxGain=Math.max(0,rawGain-preExempt);
+  const inclAmt=calcInclusion(taxGain);
+  const mRate=marginal(annInc+inclAmt,province);
+  const cgTax=inclAmt*mRate;
+
+  const sellCosts=curVal*agentComm+legalCosts+staging+repairs+breakPen;
+  const netProc=curVal-mortBal-sellCosts-cgTax;
+  const futSell=netProc*Math.pow(1+reinvRet,hrz);
+  const monthSell=netProc*reinvRet/12;
+
+  const effRent=monthRent*(1-vacRate);
+  const totRentEx=monthMort+propTax+(llIns||homeIns)+condoFee+maint+mgmtFee+renAdmin;
+  const monthRentCF=effRent-totRentEx;
+  const annNetRent=monthRentCF*12;
+  const taxRentInc=Math.max(0,annNetRent-ccaAnn);
+  const rentMRate=marginal(annInc+Math.max(0,taxRentInc),province);
+  const rentTax=taxRentInc>0?taxRentInc*rentMRate:0;
+  const annRentAT=annNetRent-rentTax;
+  const capRate=((effRent*12-(propTax+homeIns+condoFee+maint+mgmtFee+renAdmin)*12)/curVal)*100;
+  const coc=equity>0?(monthRentCF*12/equity*100):0;
+  const futRent=curVal*Math.pow(1+apprec,hrz)-mortBal+annRentAT*hrz;
+
+  const futKeep=curVal*Math.pow(1+apprec,hrz)-mortBal;
+  const dti=monthInc>0?(totalMonthCost+otherDebt)/monthInc*100:0;
+
+  const gCash=gc('g_cash'),gInc=gc('g_income'),gLong=gc('g_longterm'),gSimp=gc('g_simplify'),gStab=gc('g_stability'),gTax=gc('g_tax');
+  const risk=gs('riskTol'),emerg=gs('emergFund'),landlord=gs('landlordRdy'),urg=gs('urgency');
+
+  // Sub-scores: financial, personal, tax
+  const scores={
+    sell:{financial:50,personal:50,tax:50},
+    rent:{financial:50,personal:50,tax:50},
+    keep:{financial:50,personal:50,tax:50},
+  };
+  // SELL
+  if(netProc>0)scores.sell.financial+=12;if(netProc>curVal*0.15)scores.sell.financial+=8;
+  if(apprec>0.05)scores.sell.financial-=8;if(monthRentCF>300)scores.sell.financial-=5;
+  if(emerg==='none'||emerg==='weak')scores.sell.financial+=8;
+  if(gCash)scores.sell.personal+=18;if(gSimp)scores.sell.personal+=10;
+  if(urg==='now')scores.sell.personal+=10;if(gStab)scores.sell.personal-=15;
+  if(cgTax===0)scores.sell.tax+=12;else if(cgTax<5000)scores.sell.tax+=6;
+  // RENT
+  if(monthRentCF>0)scores.rent.financial+=18;if(monthRentCF>400)scores.rent.financial+=8;
+  if(capRate>5)scores.rent.financial+=10;
+  if(gInc)scores.rent.personal+=20;if(gLong)scores.rent.personal+=10;
+  if(landlord==='yes')scores.rent.personal+=12;if(landlord==='no')scores.rent.personal-=22;
+  if(gSimp)scores.rent.personal-=12;if(risk==='low')scores.rent.personal-=10;
+  if(ccaAnn>0)scores.rent.tax+=8;
+  // KEEP
+  if(apprec>0.05)scores.keep.financial+=15;if(dti<35)scores.keep.financial+=12;
+  if(gStab)scores.keep.personal+=20;if(gLong)scores.keep.personal+=10;
+  if(risk==='low')scores.keep.personal+=8;if(gCash)scores.keep.personal-=15;
+  if(urg==='now')scores.keep.personal-=12;if(emerg==='none')scores.keep.personal-=5;
+  if(preYrs>0)scores.keep.tax+=10;
+  // Clamp sub-scores 0-100
+  for(const p of['sell','rent','keep'])for(const c of['financial','personal','tax'])scores[p][c]=Math.min(100,Math.max(0,scores[p][c]));
+  // Weighted total: financial 40%, personal 35%, tax 25%
+  function totalScore(s){return Math.round(s.financial*0.4+s.personal*0.35+s.tax*0.25);}
+  let ss=Math.min(100,Math.max(15,totalScore(scores.sell)));
+  let rs=Math.min(100,Math.max(15,totalScore(scores.rent)));
+  let ks=Math.min(100,Math.max(15,totalScore(scores.keep)));
+  const mx=Math.max(ss,rs,ks);
+  const winnerName=ss===mx?'selling':rs===mx?'renting it out':'keeping and living in it';
+
+  document.querySelector('.main').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const scenarios=[
+    {key:'sell',icon:'🏷️',name:'Sell It',score:ss,rows:[
+      {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
+      {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
+      {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
+      {l:'Equity unlocked today',v:fmt(equity),c:''},
+    ]},
+    {key:'rent',icon:'🔑',name:'Rent It Out',score:rs,rows:[
+      {l:'Monthly cash flow (pre-tax)',v:fmt(monthRentCF),c:monthRentCF>=0?'pos':'neg'},
+      {l:'Cap rate',v:capRate.toFixed(1)+'%',c:capRate>=5?'pos':capRate>=3?'warn-c':'neg'},
+      {l:'Cash-on-cash return',v:coc.toFixed(1)+'%',c:coc>=6?'pos':''},
+      {l:`${hrz}-yr projected equity`,v:fmtK(futRent),c:'pos'},
+    ]},
+    {key:'keep',icon:'🏠',name:'Keep Living Here',score:ks,rows:[
+      {l:'Monthly ownership cost',v:fmt(totalMonthCost),c:'neg'},
+      {l:'Debt-to-income ratio',v:dti.toFixed(0)+'%',c:dti<35?'pos':dti<44?'warn-c':'neg'},
+      {l:`${hrz}-yr projected equity`,v:fmtK(futKeep),c:'pos'},
+      {l:'Annual appreciation gain',v:fmtK(curVal*apprec),c:'pos'},
+    ]},
+  ];
+
+  document.getElementById('scGrid').innerHTML=scenarios.map(sc=>`
+    <div class="sc-card ${sc.key} ${sc.score===mx?'best':''}">
+      ${sc.score===mx?'<div class="best-tag">⭐ BEST MATCH</div>':''}
+      <div class="sc-icon">${sc.icon}</div>
+      <div class="sc-name">${sc.name}</div>
+      <div class="sc-slbl">Match Score</div>
+      <div class="sc-score">${sc.score}</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:${sc.score}%"></div></div>
+      <div class="sc-subs">
+        <div class="sc-sub-row"><span class="sc-sub-label">Financial</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].financial}%"></div></div><span class="sc-sub-val">${scores[sc.key].financial}</span></div>
+        <div class="sc-sub-row"><span class="sc-sub-label">Personal</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].personal}%"></div></div><span class="sc-sub-val">${scores[sc.key].personal}</span></div>
+        <div class="sc-sub-row"><span class="sc-sub-label">Tax</span><div class="sc-sub-bar"><div class="sc-sub-fill" style="width:${scores[sc.key].tax}%"></div></div><span class="sc-sub-val">${scores[sc.key].tax}</span></div>
+      </div>
+      <div class="sc-rows">${sc.rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('')}</div>
+    </div>`).join('');
+
+  const inclThresh=TAX_CONFIG.federal.inclusionThreshold;
+  const tiered=taxGain>inclThresh;
+  const inclRows=tiered
+    ?`<div class="t-row"><span class="tl">50% Inclusion on first ${fmt(inclThresh)}</span><span class="tv">${fmt(inclThresh*TAX_CONFIG.federal.inclusionRate)}</span></div>
+      <div class="t-row"><span class="tl">66.7% Inclusion on remaining ${fmt(taxGain-inclThresh)}</span><span class="tv">${fmt((taxGain-inclThresh)*TAX_CONFIG.federal.inclusionRateHigh)}</span></div>
+      <div class="t-row"><span class="tl">= Total Included Amount</span><span class="tv">${fmt(inclAmt)}</span></div>`
+    :`<div class="t-row"><span class="tl">50% Inclusion Rate (Canada)</span><span class="tv">× 50% = ${fmt(inclAmt)}</span></div>`;
+  document.getElementById('taxBlock').innerHTML=`
+    <div class="tax-box">
+      <h4>🍁 Canadian Capital Gains Breakdown (Sell Scenario)</h4>
+      <div class="t-row"><span class="tl">Sale Price</span><span class="tv">${fmt(curVal)}</span></div>
+      <div class="t-row"><span class="tl">Less: Original Cost + Renovation Additions</span><span class="tv">− ${fmt(purPrice+acbAdd)}</span></div>
+      <div class="t-row"><span class="tl">= Gross Capital Gain</span><span class="tv">${fmt(rawGain)}</span></div>
+      <div class="t-row"><span class="tl">PRE Exemption (${preYrs} of ${totalYrs} yrs as principal residence)</span><span class="tv">− ${fmt(preExempt)}</span></div>
+      <div class="t-row"><span class="tl">= Taxable Capital Gain</span><span class="tv">${fmt(taxGain)}</span></div>
+      ${inclRows}
+      <div class="t-row"><span class="tl">Marginal Rate (${province})</span><span class="tv">${(mRate*100).toFixed(1)}%</span></div>
+      <div class="t-row"><span class="tl">Estimated Capital Gains Tax Owing</span><span class="tv">${fmt(cgTax)}</span></div>
+    </div>`;
+
+  const ins=[];
+  if(cgTax===0)ins.push({i:'🎉',t:'Zero capital gains tax',b:`Your PRE designation covers the full gain — you'd owe $0 in capital gains tax on this sale. That's a significant tax-free advantage.`});
+  else ins.push({i:'🍁',t:'Capital gains partially sheltered',b:`PRE covers ${fmt(preExempt)} of your ${fmt(rawGain)} gain. The remaining ${fmt(taxGain)} is taxable — estimated ${fmt(cgTax)} at ${(mRate*100).toFixed(1)}% marginal rate in ${province}.`});
+  if(monthRentCF>300)ins.push({i:'📬',t:'Solid rental cash flow',b:`At ${fmt(monthRentCF)}/mo pre-tax, the rental path is cash-flow positive with a ${capRate.toFixed(1)}% cap rate.`});
+  else if(monthRentCF<0)ins.push({i:'⚠️',t:'Rental cash flow is negative',b:`Renting costs ~${fmt(Math.abs(monthRentCF))}/mo out-of-pocket. You'd be counting on appreciation to make up the difference.`});
+  if(apprec>0.05)ins.push({i:'📈',t:'Your market forecast favours holding',b:`At ${(apprec*100).toFixed(1)}%/yr, the property could be worth ${fmtK(curVal*Math.pow(1+apprec,hrz))} in ${hrz} years.`});
+  if(dti>44)ins.push({i:'🚨',t:'High debt-to-income ratio',b:`Property + other debt uses ${dti.toFixed(0)}% of your income. Lenders typically stress-test at 44%. This may affect future borrowing.`});
+  if(landlord==='no')ins.push({i:'🧘',t:'Being a landlord isn\'t for everyone',b:`You flagged this isn't your thing — worth factoring in honestly. Tenant disputes and maintenance calls are real, especially under Ontario/BC tenancy rules.`});
+  if(ccaAnn>0&&preYrs>0)ins.push({i:'🚨',t:'CCA may reduce your PRE benefit',b:`You're claiming ${fmt(ccaAnn)}/yr in CCA on a property where you lived for ${preYrs} years. The CRA may reduce your Principal Residence Exemption for years where CCA was claimed. Consult a tax professional to evaluate the net benefit.`});
+  while(ins.length<4)ins.push({i:'🔍',t:'The long-term picture',b:`Over ${hrz} years: sell path → ${fmtK(futSell)}, rent path → ${fmtK(futRent)}, keep path → ${fmtK(futKeep)} in projected equity.`});
+
+  document.getElementById('insGrid').innerHTML=ins.slice(0,4).map(i=>`
+    <div class="ins-card"><div class="ii">${i.i}</div><div><div class="it">${i.t}</div><div class="ib">${i.b}</div></div></div>`).join('');
+
+  setTimeout(()=>{
+    const yrs=Array.from({length:hrz+1},(_,i)=>i);
+    new Chart(document.getElementById('chart1'),{type:'line',data:{labels:yrs.map(y=>y===0?'Now':`Yr ${y}`),datasets:[
+      {label:'Sell & Reinvest',data:yrs.map(y=>Math.max(0,netProc)*Math.pow(1+reinvRet,y)),borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Rent It Out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Keep & Live',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+    ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:10}},grid:{display:false}}}}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(invested return)','Rent Out\n(cash flow)','Keep\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(251,113,133,0.75)','rgba(74,222,128,0.75)','rgba(96,165,250,0.75)'],borderColor:['#fb7185','#4ade80','#60a5fa'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-CA'),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+  },80);
+
+  const rows=[
+    {l:'Net proceeds / equity unlocked',s:fmt(netProc),r:'$0 (hold)',k:'$0 (hold)'},
+    {l:'Monthly cash position',s:'+'+fmt(monthSell)+'/mo',r:(monthRentCF>=0?'+':'')+fmt(monthRentCF)+'/mo',k:'-'+fmt(totalMonthCost)+'/mo'},
+    {l:`Projected value (${hrz} yrs)`,s:fmtK(futSell),r:fmtK(futRent),k:fmtK(futKeep)},
+    {l:'Capital gains tax (est.)',s:fmt(cgTax),r:'Deferred',k:'Deferred'},
+    {l:'PRE applied?',s:preExempt>0?'✅ '+fmt(preExempt)+' sheltered':'❌ None',r:'⏳ Future decision',k:'⏳ Future decision'},
+    {l:'Liquidity / cash access',s:'✅ High',r:'⚠️ Low',k:'⚠️ Low'},
+    {l:'Monthly passive income',s:'❌ No',r:'✅ Yes',k:'❌ No'},
+    {l:'Benefits from future appreciation',s:'❌ No',r:'✅ Yes',k:'✅ Yes'},
+    {l:'Landlord responsibilities',s:'✅ None',r:'⚠️ Yes',k:'✅ None'},
+    {l:'Housing stability',s:'❌ Must move',r:'❌ Must move',k:'✅ Stay put'},
+    {l:'CCA deduction',s:'N/A',r:ccaAnn>0?'✅ '+fmt(ccaAnn)+'/yr':'—',k:'N/A'},
+    {l:'Match score',s:`${ss}/100 <br><small style="color:var(--text-muted);font-weight:400">F:${scores.sell.financial} P:${scores.sell.personal} T:${scores.sell.tax}</small>`,r:`${rs}/100 <br><small style="color:var(--text-muted);font-weight:400">F:${scores.rent.financial} P:${scores.rent.personal} T:${scores.rent.tax}</small>`,k:`${ks}/100 <br><small style="color:var(--text-muted);font-weight:400">F:${scores.keep.financial} P:${scores.keep.personal} T:${scores.keep.tax}</small>`},
+  ];
+  document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tr">🔑 Rent</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.r}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
+
+  const prompt=`You are a helpful, warm Canadian real estate and financial advisor. A homeowner used a property decision tool. Write a warm, plain-English 3-paragraph analysis. Be specific to their numbers — interpret what they actually mean, don't just list them. Be honest about tradeoffs. Reference Canadian context (PRE, CCA, tiered inclusion rates — 50% on first $250K, 66.7% above, provincial tax) where relevant. Do NOT give definitive tax advice. End with one balanced, genuine closing thought.
+
+Data:
+- Province: ${province}, Value: ${fmt(curVal)}, bought for ${fmt(purPrice)}
+- Mortgage: ${fmt(mortBal)} remaining at ${gv('intRate',5.2)}%, ${gv('yrsLeft',18)} yrs left
+- PRE: ${preYrs} of ${totalYrs} yrs as principal → exempts ${fmt(preExempt)} of ${fmt(rawGain)} gain → taxable gain ${fmt(taxGain)} → est. capital gains tax ${fmt(cgTax)} at ${(mRate*100).toFixed(1)}%
+- Monthly costs (own): ${fmt(totalMonthCost)}/mo
+- Rental: ${fmt(monthRent)}/mo → ${fmt(monthRentCF)}/mo cash flow pre-tax, cap rate ${capRate.toFixed(1)}%
+- Net sale proceeds: ${fmt(netProc)} | Reinvested ${hrz} yrs at ${(reinvRet*100).toFixed(1)}%: ${fmtK(futSell)}
+- ${hrz}-yr projected equity: sell ${fmtK(futSell)}, rent ${fmtK(futRent)}, keep ${fmtK(futKeep)}
+- Appreciation forecast: ${(apprec*100).toFixed(1)}%/yr
+- Goals: cash=${gCash}, income=${gInc}, long-term=${gLong}, simplify=${gSimp}, stability=${gStab}, tax=${gTax}
+- Risk: ${risk}, emergency fund: ${emerg}, landlord: ${landlord}, urgency: ${urg}
+- DTI: ${dti.toFixed(0)}%, Scores: Sell ${ss}, Rent ${rs}, Keep ${ks}, top: ${winnerName}
+
+Write exactly 3 paragraphs separated by blank lines. Conversational, warm, and genuinely useful.`;
+
+  // Generate local analysis immediately
+  const localParas=generateLocalAnalysis({
+    winnerName,topScore:mx,netProc,cgTax,reinvRet,hrz,preExempt,rawGain,taxGain,province,mRate,
+    ccaAnn,preYrs,monthRentCF,capRate,apprec,totalMonthCost,dti,annRentAT,
+    futSell,futRent,futKeep,equity,monthSell,
+    futPropVal:curVal*Math.pow(1+apprec,hrz),
+    gStab,gCash,gInc,gSimp,gLong,gTax,landlord,risk,emerg,urg,
+    scores,ss,rs,ks
+  });
+  document.getElementById('aiBody').innerHTML=localParas.map(p=>`<p>${p}</p>`).join('');
+  // Then attempt AI enhancement asynchronously
+  callClaude(prompt);
+}
+
+function generateLocalAnalysis(d){
+  const paras=[];
+  // Paragraph 1: Overall recommendation
+  let p1=`Based on your numbers, <strong>${d.winnerName}</strong> comes out on top with a score of ${d.topScore}/100. `;
+  if(d.winnerName==='selling'){
+    p1+=`Selling would net you approximately ${fmt(d.netProc)} after all costs`;
+    if(d.cgTax>0) p1+=` and an estimated ${fmt(d.cgTax)} in capital gains tax`;
+    p1+='. ';
+    if(d.cgTax===0) p1+=`The good news: your Principal Residence Exemption covers the entire gain, so you'd owe zero capital gains tax. `;
+    p1+=`Reinvested at ${(d.reinvRet*100).toFixed(1)}% over ${d.hrz} years, that could grow to ${fmtK(d.futSell)}.`;
+  } else if(d.winnerName==='renting it out'){
+    p1+=`Renting generates ${fmt(d.monthRentCF)}/month in pre-tax cash flow with a ${d.capRate.toFixed(1)}% cap rate. `;
+    if(d.monthRentCF<0) p1+=`Note: that's actually negative cash flow — you'd be subsidizing the property ${fmt(Math.abs(d.monthRentCF))}/month, banking on appreciation. `;
+    p1+=`Over ${d.hrz} years, the rental path projects ${fmtK(d.futRent)} in total equity.`;
+  } else {
+    p1+=`Staying put means ${fmt(d.totalMonthCost)}/month in ownership costs with a ${d.dti.toFixed(0)}% debt-to-income ratio. `;
+    if(d.dti>44) p1+=`That DTI is elevated — it may limit your ability to borrow for other goals. `;
+    p1+=`With ${(d.apprec*100).toFixed(1)}% annual appreciation, your property could be worth ${fmtK(d.futPropVal)} in ${d.hrz} years.`;
+  }
+  paras.push(p1);
+  // Paragraph 2: Tax and financial nuances
+  let p2='';
+  if(d.preExempt>0&&d.taxGain>0){
+    p2+=`Your Principal Residence Exemption shelters ${fmt(d.preExempt)} of a ${fmt(d.rawGain)} capital gain, but ${fmt(d.taxGain)} remains taxable. At your ${d.province} marginal rate of ${(d.mRate*100).toFixed(1)}%, that's roughly ${fmt(d.cgTax)} in tax. `;
+  } else if(d.preExempt>0&&d.taxGain===0){
+    p2+=`Your PRE fully covers the capital gain — a significant tax advantage worth ${fmt(d.preExempt)} in sheltered gains. `;
+  }
+  if(d.ccaAnn>0){
+    p2+=`You're claiming ${fmt(d.ccaAnn)}/year in CCA, which reduces taxable rental income. Remember, this gets recaptured when you sell. `;
+    if(d.preYrs>0) p2+=`Since you also lived in this property, claiming CCA could affect your PRE eligibility — worth discussing with a tax professional. `;
+  }
+  if(d.monthRentCF>300) p2+=`The rental cash flow of ${fmt(d.monthRentCF)}/month is solid — after tax on rental income, the annual after-tax return is approximately ${fmt(d.annRentAT)}. `;
+  if(!p2) p2=`The financial comparison is straightforward: selling projects ${fmtK(d.futSell)} over ${d.hrz} years, renting projects ${fmtK(d.futRent)}, and keeping projects ${fmtK(d.futKeep)} in equity.`;
+  paras.push(p2);
+  // Paragraph 3: Personal factors
+  let p3='On the personal side: ';
+  const factors=[];
+  if(d.gStab)factors.push('you value housing stability');
+  if(d.gCash)factors.push('liquidity is a priority right now');
+  if(d.gInc)factors.push('you want monthly income');
+  if(d.gSimp)factors.push('you prefer simplicity');
+  if(d.gLong)factors.push('long-term wealth building matters');
+  if(d.landlord==='no')factors.push("being a landlord isn't appealing");
+  if(factors.length>0) p3+=factors.join(', ')+'. ';
+  else p3+='your goal selections are balanced across the options. ';
+  p3+=`These personal factors are just as important as the numbers. Whatever path you choose, consider speaking with a CPA about the tax implications — particularly around the PRE designation and any CCA decisions — before making your final move.`;
+  paras.push(p3);
+  return paras;
+}
+
+async function callClaude(prompt){
+  try{
+    const res=await fetch('/.netlify/functions/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.map(b=>b.text||'').join('')||'';
+    if(text){
+      const paras=text.split(/\n\n+/).filter(p=>p.trim());
+      document.getElementById('aiBody').innerHTML=paras.map(p=>`<p>${p.trim()}</p>`).join('');
+      const lbl=document.querySelector('.ai-hdr .al');
+      if(lbl)lbl.textContent='AI ENHANCED';
+    }
+    // On empty response, local analysis stays — no action needed
+  }catch(e){
+    const lbl=document.querySelector('.ai-hdr .al');
+    if(lbl){lbl.textContent='LOCAL ANALYSIS';lbl.style.background='rgba(96,165,250,0.15)';lbl.style.color='var(--blue)';lbl.style.borderColor='rgba(96,165,250,0.25)';}
+  }
+}
+
+function restart(){
+  document.getElementById('results').style.display='none';
+  document.querySelector('.main').style.display='block';
+  goTo(0);
+}
+</script>
+</body>
+</html>
