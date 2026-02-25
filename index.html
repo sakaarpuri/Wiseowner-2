@@ -19,6 +19,12 @@
   --shadow-md: 0 18px 50px rgba(17, 24, 39, 0.10);
   --ring: 0 0 0 4px rgba(37,99,235,0.12);
 
+  /* Decorative background "photo" slots (swap gradients with url('assets/...') if desired) */
+  --bg-photo-1: linear-gradient(135deg, rgba(37,99,235,0.55), rgba(255,255,255,0.05)), radial-gradient(circle at 30% 20%, rgba(22,163,74,0.55), transparent 55%), linear-gradient(180deg, rgba(15,23,42,0.55), rgba(15,23,42,0.0));
+  --bg-photo-2: linear-gradient(135deg, rgba(225,29,72,0.42), rgba(255,255,255,0.06)), radial-gradient(circle at 70% 30%, rgba(37,99,235,0.45), transparent 60%), linear-gradient(180deg, rgba(2,6,23,0.45), rgba(2,6,23,0.0));
+  --bg-photo-3: linear-gradient(135deg, rgba(217,119,6,0.38), rgba(255,255,255,0.08)), radial-gradient(circle at 40% 40%, rgba(124,58,237,0.42), transparent 58%), linear-gradient(180deg, rgba(2,6,23,0.40), rgba(2,6,23,0.0));
+  --bg-photo-4: linear-gradient(135deg, rgba(22,163,74,0.40), rgba(255,255,255,0.06)), radial-gradient(circle at 65% 25%, rgba(37,99,235,0.40), transparent 58%), linear-gradient(180deg, rgba(15,23,42,0.42), rgba(15,23,42,0.0));
+
   /* Brand colours — darkened for light background */
   --green: #16a34a; --green-d: #15803d; --green-dim: rgba(22,163,74,0.10);
   --coral: #e11d48; --coral-d: #be123c; --coral-dim: rgba(225,29,72,0.08);
@@ -78,6 +84,38 @@ body::after {
 }
 @keyframes drift1 { to { transform: translate(80px,60px); } }
 @keyframes drift2 { to { transform: translate(-60px,-80px); } }
+
+/* ── DECORATIVE BACKGROUND PHOTOS ── */
+.bg-photos {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.bg-photos::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(243,246,251,0.05), rgba(243,246,251,0.65) 55%),
+    radial-gradient(circle at 80% 20%, rgba(243,246,251,0.08), rgba(243,246,251,0.72) 60%),
+    linear-gradient(180deg, rgba(243,246,251,0.35), rgba(243,246,251,0.65));
+}
+.bg-photo {
+  position: absolute;
+  border-radius: 38px;
+  filter: blur(2px) saturate(1.1) contrast(1.05);
+  opacity: 0.22;
+  box-shadow: 0 28px 80px rgba(17,24,39,0.18);
+  transform: translateZ(0);
+  background-size: cover;
+  background-position: center;
+}
+.bg-photo.p1 { width: 560px; height: 360px; left: -120px; top: 150px; transform: rotate(-6deg); background-image: var(--bg-photo-1); }
+.bg-photo.p2 { width: 520px; height: 330px; right: -150px; top: 260px; transform: rotate(7deg); background-image: var(--bg-photo-2); }
+.bg-photo.p3 { width: 460px; height: 300px; left: 40%; top: -110px; transform: translateX(-50%) rotate(3deg); background-image: var(--bg-photo-3); }
+.bg-photo.p4 { width: 520px; height: 340px; left: 18%; bottom: -140px; transform: rotate(5deg); background-image: var(--bg-photo-4); }
 
 /* ── HEADER ── */
 header {
@@ -746,6 +784,8 @@ select option { background: #fff; color: var(--text); }
 
 /* ── PRINT ── */
 @media print {
+  .bg-photos { display: none !important; }
+
   /* Hide interactive / nav elements */
   header, .tabs, .prog-wrap, .share-bar, .restart-btn,
   .btn-row, .disclaimer, .toast, .country-sel { display: none !important; }
@@ -936,6 +976,12 @@ details[open] .adv-arrow { transform: rotate(90deg); }
 </style>
 </head>
 <body>
+<div class="bg-photos" aria-hidden="true">
+  <div class="bg-photo p1"></div>
+  <div class="bg-photo p2"></div>
+  <div class="bg-photo p3"></div>
+  <div class="bg-photo p4"></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <header>
