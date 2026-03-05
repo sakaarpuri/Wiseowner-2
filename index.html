@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiseOwner — Property Decision Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
+<style>
+/* ═══════════════════════════════════════════════
+   WISEOWNER — GLASSMORPHISM / AI-ERA DESIGN
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Brand colours */
+  --green: #4ade80; --green-d: #22c55e; --green-dim: rgba(74,222,128,0.15);
+  --coral: #fb7185; --coral-d: #f43f5e; --coral-dim: rgba(251,113,133,0.15);
+  --blue: #60a5fa; --blue-d: #3b82f6; --blue-dim: rgba(96,165,250,0.15);
+  --gold: #fbbf24; --gold-dim: rgba(251,191,36,0.15);
+  --purple: #a78bfa; --purple-dim: rgba(167,139,250,0.12);
+  /* Surface */
+  --bg: #0b0f1a;
+  --surface: rgba(255,255,255,0.05);
+  --surface-hover: rgba(255,255,255,0.08);
+  --surface-active: rgba(255,255,255,0.11);
+  --glass: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-border-hover: rgba(255,255,255,0.2);
+  /* Text */
+  --text: #f0f4ff; --text-mid: rgba(240,244,255,0.6); --text-muted: rgba(240,244,255,0.35);
+  /* Glow */
+  --glow-green: 0 0 24px rgba(74,222,128,0.25);
+  --glow-coral: 0 0 24px rgba(251,113,133,0.25);
+  --glow-blue: 0 0 24px rgba(96,165,250,0.25);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* ── ANIMATED BACKGROUND ORBS ── */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
+  top: -200px; left: -200px;
+  animation: drift1 18s ease-in-out infinite alternate;
+}
+body::after {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(96,165,250,0.1), transparent 70%);
+  bottom: -150px; right: -150px;
+  animation: drift2 22s ease-in-out infinite alternate;
+}
+@keyframes drift1 { to { transform: translate(80px,60px); } }
+@keyframes drift2 { to { transform: translate(-60px,-80px); } }
+
+/* ── HEADER ── */
+header {
+  background: rgba(11,15,26,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 2rem; height: 62px;
+  display: flex; align-items: center; gap: 0.8rem;
+  position: sticky; top: 0; z-index: 200;
+}
+.logo {
+  font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900;
+  color: var(--text); letter-spacing: -1px;
+  display: flex; align-items: center; gap: 0.35rem;
+}
+.logo em { color: var(--green); font-style: normal; }
+.step-ctr { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+.country-sel { margin-left: auto; }
+.country-sel .sel-wrap { position: relative; }
+.country-sel select {
+  border: 1px solid var(--glass-border); border-radius: 8px;
+  padding: 0.3rem 1.6rem 0.3rem 0.7rem;
+  font-size: 0.73rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text-mid); background: var(--glass);
+  cursor: pointer; outline: none; appearance: none;
+}
+.country-sel .sel-wrap::after {
+  content: '▾'; position: absolute; right: 0.5rem; top: 50%;
+  transform: translateY(-50%); font-size: 0.6rem; color: var(--text-muted); pointer-events: none;
+}
+
+/* ── PROGRESS ── */
+.prog-wrap { height: 2px; background: var(--glass-border); position: sticky; top: 62px; z-index: 199; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.6); }
+
+/* ── TABS ── */
+.tabs {
+  background: rgba(11,15,26,0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex; padding: 0 2rem;
+  overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: 64px; z-index: 198;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 0.65rem 1rem; font-size: 0.72rem; font-weight: 600;
+  color: var(--text-muted); border-bottom: 2px solid transparent;
+  white-space: nowrap; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.tab.done { color: var(--green); }
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* ── LAYOUT ── */
+.main { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; position: relative; z-index: 1; }
+.step { display: none; }
+.step.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── TYPOGRAPHY ── */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--green); margin-bottom: 0.9rem;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.2);
+  padding: 0.28rem 0.75rem; border-radius: 20px;
+}
+.eyebrow::before {
+  content: '';
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 6px var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity: 1; } 50% { opacity: 0.4; box-shadow: 0 0 10px var(--green); }
+}
+.heading { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
+.subtext { color: var(--text-mid); font-size: 0.93rem; line-height: 1.65; margin-bottom: 2rem; max-width: 540px; }
+
+/* ── GLASS CARDS ── */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 1.7rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.card:hover {
+  border-color: var(--glass-border-hover);
+  background: var(--surface-hover);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.card-title {
+  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600;
+  color: var(--text); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.45rem;
+}
+
+/* ── GRID ── */
+.grid { display: grid; gap: 1rem; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 560px) { .g2,.g3 { grid-template-columns: 1fr; } }
+
+/* ── NEUMORPHIC INPUTS ── */
+.field { display: flex; flex-direction: column; gap: 0.32rem; }
+label { font-size: 0.76rem; font-weight: 600; color: var(--text-mid); letter-spacing: 0.3px; }
+.wrap { position: relative; }
+.pfx,.sfx {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: var(--text-muted); font-weight: 600; font-size: 0.88rem; pointer-events: none;
+}
+.pfx { left: 0.9rem; } .sfx { right: 0.9rem; }
+input[type="number"], select {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.04);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none; appearance: none;
+}
+input[type="number"]:focus, select:focus {
+  border-color: rgba(74,222,128,0.5);
+  background: rgba(74,222,128,0.05);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.2), 0 0 0 3px rgba(74,222,128,0.12);
+}
+.has-pfx { padding-left: 1.7rem !important; }
+.has-sfx { padding-right: 1.9rem !important; }
+select option { background: #1a2035; color: var(--text); }
+
+/* ── HINT & EXPLAIN ── */
+.hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; margin-top: 0.2rem; }
+.explain {
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid rgba(74,222,128,0.3);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.85rem; margin-top: 0.4rem;
+  font-size: 0.74rem; color: var(--text-mid); line-height: 1.55;
+}
+.explain a { color: var(--green); font-weight: 600; text-decoration: none; }
+.explain a:hover { text-decoration: underline; }
+
+/* ── FORECAST SLIDER ── */
+#apprec[type="range"] {
+  width: 100%; height: 6px; cursor: pointer;
+  accent-color: var(--green);
+  margin-top: 0.2rem;
+}
+.fc-track {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.45rem;
+}
+.fc-center {
+  font-weight: 700;
+  color: var(--green);
+  font-size: 0.82rem;
+  text-align: center;
+}
+.fc-sentence {
+  margin-top: 0.8rem;
+  font-size: 0.84rem;
+  color: var(--text-mid);
+  line-height: 1.5;
+  padding: 0.65rem 0.9rem;
+  background: rgba(74,222,128,0.05);
+  border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 10px;
+}
+.fc-sentence strong { color: var(--text); font-weight: 700; }
+
+/* ── FORECAST TILES (legacy — kept for CSS completeness) ── */
+.forecast-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-top: 0.6rem; }
+.ftile {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 0.9rem 0.6rem;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.ftile:hover { border-color: var(--glass-border-hover); background: var(--surface-hover); }
+.ftile.selected {
+  border-color: rgba(74,222,128,0.5);
+  background: rgba(74,222,128,0.07);
+  box-shadow: 0 0 20px rgba(74,222,128,0.12);
+}
+.ftile .ft-emoji { font-size: 1.5rem; margin-bottom: 0.3rem; display: block; }
+.ftile .ft-label { font-size: 0.76rem; font-weight: 700; color: var(--text); }
+.ftile .ft-sub { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.12rem; }
+.ftile.selected .ft-label { color: var(--green); }
+.forecast-custom { margin-top: 1rem; display: none; }
+.forecast-custom.show { display: block; }
+
+/* ── CALLOUTS ── */
+.callout {
+  border-radius: 12px; padding: 0.85rem 1rem;
+  font-size: 0.8rem; line-height: 1.55; margin-top: 1rem;
+  display: flex; gap: 0.6rem;
+  backdrop-filter: blur(10px);
+}
+.callout .ci { flex-shrink: 0; }
+.info { background: rgba(96,165,250,0.08); color: var(--blue); border-left: 2px solid rgba(96,165,250,0.4); }
+.maple { background: rgba(251,113,133,0.08); color: #fca5a5; border-left: 2px solid rgba(251,113,133,0.4); }
+.forest { background: rgba(74,222,128,0.07); color: var(--green); border-left: 2px solid rgba(74,222,128,0.35); }
+
+/* ── CHECKBOXES (legacy) ── */
+.checks { display: flex; flex-direction: column; gap: 0.65rem; }
+.chk-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.9rem; color: var(--text-mid); cursor: pointer;
+  padding: 0.5rem 0.7rem; border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.18s;
+}
+.chk-item:hover { background: var(--surface-hover); border-color: var(--glass-border); }
+.chk-item input { width: 16px; height: 16px; accent-color: var(--green); flex-shrink: 0; }
+
+/* ── GOAL TAP-CARDS ── */
+.goal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+}
+.goal-card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: var(--glass-border-hover);
+}
+.goal-card.selected {
+  background: rgba(74,222,128,0.08);
+  border-color: rgba(74,222,128,0.5);
+  box-shadow: 0 0 0 1px rgba(74,222,128,0.15);
+}
+.gc-emoji { font-size: 1.35rem; line-height: 1; }
+.gc-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 0.2rem;
+}
+.gc-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.goal-card.selected .gc-title { color: var(--green); }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 0.8rem; margin-top: 2rem; align-items: center; }
+.btn-next {
+  background: linear-gradient(135deg, var(--green-d), #16a34a);
+  color: #0b1a0f; border: none; border-radius: 12px;
+  padding: 0.82rem 2rem; font-size: 0.95rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  box-shadow: 0 0 20px rgba(74,222,128,0.3);
+  transition: all 0.2s;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 4px 28px rgba(74,222,128,0.45); }
+.btn-back {
+  background: transparent; color: var(--text-muted);
+  border: 1px solid var(--glass-border); border-radius: 12px;
+  padding: 0.82rem 1.5rem; font-size: 0.9rem; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--glass-border-hover); color: var(--text); }
+.btn-cta {
+  background: linear-gradient(135deg, var(--green-d), #15803d);
+  color: #0b1a0f; border: none; border-radius: 14px;
+  padding: 0.95rem 2.5rem; font-size: 1rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  box-shadow: 0 0 28px rgba(74,222,128,0.35), 0 4px 20px rgba(0,0,0,0.3);
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.btn-cta::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.btn-cta:hover::before { left: 100%; }
+.btn-cta:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(74,222,128,0.5), 0 8px 30px rgba(0,0,0,0.3); }
+
+/* ── INTRO PAGE ── */
+/* ── HERO MESH ── */
+.intro-hero {
+  position: relative;
+  padding: 3.5rem 0 1rem;
+}
+.intro-hero::before {
+  content: '';
+  position: absolute; top: -60px; left: -80px; right: -80px; height: 400px;
+  background: radial-gradient(ellipse at 30% 40%, rgba(74,222,128,0.08) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.07) 0%, transparent 50%),
+              radial-gradient(ellipse at 60% 80%, rgba(251,113,133,0.05) 0%, transparent 45%);
+  pointer-events: none; z-index: 0;
+}
+
+.big-logo {
+  font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 900;
+  color: var(--text); margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.4rem;
+  position: relative; z-index: 1;
+}
+.big-logo em {
+  color: var(--green); font-style: normal;
+  position: relative;
+}
+.big-logo em::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--blue));
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(74,222,128,0.5);
+}
+.intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin-bottom: 1.8rem; }
+
+.path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+.path-item {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 1.4rem 1rem; text-align: center;
+  position: relative; overflow: hidden; transition: all 0.25s;
+}
+.path-item::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  border-radius: 0 0 18px 18px; opacity: 0; transition: opacity 0.25s;
+}
+.path-item.sell::after { background: var(--coral); }
+.path-item.rent::after { background: var(--green); }
+.path-item.keep::after { background: var(--blue); }
+.path-item:hover { border-color: var(--glass-border-hover); }
+.path-item:hover::after { opacity: 1; }
+.path-item .pi { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+.path-item .pn { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; }
+.path-item.sell .pn { color: var(--coral); }
+.path-item.rent .pn { color: var(--green); }
+.path-item.keep .pn { color: var(--blue); }
+.path-item .pd { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.qb {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 0.32rem 0.85rem;
+  font-size: 0.73rem; font-weight: 600; color: var(--text-mid);
+  display: flex; align-items: center; gap: 0.3rem;
+  backdrop-filter: blur(10px);
+}
+
+.ai-intro-card {
+  background: linear-gradient(135deg, rgba(74,222,128,0.07), rgba(96,165,250,0.05));
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 18px; padding: 1.2rem 1.4rem;
+  display: flex; gap: 0.9rem; align-items: center; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.ai-intro-card::before {
+  content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.ai-intro-card .ai-icon { font-size: 1.8rem; flex-shrink: 0; }
+.ai-intro-card strong { display: block; font-size: 0.86rem; font-weight: 700; color: var(--green); margin-bottom: 0.2rem; }
+.ai-intro-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
+/* ── RESULTS ── */
+#results { display: none; }
+.res-header { text-align: center; padding: 2.5rem 0 1.5rem; position: relative; }
+.res-header h1 { font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
+.res-header p { color: var(--text-mid); font-size: 0.93rem; }
+
+/* SCORE CARDS */
+.sc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.1rem; margin-bottom: 2rem; }
+.sc-card {
+  background: var(--glass);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 22px; padding: 1.7rem;
+  text-align: center; position: relative;
+  overflow: hidden; transition: all 0.3s;
+}
+.sc-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+.sc-card.best {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.sc-card.best.sell { border-color: rgba(251,113,133,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-coral); }
+.sc-card.best.rent { border-color: rgba(74,222,128,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-green); }
+.sc-card.best.keep { border-color: rgba(96,165,250,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-blue); }
+/* Glow orb behind best card */
+.sc-card.best::after {
+  content: '';
+  position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 120px; border-radius: 50%;
+  filter: blur(30px); opacity: 0.3;
+}
+.sc-card.best.sell::after { background: var(--coral); }
+.sc-card.best.rent::after { background: var(--green); }
+.sc-card.best.keep::after { background: var(--blue); }
+
+.best-tag {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px;
+  padding: 0.22rem 0.9rem; border-radius: 0 0 10px 10px; white-space: nowrap;
+  color: #0b1a0f;
+}
+.sell .best-tag { background: var(--coral); }
+.rent .best-tag { background: var(--green); }
+.keep .best-tag { background: var(--blue); }
+
+.sc-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
+.sc-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+.sell .sc-name { color: var(--coral); }
+.rent .sc-name { color: var(--green); }
+.keep .sc-name { color: var(--blue); }
+.sc-slbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+.sc-score { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; line-height: 1; margin: 0.2rem 0 0.8rem; }
+.sell .sc-score { color: var(--coral); }
+.rent .sc-score { color: var(--green); }
+.keep .sc-score { color: var(--blue); }
+.sc-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-bottom: 1.2rem; overflow: hidden; }
+.sc-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+.sell .sc-fill { background: linear-gradient(90deg, var(--coral-d), var(--coral)); }
+.rent .sc-fill { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.keep .sc-fill { background: linear-gradient(90deg, var(--blue-d), var(--blue)); }
+.sc-rows { text-align: left; }
+.sc-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
+.sc-row:last-child { border-bottom: none; }
+.sc-row .rl { color: var(--text-muted); }
+.sc-row .rv { font-weight: 700; color: var(--text); }
+.pos { color: var(--green) !important; }
+.neg { color: var(--coral) !important; }
+.warn-c { color: var(--gold) !important; }
+
+/* AI BOX */
+.ai-box {
+  background: linear-gradient(145deg, rgba(74,222,128,0.06), rgba(96,165,250,0.04));
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 20px; padding: 1.8rem; margin-bottom: 1.8rem;
+  position: relative; overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+.ai-box::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px; width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(74,222,128,0.08), transparent 70%);
+  border-radius: 50%;
+}
+.ai-hdr { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
+.ai-hdr .ao { font-size: 1.5rem; }
+.ai-hdr h3 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700; color: var(--green); }
+.ai-hdr .al {
+  margin-left: auto; background: rgba(74,222,128,0.15);
+  color: var(--green); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
+  padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.25);
+}
+.ai-body { font-size: 0.9rem; color: var(--text-mid); line-height: 1.8; }
+.ai-body p { margin-bottom: 0.9rem; }
+.ai-body p:last-child { margin-bottom: 0; }
+.ai-loading { display: flex; align-items: center; gap: 0.8rem; color: var(--text-muted); font-size: 0.88rem; }
+.dots span {
+  display: inline-block; width: 6px; height: 6px;
+  background: var(--green); border-radius: 50%; margin: 0 2px;
+  animation: bounce 1.2s infinite;
+}
+.dots span:nth-child(2){animation-delay:0.2s;} .dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
+
+/* TAX BOX */
+.tax-box {
+  background: rgba(251,191,36,0.05);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+.tax-box h4 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; }
+.t-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.38rem 0; border-bottom: 1px solid rgba(251,191,36,0.1); }
+.t-row:last-child { border-bottom: none; font-weight: 700; font-size: 0.9rem; }
+.t-row .tl { color: var(--text-muted); }
+.t-row .tv { font-weight: 600; color: var(--text); }
+
+/* SECTION HEADINGS */
+.sec { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
+
+/* INSIGHTS */
+.ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.ins-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 1.1rem; display: flex; gap: 0.8rem;
+  backdrop-filter: blur(16px); transition: border-color 0.2s;
+}
+.ins-card:hover { border-color: var(--glass-border-hover); }
+.ins-card .ii { font-size: 1.4rem; flex-shrink: 0; }
+.ins-card .it { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 0.22rem; }
+.ins-card .ib { font-size: 0.76rem; color: var(--text-mid); line-height: 1.5; }
+
+/* CHARTS */
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+.chart-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 1.4rem;
+  backdrop-filter: blur(16px);
+}
+.chart-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); margin-bottom: 1rem; }
+
+/* TABLE */
+.tbl {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  font-size: 0.83rem; margin-bottom: 2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; overflow: hidden;
+  backdrop-filter: blur(16px);
+}
+.tbl th {
+  padding: 0.9rem 1rem; font-weight: 700; text-align: center;
+  font-family: 'Fraunces', serif; font-size: 0.92rem;
+  background: rgba(255,255,255,0.04);
+}
+.tbl th:first-child { text-align: left; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.tbl th.ts { color: var(--coral); }
+.tbl th.tr { color: var(--green); }
+.tbl th.tk { color: var(--blue); }
+.tbl td { padding: 0.7rem 1rem; border-top: 1px solid rgba(255,255,255,0.04); text-align: center; font-weight: 600; color: var(--text); }
+.tbl td:first-child { text-align: left; font-weight: 400; color: var(--text-mid); }
+.tbl tr:hover td { background: rgba(255,255,255,0.025); }
+
+/* DISCLAIMER */
+.disclaimer {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 1rem 1.2rem;
+  font-size: 0.74rem; color: var(--text-muted); line-height: 1.6;
+}
+.restart-btn {
+  display: block; text-align: center; margin: 1.5rem auto;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;
+}
+
+/* VALIDATION */
+.field-err input, .field-err select {
+  border-color: rgba(251,113,133,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(251,113,133,0.1) !important;
+}
+.err-msg { font-size: 0.72rem; color: var(--coral); font-weight: 600; margin-top: 0.25rem; display: none; }
+.field-err .err-msg { display: block; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(30,40,60,0.95);
+  backdrop-filter: blur(20px);
+  color: var(--text); padding: 0.8rem 1.4rem; border-radius: 14px;
+  font-size: 0.84rem; font-weight: 500; z-index: 999;
+  border: 1px solid var(--glass-border);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4); white-space: nowrap; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* SHARE BAR */
+.share-bar { display: flex; gap: 0.75rem; align-items: center; justify-content: center; margin: 1.5rem 0 0.5rem; flex-wrap: wrap; }
+.share-btn {
+  display: flex; align-items: center; gap: 0.45rem;
+  border: 1px solid var(--glass-border);
+  background: var(--glass); border-radius: 10px;
+  padding: 0.6rem 1.1rem; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-mid); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+  backdrop-filter: blur(10px);
+}
+.share-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.share-btn.print-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .sc-grid,.path-row,.charts,.ins-grid { grid-template-columns: 1fr; }
+  .big-logo { font-size: 2.1rem; }
+  .heading { font-size: 1.65rem; }
+  .forecast-tiles { grid-template-columns: 1fr 1fr; }
+  .sc-card.best { transform: none; box-shadow: 0 0 24px rgba(74,222,128,0.15); }
+  header { padding: 0 1rem; }
+  .tabs { padding: 0 0.5rem; }
+  .main { padding: 2rem 1rem 5rem; }
+  .tbl { font-size: 0.72rem; }
+  .tbl th, .tbl td { padding: 0.55rem 0.5rem; }
+  .share-bar { gap: 0.5rem; }
+  .share-btn { font-size: 0.74rem; padding: 0.5rem 0.8rem; }
+  .quick-badges { gap: 0.4rem; }
+  .qb { font-size: 0.68rem; }
+}
+
+/* ── SCAN LINE ON AI BOX ── */
+.ai-box::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(74,222,128,0.6), transparent);
+  animation: scan 4s linear infinite;
+}
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ── GRADIENT BORDER CARDS (RESULTS) ── */
+.sc-card.best::before {
+  background: none;
+}
+.sc-card.best.rent > *:first-child { display: none; }
+
+/* ── RESULTS SECTION HEADER ── */
+.sec {
+  font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; color: var(--text);
+  margin: 2.5rem 0 1.1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ── GLOW ON FOCUSED FIELD LABELS ── */
+.field:focus-within label { color: var(--green); transition: color 0.2s; }
+
+/* ── RESULT HEADER GLOW ── */
+.res-header h1 {
+  background: linear-gradient(135deg, var(--text) 40%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── PRINT ── */
+@media print {
+  header,.tabs,.prog-wrap,.share-bar,.restart-btn,.btn-row,.disclaimer { display: none !important; }
+  body { background: white; color: #111; }
+  .card,.sc-card,.ai-box,.tax-box,.ins-card,.chart-card { background: white !important; border: 1px solid #ddd !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .text,.sc-name,.ai-hdr h3,.heading,.res-header h1 { color: #111 !important; }
+  .sc-card.best { transform: none !important; }
+  .main { padding: 0.5rem 1rem; }
+  body::before, body::after { display: none; }
+}
+
+/* ── ADDRESS AUTOCOMPLETE ── */
+.addr-card {
+  background: linear-gradient(135deg, rgba(74,222,128,0.06), rgba(96,165,250,0.04));
+  border: 1px solid rgba(74,222,128,0.25);
+  border-radius: 20px; padding: 1.4rem 1.7rem; margin-bottom: 1rem;
+  position: relative; overflow: hidden;
+}
+.addr-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74,222,128,0.4), transparent);
+}
+.addr-wrap { position: relative; display: flex; align-items: center; gap: 0.6rem; }
+.addr-wrap input[type="text"] {
+  width: 100%; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+  padding: 0.8rem 1rem 0.8rem 2.6rem;
+  font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+  color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.addr-wrap input[type="text"]:focus {
+  border-color: rgba(74,222,128,0.5);
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.12);
+}
+.addr-wrap input[type="text"]::placeholder { color: var(--text-muted); }
+.addr-icon { position: absolute; left: 0.85rem; font-size: 1rem; pointer-events: none; }
+.prefill-banner {
+  display: none; align-items: center; gap: 0.6rem;
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3);
+  border-radius: 10px; padding: 0.6rem 1rem; margin-top: 0.75rem;
+  font-size: 0.8rem; color: var(--green); font-weight: 600;
+}
+.prefill-banner.show { display: flex; }
+.prefill-banner button {
+  margin-left: auto; background: none; border: none;
+  color: var(--text-muted); font-size: 1rem; cursor: pointer; line-height: 1;
+}
+.prefill-banner button:hover { color: var(--text); }
+/* Google Places dropdown styling */
+.pac-container {
+  background: #1a2035; border: 1px solid var(--glass-border);
+  border-radius: 12px; margin-top: 4px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.pac-item { padding: 0.5rem 1rem; color: var(--text-mid); cursor: pointer; border-top: 1px solid rgba(255,255,255,0.05); }
+.pac-item:first-child { border-top: none; }
+.pac-item:hover, .pac-item-selected { background: rgba(74,222,128,0.08); color: var(--text); }
+.pac-item-query { color: var(--text); font-weight: 600; }
+.pac-icon { display: none; }
+
+/* ── LIVE PREVIEW PANEL ── */
+.form-wrap {
+  display: flex;
+  gap: 2rem;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+.form-wrap > .main {
+  flex: 1;
+  min-width: 0;
+  max-width: 720px;
+  margin: 0;
+}
+.preview-panel {
+  width: 264px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 76px;
+  display: none;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding-top: 2.5rem;
+}
+@media (min-width: 1060px) {
+  .preview-panel { display: flex; }
+}
+.pv-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s;
+}
+.pv-title {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.pv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.32rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.8rem;
+}
+.pv-row:last-child { border-bottom: none; }
+.pv-lbl { color: var(--text-mid); }
+.pv-val { font-weight: 600; color: var(--text); }
+.pv-val.pos { color: var(--green); }
+.pv-val.neg { color: var(--coral); }
+.pv-val.blue { color: var(--blue); }
+.pv-badge {
+  display: inline-block;
+  font-size: 0.64rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 20px;
+  margin-top: 0.55rem;
+}
+.pv-badge.green { background: var(--green-dim); color: var(--green); }
+.pv-badge.coral { background: var(--coral-dim); color: var(--coral); }
+.pv-updated {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 0.2rem;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.pv-updated.show { opacity: 1; }
+/* Mobile floating pill */
+.preview-pill {
+  display: none;
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  z-index: 200;
+  background: rgba(11,15,26,0.92);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+  transition: transform 0.15s;
+}
+.preview-pill:active { transform: scale(0.96); }
+.pp-eq { color: var(--green); }
+@media (max-width: 1059px) {
+  .preview-pill { display: flex; }
+}
+.preview-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 300;
+  background: rgba(11,15,26,0.97);
+  border-top: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 20px 20px 0 0;
+  padding: 1.4rem 1.5rem 2.5rem;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
+.preview-sheet.open {
+  transform: translateY(0);
+  pointer-events: all;
+}
+.ps-close {
+  float: right;
+  background: none; border: none;
+  color: var(--text-muted); font-size: 1.3rem;
+  cursor: pointer; line-height: 1; padding: 0;
+}
+.ps-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.ps-rows { display: flex; flex-direction: column; gap: 0; }
+.ps-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.85rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ps-row:last-child { border-bottom: none; }
+.ps-lbl { color: var(--text-mid); }
+.ps-val { font-weight: 600; }
+.ps-val.pos { color: var(--green); }
+.ps-val.neg { color: var(--coral); }
+
+/* ── STEP SLIDE-IN ── */
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.step.active { animation: stepIn 0.28s ease; }
+
+/* ── CALC LOADING OVERLAY ── */
+.calc-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(11,15,26,0.96);
+  backdrop-filter: blur(12px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1.2rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.calc-overlay.show { opacity: 1; pointer-events: all; }
+.calc-spinner {
+  width: 52px; height: 52px;
+  border: 3px solid rgba(74,222,128,0.2);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.calc-label {
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem; font-weight: 700; color: var(--text);
+}
+.calc-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ══════════════════════════════════════
+   MOTIVATED SELLER DIRECTORY
+   ══════════════════════════════════════ */
+.dir-btn {
+  background: rgba(96,165,250,0.12);
+  border: 1px solid rgba(96,165,250,0.3);
+  color: var(--blue);
+  border-radius: 10px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.dir-btn:hover { background: rgba(96,165,250,0.2); border-color: rgba(96,165,250,0.5); }
+
+#directory { display: none; position: relative; z-index: 1; }
+.dir-wrap { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+
+.dir-back-btn {
+  background: none; border: none;
+  color: var(--blue); font-size: 0.84rem; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  padding: 0; margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.dir-back-btn:hover { text-decoration: underline; }
+
+.dir-hero { text-align: center; margin-bottom: 2rem; }
+.dir-hero h1 {
+  font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--text) 40%, var(--blue) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 0.4rem;
+}
+.dir-hero p { color: var(--text-mid); font-size: 0.95rem; }
+
+/* Search */
+.dir-search-wrap { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+.dir-search-input {
+  flex: 1; background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border); border-radius: 14px;
+  padding: 0.85rem 1.2rem; font-size: 0.95rem;
+  font-family: 'DM Sans', sans-serif; color: var(--text);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dir-search-input:focus { border-color: rgba(96,165,250,0.5); box-shadow: 0 0 0 3px rgba(96,165,250,0.1); }
+.dir-search-input::placeholder { color: var(--text-muted); }
+
+/* Signal chips */
+.dir-section-title {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.65rem;
+}
+.sig-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.sig-chip {
+  display: flex; align-items: center; gap: 0.35rem;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 0.38rem 0.85rem;
+  font-size: 0.78rem; font-weight: 500; cursor: pointer;
+  transition: all 0.18s; position: relative; color: var(--text-mid);
+}
+.sig-chip:hover { background: rgba(255,255,255,0.08); border-color: var(--glass-border-hover); }
+.sig-chip.active { background: rgba(96,165,250,0.12); border-color: rgba(96,165,250,0.45); color: var(--blue); }
+.sig-chip-tip {
+  display: none; position: absolute; bottom: calc(100% + 8px); left: 50%;
+  transform: translateX(-50%); width: 200px;
+  background: rgba(20,28,48,0.97); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 0.6rem 0.75rem;
+  font-size: 0.72rem; color: var(--text-mid); line-height: 1.45;
+  pointer-events: none; z-index: 100; text-align: left; font-weight: 400;
+}
+.sig-chip:hover .sig-chip-tip { display: block; }
+
+/* Sliders */
+.dir-sliders {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 1.5rem;
+  display: flex; flex-direction: column; gap: 1.1rem;
+}
+.dir-slider-row label { font-size: 0.8rem; color: var(--text-mid); margin-bottom: 0.5rem; display: block; }
+.dir-slider-row label span { font-weight: 700; color: var(--text); }
+.dir-slider-row input[type="range"] { width: 100%; accent-color: var(--blue); height: 5px; cursor: pointer; }
+
+/* Mock notice */
+.dir-mock-notice {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.25);
+  border-radius: 10px; padding: 0.65rem 1rem;
+  font-size: 0.78rem; color: var(--gold); margin-bottom: 1.2rem;
+}
+
+/* Property cards */
+.dir-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.dir-count { font-size: 0.82rem; color: var(--text-muted); }
+.prop-cards { display: flex; flex-direction: column; gap: 1rem; }
+.prop-card {
+  background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 1.4rem 1.5rem;
+  transition: border-color 0.2s; position: relative; overflow: hidden;
+}
+.prop-card:not(.locked):hover { border-color: var(--glass-border-hover); }
+.prop-card-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 0.9rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.prop-address { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.prop-city { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+.prop-stats {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 0.5rem 1rem; margin-bottom: 1rem;
+  padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ps-stat label { font-size: 0.63rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.2rem; }
+.ps-stat .ps-val { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+.ps-stat .ps-val.green { color: var(--green); }
+.prop-signals { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+.prop-sig {
+  display: flex; align-items: center; gap: 0.3rem;
+  background: rgba(251,113,133,0.08); border: 1px solid rgba(251,113,133,0.2);
+  border-radius: 20px; padding: 0.25rem 0.6rem;
+  font-size: 0.72rem; font-weight: 600; color: var(--coral);
+  position: relative; cursor: default;
+}
+.prop-sig-tip {
+  display: none; position: absolute; bottom: calc(100% + 6px); left: 0;
+  width: 210px; background: rgba(20,28,48,0.97); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 0.55rem 0.7rem;
+  font-size: 0.71rem; color: var(--text-mid); line-height: 1.45;
+  pointer-events: none; z-index: 100; font-weight: 400; text-align: left;
+}
+.prop-sig:hover .prop-sig-tip { display: block; }
+.prop-owner { font-size: 0.78rem; color: var(--text-mid); margin-bottom: 1rem; line-height: 1.6; }
+.prop-owner strong { color: var(--text); }
+.prop-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+.btn-analyze {
+  background: linear-gradient(135deg, var(--green-d), var(--green));
+  color: #0b0f1a; border: none; border-radius: 10px;
+  padding: 0.55rem 1.1rem; font-size: 0.82rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: opacity 0.18s;
+}
+.btn-analyze:hover { opacity: 0.88; }
+.btn-skip-trace {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+  color: var(--text-mid); border-radius: 10px;
+  padding: 0.55rem 1.1rem; font-size: 0.82rem; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.18s;
+}
+.btn-skip-trace:hover { background: rgba(255,255,255,0.09); color: var(--text); }
+
+/* Paywall blur */
+.prop-card.locked .prop-card-inner { filter: blur(4px); pointer-events: none; user-select: none; }
+.prop-card-paywall {
+  display: none; position: absolute; inset: 0;
+  background: rgba(11,15,26,0.72); backdrop-filter: blur(2px);
+  border-radius: 18px; align-items: center; justify-content: center;
+  flex-direction: column; gap: 0.6rem; text-align: center; padding: 1rem; z-index: 10;
+}
+.prop-card.locked .prop-card-paywall { display: flex; }
+.pw-lock { font-size: 1.8rem; }
+.pw-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; }
+.pw-sub { font-size: 0.78rem; color: var(--text-muted); }
+.btn-unlock {
+  background: linear-gradient(135deg, var(--blue-d), var(--blue));
+  color: #fff; border: none; border-radius: 10px;
+  padding: 0.5rem 1.2rem; font-size: 0.82rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.3rem;
+}
+
+/* Coming soon modal */
+.cs-overlay {
+  display: none; position: fixed; inset: 0; z-index: 600;
+  background: rgba(11,15,26,0.8); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+}
+.cs-overlay.show { display: flex; }
+.cs-modal {
+  background: rgba(20,28,48,0.98); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 2.2rem 2.5rem;
+  max-width: 400px; width: 90%; text-align: center;
+}
+.cs-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.cs-title { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.cs-sub { font-size: 0.88rem; color: var(--text-mid); margin-bottom: 1.5rem; line-height: 1.55; }
+.cs-close {
+  background: none; border: 1px solid var(--glass-border);
+  color: var(--text-mid); border-radius: 10px;
+  padding: 0.55rem 1.4rem; font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+}
+
+/* Empty state */
+.dir-empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); font-size: 0.9rem; }
+.dir-empty .de-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+
+@media (max-width: 600px) {
+  .dir-search-wrap { flex-direction: column; }
+  .prop-stats { grid-template-columns: 1fr 1fr; }
+  .dir-wrap { padding: 1.5rem 1rem 5rem; }
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="calc-overlay" id="calcOverlay">
+  <div class="calc-spinner"></div>
+  <div class="calc-label">Crunching your numbers…</div>
+  <div class="calc-sub">Comparing all three paths</div>
+</div>
+
+<header>
+  <div class="logo">🏠 Wise<em>Owner</em></div>
+  <div class="step-ctr" id="stepCtr"></div>
+  <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()">🔍 Find Deals</button>
+  <div class="country-sel">
+    <div class="sel-wrap">
+      <select onchange="void(0)" title="Country">
+        <option value="US">🇺🇸 United States</option>
+        <option value="coming" disabled>🌍 More coming soon</option>
+      </select>
+    </div>
+  </div>
+</header>
+<div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+<div class="tabs" id="tabs">
+  <div class="tab active" data-s="0">🏠 Start</div>
+  <div class="tab" data-s="1">📍 Property</div>
+  <div class="tab" data-s="2">💳 Mortgage</div>
+  <div class="tab" data-s="3">🔑 Rental</div>
+  <div class="tab" data-s="4">🏷️ Sale</div>
+  <div class="tab" data-s="5">💰 You</div>
+</div>
+
+<div class="form-wrap"><div class="main" id="formMain">
+
+  <!-- STEP 0: INTRO -->
+  <div class="step active" id="step-0">
+    <div class="intro-hero">
+      <div class="big-logo">🏠 Wise<em>Owner</em></div>
+      <div class="intro-desc">Not sure what to do with your property? Answer a few quick questions — we'll compare all three paths and an AI will explain what the numbers actually mean for you.</div>
+      <div class="path-row">
+        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">Cash out, move on</div></div>
+        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Earn monthly income</div></div>
+        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Keep Living Here</div><div class="pd">Stay put, build equity</div></div>
+      </div>
+      <div class="quick-badges">
+        <div class="qb">⏱️ ~5 minutes</div>
+        <div class="qb">🇺🇸 Built for the US</div>
+        <div class="qb">🔒 Nothing is saved</div>
+        <div class="qb">🤖 AI interpretation included</div>
+      </div>
+      <div class="ai-intro-card">
+        <div class="ai-icon">🤖</div>
+        <div><strong>More than just a calculator</strong><p>Once you fill in your numbers, Claude AI writes a plain-English read of your specific situation — not just scores and tables.</p></div>
+      </div>
+      <div class="btn-row" style="margin-top:1.5rem;"><button class="btn-cta" onclick="goTo(1)">Let's figure this out →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 1: PROPERTY -->
+  <div class="step" id="step-1">
+    <div class="eyebrow">Step 1 of 5</div>
+    <h2 class="heading">Your property 🏠</h2>
+    <p class="subtext">Just the basics. Ballpark numbers work fine here.</p>
+
+    <!-- ADDRESS AUTOCOMPLETE -->
+    <div class="addr-card">
+      <label style="font-size:0.76rem;font-weight:600;color:var(--green);letter-spacing:0.3px;display:block;margin-bottom:0.6rem;">🔍 Your property address <span style="color:var(--text-muted);font-weight:400;">(optional — auto-fills fields below)</span></label>
+      <div class="addr-wrap">
+        <span class="addr-icon">📍</span>
+        <input type="text" id="addrInput" placeholder="Type your address..." autocomplete="off">
+      </div>
+      <div class="prefill-banner" id="prefillBanner">
+        ✓ Pre-filled from public records — adjust anything that looks off
+        <button onclick="dismissBanner()" title="Dismiss">×</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💰 What's it worth?</div>
+      <div class="grid g2">
+        <div class="field" id="f-curVal">
+          <label>What do you think it's worth today?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000"></div>
+          <span class="hint">Your best guess is fine — check Zillow, Redfin, or Realtor.com for recent comps nearby.</span>
+          <span class="err-msg">Please enter a property value to continue</span>
+        </div>
+        <div class="field" id="f-purPrice">
+          <label>What did you pay for it?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="purPrice" class="has-pfx" placeholder="500,000"></div>
+          <span class="err-msg">Please enter your original purchase price</span>
+        </div>
+        <div class="field">
+          <label>Year you bought it</label>
+          <input type="number" id="purYear" placeholder="2015" min="1950" max="2025">
+        </div>
+        <div class="field">
+          <label>State</label>
+          <select id="stateField">
+            <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option>
+            <option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option>
+            <option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option>
+            <option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option>
+            <option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option>
+            <option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option>
+            <option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option>
+            <option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option>
+            <option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option>
+            <option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option>
+            <option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option>
+            <option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option>
+            <option value="TX" selected>Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option>
+            <option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option>
+            <option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
+            <option value="DC">District of Columbia</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Type of property</label>
+          <select id="propType"><option value="primary">My main home</option><option value="investment">Rental / investment property</option><option value="vacation">Cottage / vacation home</option></select>
+        </div>
+        <div class="field">
+          <label>Style of property</label>
+          <select id="propCat"><option value="detached">Detached House</option><option value="semi">Semi-Detached</option><option value="condo">Condo / Apartment</option><option value="townhouse">Townhouse</option><option value="multi">Multi-Unit (Duplex/Triplex)</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔮 Where do you see the value going?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1.1rem;line-height:1.55;">Drag to set your expected annual appreciation for your neighbourhood.</p>
+      <input type="range" id="apprec" min="-2" max="10" step="0.5" value="4" oninput="syncForecast(this.value)">
+      <div class="fc-track">
+        <span>📉 −2%</span>
+        <span class="fc-center" id="fcLabel">📈 +4.0% / yr</span>
+        <span>🔥 10%</span>
+      </div>
+      <div class="fc-sentence" id="fcSentence">
+        That puts this property at <strong id="fcProjVal">—</strong> in <span id="fcHrz">10</span> years.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏠 §121 Primary Residence Exclusion</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">The IRS <strong>§121 exclusion</strong> can shield up to <strong>$250,000</strong> of your gain from capital gains tax (or <strong>$500,000</strong> if married filing jointly) — but only if you owned and lived there as your main home for at least <strong>2 of the last 5 years</strong>.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>Filing status</label>
+          <select id="filingStatus">
+            <option value="single">Single</option>
+            <option value="married">Married Filing Jointly</option>
+            <option value="hoh">Head of Household</option>
+          </select>
+          <span class="hint">Affects your §121 exclusion limit and federal capital gains bracket.</span>
+        </div>
+        <div class="field">
+          <label>Years you lived there as your main home</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="preYrs" class="has-sfx" placeholder="3" min="0"></div>
+          <div class="explain">You need <strong>2+ years</strong> as your primary residence to qualify for the §121 exclusion. Enter 0 if it was always a rental or vacation home.</div>
+        </div>
+        <div class="field">
+          <label>Total years owned</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="totalYrs" class="has-sfx" placeholder="5" min="1"></div>
+          <div class="explain">From purchase year to today. E.g. bought in 2019 = ~6 years.</div>
+        </div>
+        <div class="field">
+          <label>Did you ever rent this property out?</label>
+          <select id="hasRented" onchange="document.getElementById('rentedDetails').style.display=this.value==='yes'?'block':'none'">
+            <option value="no" selected>No</option>
+            <option value="yes">Yes</option>
+          </select>
+          <span class="hint">If yes, prior depreciation claimed may be recaptured at 25% when you sell.</span>
+        </div>
+      </div>
+      <div id="rentedDetails" style="display:none;margin-top:0.8rem;">
+        <div class="grid g2">
+          <div class="field">
+            <label>How many years was it rented?</label>
+            <div class="wrap"><span class="sfx">yrs</span><input type="number" id="rentedYrs" class="has-sfx" placeholder="3" min="0"></div>
+          </div>
+          <div class="field">
+            <label>Estimated building value (not land)</label>
+            <div class="wrap"><span class="pfx">$</span><input type="number" id="dprBuildVal" class="has-pfx" placeholder="350,000"></div>
+            <div class="explain">Used to estimate prior depreciation (building ÷ 27.5 × years rented). The building is typically 70–85% of total value.</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout info"><span class="ci">💡</span><div>The §121 exclusion only applies to your <strong>primary residence</strong>. Vacation homes and pure rentals don't qualify. Partial exclusions may apply if you moved for work, health, or unforeseen circumstances — consult a CPA.</div></div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(0)">← Back</button><button class="btn-next" onclick="goTo(2)">Next: Mortgage →</button></div>
+  </div>
+
+  <!-- STEP 2: MORTGAGE -->
+  <div class="step" id="step-2">
+    <div class="eyebrow">Step 2 of 5</div>
+    <h2 class="heading">Your mortgage 💳</h2>
+    <p class="subtext">Check your latest mortgage statement — most of this is right on it.</p>
+
+    <div class="card">
+      <div class="card-title">📋 Loan basics</div>
+      <div class="grid g2">
+        <div class="field" id="f-mortBal">
+          <label>How much do you still owe?</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000"></div>
+          <span class="hint">The remaining balance on your mortgage statement.</span>
+          <span class="err-msg">Enter your mortgage balance ($0 if it's paid off)</span>
+        </div>
+        <div class="field">
+          <label>Your monthly mortgage payment</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthMort" class="has-pfx" placeholder="2,200"></div>
+          <span class="hint">Principal + interest only. Don't include property tax or insurance if they're billed separately.</span>
+        </div>
+        <div class="field">
+          <label>Interest rate</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="intRate" class="has-sfx" placeholder="5.2" step="0.05"></div>
+        </div>
+        <div class="field">
+          <label>Years left on your mortgage</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="yrsLeft" class="has-sfx" placeholder="18" min="1" max="30"></div>
+        </div>
+        <div class="field">
+          <label>Is your mortgage open or closed?</label>
+          <select id="mortType"><option value="open">Open — I can pay it off anytime</option><option value="closed" selected>Closed — there's a penalty to break it</option><option value="variable">Variable rate</option></select>
+        </div>
+        <div class="field">
+          <label>Penalty if you break it early (if closed)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="breakPen" class="has-pfx" placeholder="5,000"></div>
+          <div class="explain">Call your lender and ask: <em>"What's my prepayment penalty today?"</em> It's usually 3 months of interest, or an IRD calculation — whichever is higher. Enter $0 if your mortgage is open.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧾 What you pay each month to own it</div>
+      <div class="grid g3">
+        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Annual bill ÷ 12</span></div>
+        <div class="field"><label>Home insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="homeIns" class="has-pfx" placeholder="180"></div></div>
+        <div class="field"><label>Condo / strata fees</label><div class="wrap"><span class="pfx">$</span><input type="number" id="condoFee" class="has-pfx" placeholder="0"></div><span class="hint">$0 if not applicable</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(1)">← Back</button><button class="btn-next" onclick="goTo(3)">Next: Rental →</button></div>
+  </div>
+
+  <!-- STEP 3: RENTAL -->
+  <div class="step" id="step-3">
+    <div class="eyebrow">Step 3 of 5</div>
+    <h2 class="heading">The rental picture 🔑</h2>
+    <p class="subtext">Fill this in even if renting isn't on your radar — it builds the full comparison. Estimates are totally fine.</p>
+
+    <div class="card">
+      <div class="card-title">💵 What could you charge in rent?</div>
+      <div class="grid g2">
+        <div class="field" id="f-monthRent">
+          <label>Estimated monthly rent</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
+          <span class="hint">Check <a href="https://www.rentometer.com" target="_blank" style="color:var(--green);font-weight:600;">Rentometer</a> or Zillow Rental Manager for what similar units in your area are going for.</span>
+          <span class="err-msg">Enter an estimated rent, even a rough guess</span>
+        </div>
+        <div class="field">
+          <label>How often might it sit empty? (vacancy)</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="vacRate" class="has-sfx" placeholder="5" min="0" max="50"></div>
+          <div class="explain">This is the % of the year with no tenant. <strong>Tight market (NYC, LA, Austin)?</strong> Use 3–5%. <strong>Smaller city or uncertain?</strong> Use 8–10%. It's basically: how many weeks per year without rent × (100 ÷ 52).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
+      <div class="grid g2">
+        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint">A rough rule: budget 1% of the property's value per year, divided by 12. So $600k property → ~$500/mo.</span></div>
+        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd manage it yourself.</span></div>
+        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="120"></div><span class="hint">Usually $100–$200/mo. A bit higher than regular home insurance.</span></div>
+        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="50"></div><span class="hint">Tax filing, leases, occasional legal advice — roughly $50–$100/mo averaged out.</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧮 Depreciation (Schedule E) — optional</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">US landlords can deduct the building's depreciation each year on <strong>IRS Schedule E</strong>. Residential buildings depreciate over 27.5 years — it reduces your taxable rental income on paper, but the IRS recaptures it at sale (see §1250).</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>Estimated building value (not land)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="buildingVal" class="has-pfx" placeholder="400,000"></div>
+          <div class="explain">You can only depreciate the structure — not the land. Building value is typically <strong>70–85% of total value</strong>. So a $600k property → ~$420k building. A cost segregation study or appraiser can confirm the split.</div>
+        </div>
+        <div class="field">
+          <label>Annual depreciation deduction (building ÷ 27.5)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="ccaAnn" class="has-pfx" placeholder="14,545"></div>
+          <div class="explain">Divide your building value by 27.5. E.g. $400k building → ~$14,545/yr. <strong>Leave at $0 to skip</strong> — but note the IRS may still assume depreciation was taken when you sell.</div>
+        </div>
+      </div>
+      <div class="callout info"><span class="ci">⚠️</span><div><strong>Depreciation recapture:</strong> The IRS taxes recaptured depreciation at 25% (§1250) when you sell — even if you didn't claim it. This is separate from capital gains tax. Talk to a CPA before deciding whether to claim it.</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏛️ A couple of quick ones</div>
+      <div class="grid g2">
+        <div class="field">
+          <label>Is your property subject to rent control?</label>
+          <select id="rentCtrl"><option value="yes">Yes</option><option value="no" selected>No / not sure</option></select>
+          <div class="explain">Some states and cities cap rent increases (NY, CA, OR, NJ). Check your local tenant rights authority to see if your property qualifies. New construction is often exempt.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(2)">← Back</button><button class="btn-next" onclick="goTo(4)">Next: Sale →</button></div>
+  </div>
+
+  <!-- STEP 4: SELL -->
+  <div class="step" id="step-4">
+    <div class="eyebrow">Step 4 of 5</div>
+    <h2 class="heading">The selling picture 🏷️</h2>
+    <p class="subtext">What it'd cost to sell, what tax you might owe, and what you'd do with the money.</p>
+
+    <div class="card">
+      <div class="card-title">💸 Cost of selling</div>
+      <div class="grid g2">
+        <div class="field"><label>Agent commission</label><div class="wrap"><span class="sfx">%</span><input type="number" id="agentComm" class="has-sfx" placeholder="5.5" step="0.25" value="5.5"></div><span class="hint">Typically 5–6% in the US, split between buyer's and seller's agents. Can sometimes be negotiated.</span></div>
+        <div class="field"><label>Closing costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="legalCosts" class="has-pfx" placeholder="2,500"></div><span class="hint">Typically $1,500–$3,500 for title insurance, escrow fees, and attorney fees.</span></div>
+        <div class="field"><label>Staging & prep costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="staging" class="has-pfx" placeholder="4,000"></div><span class="hint">Photography, staging, cleaning, etc. $0 if selling as-is.</span></div>
+        <div class="field"><label>Repairs before listing</label><div class="wrap"><span class="pfx">$</span><input type="number" id="repairs" class="has-pfx" placeholder="0"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🇺🇸 Estimated US Capital Gains Tax</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">When you sell for a profit, the IRS taxes <strong>long-term capital gains</strong> at 0%, 15%, or 20% depending on your income. The <strong>§121 exclusion</strong> from Step 1 can reduce or eliminate that entirely. Higher earners may also owe a 3.8% <strong>Net Investment Income Tax (NIIT)</strong>. We calculate all of this automatically.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>Estimated annual household income (all sources)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="annInc" class="has-pfx" placeholder="95,000"></div>
+          <div class="explain">Used to determine your <strong>federal capital gains bracket</strong> and whether NIIT applies. A rough number is fine — check your last W-2, 1099, or tax return.</div>
+        </div>
+        <div class="field">
+          <label>Capital improvements done to the property</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="acbAdd" class="has-pfx" placeholder="0"></div>
+          <div class="explain">A kitchen remodel, new addition, finished basement — these increase your <strong>cost basis</strong> (IRS Form 1040 Schedule D) and reduce your taxable gain. Include permanent improvements, not regular repairs. Keep all receipts.</div>
+        </div>
+      </div>
+      <div class="callout forest"><span class="ci">🧮</span><div>We calculate your gain automatically: sale price minus cost basis minus improvements. Then we apply the §121 exclusion from Step 1, the federal rate (0/15/20%), NIIT if applicable, and your state's rate. Full breakdown in results.</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🌱 If you sell — what then?</div>
+      <div class="grid g2">
+        <div class="field">
+          <label>If you invest the proceeds, what return do you expect?</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
+          <span class="hint">S&P 500 index fund historical avg ~10%/yr. Balanced portfolio ~6%. Bonds ~4%. HYSA ~4.5%.</span>
+        </div>
+        <div class="field">
+          <label>How many years ahead are you comparing?</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
+          <span class="hint">10 years is a common planning horizon. Use 5 if you're deciding soon, 20 if you're thinking retirement.</span>
+        </div>
+        <div class="field">
+          <label>Tax-advantaged account room (401k, IRA, etc.)?</label>
+          <select id="taxShelter"><option value="full">Yes — plenty of 401(k)/IRA room</option><option value="partial" selected>Some room available</option><option value="no">No — mostly used up</option></select>
+        </div>
+        <div class="field">
+          <label>Buying another home with the money?</label>
+          <select id="buyAnother"><option value="yes">Yes — buying another property</option><option value="maybe">Maybe, in a few years</option><option value="no" selected>No — investing or renting</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(3)">← Back</button><button class="btn-next" onclick="goTo(5)">Almost there →</button></div>
+  </div>
+
+  <!-- STEP 5: PERSONAL -->
+  <div class="step" id="step-5">
+    <div class="eyebrow">Step 5 of 5 — Last one!</div>
+    <h2 class="heading">A bit about you 💰</h2>
+    <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
+
+    <div class="card">
+      <div class="card-title">🎯 What matters most to you right now?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Tap everything that applies — helps tailor the recommendation to you.</p>
+      <div class="goal-grid">
+        <div class="goal-card" id="gc_cash" onclick="toggleGoal('g_cash',this)">
+          <input type="checkbox" id="g_cash" style="display:none">
+          <div class="gc-emoji">💵</div>
+          <div class="gc-title">Need cash now</div>
+          <div class="gc-desc">Liquidity matters right now</div>
+        </div>
+        <div class="goal-card" id="gc_income" onclick="toggleGoal('g_income',this)">
+          <input type="checkbox" id="g_income" style="display:none">
+          <div class="gc-emoji">📬</div>
+          <div class="gc-title">Monthly income</div>
+          <div class="gc-desc">Want rent coming in every month</div>
+        </div>
+        <div class="goal-card" id="gc_longterm" onclick="toggleGoal('g_longterm',this)">
+          <input type="checkbox" id="g_longterm" style="display:none">
+          <div class="gc-emoji">📈</div>
+          <div class="gc-title">Long-term wealth</div>
+          <div class="gc-desc">Building equity over time is the priority</div>
+        </div>
+        <div class="goal-card" id="gc_simplify" onclick="toggleGoal('g_simplify',this)">
+          <input type="checkbox" id="g_simplify" style="display:none">
+          <div class="gc-emoji">🧘</div>
+          <div class="gc-title">Simplify life</div>
+          <div class="gc-desc">Less to manage and think about</div>
+        </div>
+        <div class="goal-card" id="gc_stability" onclick="toggleGoal('g_stability',this)">
+          <input type="checkbox" id="g_stability" style="display:none">
+          <div class="gc-emoji">🛡️</div>
+          <div class="gc-title">Stay in my home</div>
+          <div class="gc-desc">Stability and staying put matters</div>
+        </div>
+        <div class="goal-card" id="gc_tax" onclick="toggleGoal('g_tax',this)">
+          <input type="checkbox" id="g_tax" style="display:none">
+          <div class="gc-emoji">📋</div>
+          <div class="gc-title">Minimize tax bill</div>
+          <div class="gc-desc">Keeping IRS costs low is a priority</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎛️ How do you feel about risk?</div>
+      <div class="grid g2">
+        <div class="field"><label>Risk comfort level</label><select id="riskTol"><option value="low">Low — I'd rather play it safe</option><option value="medium" selected>Medium — balanced</option><option value="high">High — I'm comfortable with uncertainty</option></select></div>
+        <div class="field"><label>Emergency savings situation</label><select id="emergFund"><option value="strong">Solid — 6+ months of expenses saved</option><option value="ok" selected>OK — roughly 3 months</option><option value="weak">Tight — less than 3 months</option><option value="none">None right now</option></select></div>
+        <div class="field"><label>Would you be comfortable being a landlord?</label><select id="landlordRdy"><option value="yes">Yes — I've done it or I'm up for it</option><option value="maybe">Maybe — I'm on the fence</option><option value="no">No — not my thing</option></select></div>
+        <div class="field"><label>How soon do you need to decide?</label><select id="urgency"><option value="now">ASAP — decision is pressing</option><option value="months">Within a few months</option><option value="flexible" selected>No rush — just exploring</option></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏦 Quick financial snapshot</div>
+      <div class="grid g2">
+        <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div></div>
+        <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Car payments, student loans, lines of credit.</span></div>
+        <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
+        <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(4)">← Back</button><button class="btn-cta" onclick="calculate()">🏠 Show My Results</button></div>
+  </div>
+
+</div><!-- end .main -->
+
+  <aside class="preview-panel" id="previewPanel">
+    <div class="pv-card">
+      <div class="pv-title">📊 Quick Snapshot</div>
+      <div class="pv-row"><span class="pv-lbl">Estimated equity</span><span class="pv-val" id="pvEquity">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Net proceeds (sell)</span><span class="pv-val" id="pvNetProc">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Capital gains tax (est.)</span><span class="pv-val" id="pvCGTax">—</span></div>
+      <div id="pv121Badge"></div>
+    </div>
+    <div class="pv-card">
+      <div class="pv-title">💸 Monthly Picture</div>
+      <div class="pv-row"><span class="pv-lbl">Ownership cost / mo</span><span class="pv-val neg" id="pvMonthCost">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Rental cash flow / mo</span><span class="pv-val" id="pvCashFlow">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">DTI ratio (est.)</span><span class="pv-val" id="pvDTI">—</span></div>
+    </div>
+    <div class="pv-card">
+      <div class="pv-title">🔭 10-yr Projections</div>
+      <div class="pv-row"><span class="pv-lbl">Sell + reinvest</span><span class="pv-val blue" id="pvFutSell">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Rent out</span><span class="pv-val blue" id="pvFutRent">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Keep &amp; live here</span><span class="pv-val blue" id="pvFutKeep">—</span></div>
+    </div>
+    <div class="pv-updated" id="pvUpdated">↑ updated live</div>
+  </aside>
+</div><!-- end .form-wrap -->
+
+<!-- MOBILE PREVIEW PILL + SHEET -->
+<div class="preview-pill" id="previewPill" onclick="openPreviewSheet()">
+  <span>💰 Equity</span><span class="pp-eq" id="pillEquity">—</span>
+</div>
+<div class="preview-sheet" id="previewSheet">
+  <button class="ps-close" onclick="closePreviewSheet()">×</button>
+  <div class="ps-title">📊 Quick Snapshot</div>
+  <div class="ps-rows">
+    <div class="ps-row"><span class="ps-lbl">Estimated equity</span><span class="ps-val pos" id="psEquity">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">Net proceeds (sell)</span><span class="ps-val" id="psNetProc">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">Capital gains tax (est.)</span><span class="ps-val" id="psCGTax">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">Ownership cost / mo</span><span class="ps-val neg" id="psMonthCost">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">Rental cash flow / mo</span><span class="ps-val" id="psCashFlow">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">10-yr sell + reinvest</span><span class="ps-val" id="psFutSell">—</span></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="main">
+    <div class="res-header"><h1>🏠 Your WiseOwner Report</h1><p>Based on your numbers and US federal &amp; state tax rules. The final call is always yours.</p></div>
+    <div class="sc-grid" id="scGrid"></div>
+    <div class="ai-box" id="aiBox">
+      <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
+      <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Reading your numbers</span><div class="dots"><span></span><span></span><span></span></div></div></div>
+    </div>
+    <div id="taxBlock"></div>
+    <div class="sec">💡 Key Insights</div>
+    <div class="ins-grid" id="insGrid"></div>
+    <div class="sec">📊 Visual Comparison</div>
+    <div class="charts">
+      <div class="chart-card"><h4>Projected Net Value Over Time</h4><canvas id="chart1" height="210"></canvas></div>
+      <div class="chart-card"><h4>Monthly Cash Position</h4><canvas id="chart2" height="210"></canvas></div>
+    </div>
+    <div class="sec">📋 Side-by-Side</div>
+    <table class="tbl" id="cmpTable"></table>
+    <div class="share-bar">
+      <button class="share-btn" onclick="copyLink()">🔗 Copy link to share</button>
+      <button class="share-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+    <div class="disclaimer">⚠️ <strong>Decision-support tool — not tax or financial advice.</strong> US federal and state tax rules (§121 exclusion, capital gains brackets, NIIT, depreciation recapture) are approximated using top marginal rates. Actual tax liability depends on your full situation and IRS interpretation. State rates shown are estimates — some states have additional rules, deductions, or thresholds. Claude's analysis is informational only. Always consult a CPA or financial advisor before major property decisions.</div>
+    <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
+  </div>
+</div>
+
+<!-- MOTIVATED SELLER DIRECTORY -->
+<div id="directory">
+  <div class="dir-wrap">
+    <button class="dir-back-btn" onclick="showCalculator()">← Back to Keep/Sell</button>
+    <div class="dir-hero">
+      <h1>🔍 Find Deals</h1>
+      <p>Discover motivated sellers in any market. Filter by signal, equity, and value range.</p>
+    </div>
+
+    <div class="dir-search-wrap">
+      <input type="text" id="dirZip" class="dir-search-input" placeholder="Enter zip code or city (e.g. 78704 or Austin TX)" onkeydown="if(event.key==='Enter')searchDirectory()">
+      <button class="btn-cta" onclick="searchDirectory()">Search</button>
+    </div>
+
+    <div class="dir-section-title">Filter by seller signal</div>
+    <div class="sig-chips" id="sigChips"></div>
+
+    <div class="dir-sliders">
+      <div class="dir-slider-row">
+        <label>Property value range: <span id="valLabel">Any</span></label>
+        <input type="range" id="valMin" min="0" max="3000000" step="25000" value="0" oninput="updateDirLabel()">
+        <input type="range" id="valMax" min="0" max="3000000" step="25000" value="3000000" oninput="updateDirLabel()" style="margin-top:0.4rem;">
+      </div>
+      <div class="dir-slider-row">
+        <label>Minimum equity: <span id="equityLabel">0%</span></label>
+        <input type="range" id="equityMin" min="0" max="80" step="5" value="0" oninput="updateDirLabel()">
+      </div>
+    </div>
+
+    <div id="dirResults">
+      <div class="dir-empty">
+        <div class="de-icon">🔍</div>
+        Enter a zip code or city above and hit Search to find motivated sellers.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMING SOON MODAL -->
+<div class="cs-overlay" id="csOverlay" onclick="closeComingSoon(event)">
+  <div class="cs-modal">
+    <div class="cs-icon">🚀</div>
+    <div class="cs-title">Full directory coming soon</div>
+    <div class="cs-sub">Unlimited results with skip trace, owner contact info, and direct mail integration — launching at $29/mo. Drop your email to get early access.</div>
+    <button class="cs-close" onclick="closeComingSoon()">Got it</button>
+  </div>
+</div>
+
+<script>
+// ── US STATE CAPITAL GAINS RATES (2024) ──
+const STATE_TAX={
+  AL:{name:"Alabama",capGainsRate:0.05},AK:{name:"Alaska",capGainsRate:0},
+  AZ:{name:"Arizona",capGainsRate:0.025},AR:{name:"Arkansas",capGainsRate:0.044},
+  CA:{name:"California",capGainsRate:0.133},CO:{name:"Colorado",capGainsRate:0.044},
+  CT:{name:"Connecticut",capGainsRate:0.0699},DE:{name:"Delaware",capGainsRate:0.066},
+  FL:{name:"Florida",capGainsRate:0},GA:{name:"Georgia",capGainsRate:0.0549},
+  HI:{name:"Hawaii",capGainsRate:0.0725},ID:{name:"Idaho",capGainsRate:0.058},
+  IL:{name:"Illinois",capGainsRate:0.0495},IN:{name:"Indiana",capGainsRate:0.0305},
+  IA:{name:"Iowa",capGainsRate:0.06},KS:{name:"Kansas",capGainsRate:0.057},
+  KY:{name:"Kentucky",capGainsRate:0.045},LA:{name:"Louisiana",capGainsRate:0.06},
+  ME:{name:"Maine",capGainsRate:0.0715},MD:{name:"Maryland",capGainsRate:0.0575},
+  MA:{name:"Massachusetts",capGainsRate:0.05},MI:{name:"Michigan",capGainsRate:0.0425},
+  MN:{name:"Minnesota",capGainsRate:0.0985},MS:{name:"Mississippi",capGainsRate:0.05},
+  MO:{name:"Missouri",capGainsRate:0.048},MT:{name:"Montana",capGainsRate:0.0675},
+  NE:{name:"Nebraska",capGainsRate:0.0664},NV:{name:"Nevada",capGainsRate:0},
+  NH:{name:"New Hampshire",capGainsRate:0},NJ:{name:"New Jersey",capGainsRate:0.1075},
+  NM:{name:"New Mexico",capGainsRate:0.059},NY:{name:"New York",capGainsRate:0.109},
+  NC:{name:"North Carolina",capGainsRate:0.045},ND:{name:"North Dakota",capGainsRate:0.025},
+  OH:{name:"Ohio",capGainsRate:0.0399},OK:{name:"Oklahoma",capGainsRate:0.0475},
+  OR:{name:"Oregon",capGainsRate:0.099},PA:{name:"Pennsylvania",capGainsRate:0.0307},
+  RI:{name:"Rhode Island",capGainsRate:0.0599},SC:{name:"South Carolina",capGainsRate:0.064},
+  SD:{name:"South Dakota",capGainsRate:0},TN:{name:"Tennessee",capGainsRate:0},
+  TX:{name:"Texas",capGainsRate:0},UT:{name:"Utah",capGainsRate:0.0465},
+  VT:{name:"Vermont",capGainsRate:0.0875},VA:{name:"Virginia",capGainsRate:0.0575},
+  WA:{name:"Washington",capGainsRate:0.07,specialThreshold:262000},
+  WV:{name:"West Virginia",capGainsRate:0.065},WI:{name:"Wisconsin",capGainsRate:0.0765},
+  WY:{name:"Wyoming",capGainsRate:0},DC:{name:"District of Columbia",capGainsRate:0.1075},
+};
+
+// ── MOTIVATED SELLER SIGNALS ──
+const SIGNALS={
+  expired_listing:{
+    label:"Expired Listing",icon:"📅",
+    tooltip:"Listed on MLS but didn't sell — owner tried and failed, likely more flexible now"
+  },
+  price_reduced:{
+    label:"Price Cut 3×+",icon:"📉",
+    tooltip:"Asking price dropped multiple times — seller is chasing the market and motivated"
+  },
+  pre_foreclosure:{
+    label:"Pre-Foreclosure",icon:"⚠️",
+    tooltip:"Notice of Default filed — owner faces losing the home and may sell below market"
+  },
+  tax_delinquent:{
+    label:"Tax Delinquent",icon:"🏚️",
+    tooltip:"Unpaid property taxes — owner under financial pressure, county may seize property"
+  },
+  absentee_owner:{
+    label:"Absentee Owner",icon:"✈️",
+    tooltip:"Owner doesn't live here — often a tired landlord or inherited property"
+  },
+  probate:{
+    label:"Probate / Estate",icon:"🏛️",
+    tooltip:"Inherited property going through estate settlement — heirs often prefer fast cash sale"
+  },
+  long_vacant:{
+    label:"Long Vacant",icon:"🔑",
+    tooltip:"Property sits empty — costs money monthly with no income, owner eager to sell"
+  },
+  high_equity:{
+    label:"High Equity 40%+",icon:"💰",
+    tooltip:"Owner has large equity cushion — can afford to sell below ask and still walk away well"
+  }
+};
+
+// Federal long-term capital gains brackets (2024)
+function fedCapGainsRate(filingStatus,totalIncome){
+  const b={
+    single:  [[47025,0],[518900,0.15],[Infinity,0.20]],
+    married: [[94050,0],[583750,0.15],[Infinity,0.20]],
+    hoh:     [[63000,0],[551350,0.15],[Infinity,0.20]]
+  }[filingStatus]||[[47025,0],[518900,0.15],[Infinity,0.20]];
+  for(const [t,r] of b) if(totalIncome<=t) return r;
+  return 0.20;
+}
+
+// Simplified federal ordinary income rate (for rental income approximation)
+function fedOrdIncomeRate(filingStatus,income){
+  const b={
+    single:  [[11600,0.10],[47150,0.12],[100525,0.22],[191950,0.24],[243725,0.32],[609350,0.35],[Infinity,0.37]],
+    married: [[23200,0.10],[94300,0.12],[201050,0.22],[383900,0.24],[487450,0.32],[731200,0.35],[Infinity,0.37]],
+    hoh:     [[16550,0.10],[63100,0.12],[100500,0.22],[191950,0.24],[243700,0.32],[609350,0.35],[Infinity,0.37]]
+  }[filingStatus]||[[47150,0.12],[100525,0.22],[Infinity,0.24]];
+  for(const [t,r] of b) if(income<=t) return r;
+  return 0.37;
+}
+
+// ===== ADDRESS AUTOCOMPLETE =====
+// Track which fields the user has manually touched so we never overwrite them
+const _dirtyFields = new Set();
+['curVal','purPrice','purYear','stateField','propType','propCat'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => _dirtyFields.add(id));
+  if (el) el.addEventListener('change', () => _dirtyFields.add(id));
+});
+
+function safeSet(id, value) {
+  if (_dirtyFields.has(id) || value == null) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = value;
+}
+
+function dismissBanner() {
+  document.getElementById('prefillBanner').classList.remove('show');
+}
+
+function initAutocomplete() {
+  const input = document.getElementById('addrInput');
+  if (!input || !window.google) return;
+  const ac = new google.maps.places.Autocomplete(input, {
+    componentRestrictions: { country: 'us' },
+    fields: ['formatted_address', 'address_components', 'geometry'],
+    types: ['address'],
+  });
+  ac.addListener('place_changed', () => {
+    const place = ac.getPlace();
+    if (!place || !place.formatted_address) return;
+    onAddressSelected(place.formatted_address);
+  });
+}
+
+async function onAddressSelected(address) {
+  // Step 1: geocode → get state
+  try {
+    const geoRes = await fetch('/.netlify/functions/geocode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address }),
+    });
+    const geo = await geoRes.json();
+    if (geo.success && geo.data.state) {
+      safeSet('stateField', geo.data.state);
+      // Step 2: fetch property data
+      fetchPropertyData(address, geo.data);
+    }
+  } catch (err) {
+    console.warn('Geocode failed:', err);
+  }
+}
+
+async function fetchPropertyData(address, geoData) {
+  try {
+    const parts = address.split(',');
+    const streetAddress = parts[0]?.trim() || address;
+    const res = await fetch('/.netlify/functions/property-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        address: streetAddress,
+        city: geoData.city || '',
+        state: geoData.state || '',
+        zip: geoData.zip || '',
+      }),
+    });
+    const json = await res.json();
+    if (!json.success || !json.data) return; // no data — stay silent
+    const d = json.data;
+
+    let prefilled = false;
+    if (d.estimatedValue) { safeSet('curVal', Math.round(d.estimatedValue)); prefilled = true; }
+    if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; }
+    if (d.lastSaleDate) {
+      const yr = new Date(d.lastSaleDate).getFullYear();
+      if (yr > 1900) { safeSet('purYear', yr); prefilled = true; }
+    }
+    if (d.propertyType) {
+      const typeMap = {
+        'Single Family': 'detached', 'Condo': 'condo', 'Townhouse': 'townhouse',
+        'Multi Family': 'multi', 'Apartment': 'condo',
+      };
+      const mapped = typeMap[d.propertyType];
+      if (mapped) { safeSet('propCat', mapped); prefilled = true; }
+    }
+
+    if (prefilled) {
+      document.getElementById('prefillBanner').classList.add('show');
+    }
+  } catch (err) {
+    console.warn('Property data fetch failed:', err);
+    // Silent failure — form stays blank, no error shown to user
+  }
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ===== VALIDATION =====
+function clearErr(id) {
+  const f = document.getElementById('f-'+id);
+  if(f) f.classList.remove('field-err');
+}
+function setErr(id) {
+  const f = document.getElementById('f-'+id);
+  if(f) { f.classList.add('field-err'); f.querySelector('input,select')?.focus(); }
+}
+function validateStep(n) {
+  let ok = true;
+  const checks = {
+    1: [
+      { id:'curVal',   test: v => v > 0,   msg: '👆 Property value is needed to run any calculations' },
+      { id:'purPrice', test: v => v > 0,   msg: '👆 Original purchase price is needed for capital gains' },
+    ],
+    2: [
+      { id:'mortBal', test: v => v >= 0 && !isNaN(v), msg: '👆 Enter your mortgage balance — $0 if fully paid off' },
+    ],
+    3: [
+      { id:'monthRent', test: v => v > 0, msg: '👆 A rough rent estimate is needed to compare the rental path' },
+    ],
+  };
+  const stepChecks = checks[n];
+  if (!stepChecks) return true;
+  // clear all first
+  stepChecks.forEach(c => clearErr(c.id));
+  for (const c of stepChecks) {
+    const el = document.getElementById(c.id);
+    const val = el ? parseFloat(el.value) : NaN;
+    if (!c.test(val)) {
+      setErr(c.id);
+      if (ok) showToast(c.msg); // only toast first error
+      ok = false;
+    }
+  }
+  return ok;
+}
+
+// ===== COPY LINK =====
+function copyLink() {
+  const url = window.location.href.split('?')[0];
+  navigator.clipboard.writeText(url).then(() => {
+    showToast('✅ Link copied — share it with a partner or advisor');
+  }).catch(() => {
+    showToast('📋 Copy this URL from your address bar to share');
+  });
+}
+
+let cur=0;
+function gv(id,fb=0){const e=document.getElementById(id);if(!e)return fb;const n=parseFloat(e.value);return isNaN(n)?fb:n;}
+function gs(id){const e=document.getElementById(id);return e?e.value:'';}
+function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
+function fmt(n){if(!isFinite(n))return'$0';return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString('en-US');}
+function fmtK(n){if(!isFinite(n))return'$0';const sg=n<0?'-':'';const a=Math.abs(n);if(a>=1e6)return sg+'$'+(a/1e6).toFixed(2)+'M';if(a>=1000)return sg+'$'+(a/1000).toFixed(0)+'K';return fmt(n);}
+
+// Forecast slider
+function syncForecast(pct){
+  const n=parseFloat(pct);
+  const lbl=document.getElementById('fcLabel');
+  if(lbl){
+    const emoji=n<=-1?'📉':n===0?'➡️':n<4?'📈':n<7?'🚀':'🔥';
+    lbl.textContent=`${emoji} ${n>0?'+':''}${n.toFixed(1)}% / yr`;
+  }
+  const curVal=gv('curVal',0);
+  const hrz=Math.max(1,gv('horizon',10));
+  const pv=document.getElementById('fcProjVal');
+  if(pv) pv.textContent=curVal>0?fmtK(curVal*Math.pow(1+n/100,hrz)):'—';
+  const fh=document.getElementById('fcHrz');
+  if(fh) fh.textContent=hrz;
+  updatePreview();
+}
+
+function goTo(n){
+  // going forward: validate current step
+  if(n > cur && !validateStep(cur)) return;
+  // Step celebration toast
+  const stepDone={1:'✓ Property info saved!',2:'✓ Mortgage noted!',3:'✓ Rental picture set!',4:'✓ Sale costs captured!'};
+  if(n > cur && stepDone[cur]) showToast(stepDone[cur]);
+  document.getElementById('step-'+cur)?.classList.remove('active');
+  cur=n;
+  document.getElementById('step-'+cur)?.classList.add('active');
+  document.getElementById('pbar').style.width=(n/5*100)+'%';
+  const sc=document.getElementById('stepCtr');
+  if(sc)sc.textContent=n>0?`Step ${n} of 5`:'';
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
+  window.scrollTo({top:0,behavior:'smooth'});
+  updatePreview();
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goTo(parseInt(t.dataset.s))));
+
+// ── LIVE PREVIEW PANEL ──
+function updatePreview(){
+  const curVal=gv('curVal',0), purPrice=gv('purPrice',0);
+  if(!curVal && !purPrice) return; // nothing entered yet
+  const mortBal=gv('mortBal',0);
+  const state=gs('stateField')||'TX';
+  const filingStatus=gs('filingStatus')||'single';
+  const preYrs=gv('preYrs',0);
+  const monthMort=gv('monthMort',0), propTax=gv('propTax',0), homeIns=gv('homeIns',0), condoFee=gv('condoFee',0);
+  const monthRent=gv('monthRent',0), vacRate=gv('vacRate',5)/100;
+  const maint=gv('maint',0), mgmtFee=gv('mgmtFee',0), llIns=gv('llIns',0);
+  const agentComm=gv('agentComm',5.5)/100, legalCosts=gv('legalCosts',2500), staging=gv('staging',0), repairs=gv('repairs',0);
+  const annInc=gv('annInc',95000), acbAdd=gv('acbAdd',0);
+  const reinvRet=gv('reinvRet',7)/100, hrz=Math.max(1,gv('horizon',10));
+  const monthInc=gv('monthInc',0), otherDebt=gv('otherDebt',0);
+  const apprec=gv('apprec',4)/100;
+
+  // Calculations
+  const equity=curVal-mortBal;
+  const sellCosts=(curVal*agentComm)+legalCosts+staging+repairs;
+  const netProc=equity-sellCosts;
+  const totalMonthCost=monthMort+propTax+homeIns+condoFee;
+  const rawGain=Math.max(0,curVal-purPrice-acbAdd);
+  const exclusionLimit=filingStatus==='married'?500000:250000;
+  const section121Excluded=preYrs>=2?Math.min(rawGain,exclusionLimit):0;
+  const taxableGain=Math.max(0,rawGain-section121Excluded);
+  const federalRate=fedCapGainsRate(filingStatus,annInc+taxableGain);
+  const niitThreshold=filingStatus==='married'?250000:200000;
+  const niitAmt=annInc>niitThreshold?taxableGain*0.038:0;
+  const stInfo=STATE_TAX[state]||{capGainsRate:0};
+  const stateTax=state==='WA'?(taxableGain>262000?(taxableGain-262000)*stInfo.capGainsRate:0):taxableGain*stInfo.capGainsRate;
+  const cgTax=taxableGain*federalRate+niitAmt+stateTax;
+  const effRent=monthRent*(1-vacRate);
+  const renExp=maint+mgmtFee+llIns;
+  const monthRentCF=effRent-monthMort-propTax-homeIns-condoFee-renExp;
+  const dti=monthInc>0?((totalMonthCost+otherDebt)/monthInc*100):0;
+  const futSell=netProc>0?netProc*Math.pow(1+reinvRet,hrz):0;
+  const futRent=curVal*Math.pow(1+apprec,hrz)+(monthRentCF*12*hrz*0.7);
+  const futKeep=curVal*Math.pow(1+apprec,hrz);
+
+  // Helper to set text on an element
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const setClass=(id,base,extra)=>{const el=document.getElementById(id);if(el)el.className=base+' '+extra;};
+
+  // Desktop panel
+  set('pvEquity',fmt(equity));
+  set('pvNetProc',fmt(netProc));
+  setClass('pvNetProc','pv-val',netProc>=0?'pos':'neg');
+  set('pvCGTax',fmt(cgTax));
+  setClass('pvCGTax','pv-val',cgTax===0?'pos':'neg');
+  const badge=document.getElementById('pv121Badge');
+  if(badge){
+    if(preYrs>=2&&section121Excluded>0) badge.innerHTML=`<span class="pv-badge green">§121 saves ~${fmt(section121Excluded)}</span>`;
+    else if(preYrs>0&&preYrs<2) badge.innerHTML=`<span class="pv-badge coral">§121 needs 2 yrs residency</span>`;
+    else badge.innerHTML='';
+  }
+  set('pvMonthCost',totalMonthCost>0?fmt(totalMonthCost):'—');
+  set('pvCashFlow',monthRent>0?fmt(monthRentCF):'—');
+  setClass('pvCashFlow','pv-val',monthRent>0?(monthRentCF>=0?'pos':'neg'):'');
+  set('pvDTI',monthInc>0?dti.toFixed(0)+'%':'—');
+  set('pvFutSell',fmtK(futSell));
+  set('pvFutRent',monthRent>0?fmtK(futRent):'—');
+  set('pvFutKeep',fmtK(futKeep));
+  const upd=document.getElementById('pvUpdated');
+  if(upd){upd.classList.add('show');clearTimeout(upd._t);upd._t=setTimeout(()=>upd.classList.remove('show'),1800);}
+
+  // Mobile pill + sheet
+  set('pillEquity',fmt(equity));
+  set('psEquity',fmt(equity));
+  set('psNetProc',fmt(netProc));
+  setClass('psNetProc','ps-val',netProc>=0?'pos':'neg');
+  set('psCGTax',fmt(cgTax));
+  setClass('psCGTax','ps-val',cgTax===0?'pos':'neg');
+  set('psMonthCost',totalMonthCost>0?fmt(totalMonthCost):'—');
+  set('psCashFlow',monthRent>0?fmt(monthRentCF):'—');
+  setClass('psCashFlow','ps-val',monthRent>0?(monthRentCF>=0?'pos':'neg'):'');
+  set('psFutSell',fmtK(futSell));
+}
+function openPreviewSheet(){document.getElementById('previewSheet').classList.add('open');}
+function closePreviewSheet(){document.getElementById('previewSheet').classList.remove('open');}
+
+// Calc overlay
+function showCalcOverlay(){
+  const o=document.getElementById('calcOverlay');
+  if(o){ o.classList.add('show'); }
+}
+function hideCalcOverlay(){
+  const o=document.getElementById('calcOverlay');
+  if(o){ o.classList.remove('show'); }
+}
+
+// Goal tap-cards
+function toggleGoal(id, card){
+  const cb=document.getElementById(id);
+  if(!cb) return;
+  cb.checked=!cb.checked;
+  card.classList.toggle('selected', cb.checked);
+}
+
+// Wire updatePreview to all form inputs/selects
+document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
+  el.addEventListener('input',updatePreview);
+  el.addEventListener('change',updatePreview);
+});
+
+function calculate(){
+  if(!validateStep(5)) return; // final check — shouldn't be needed but safety net
+  showCalcOverlay();
+  const curVal=gv('curVal',750000), purPrice=gv('purPrice',500000);
+  const apprec=gv('apprec',4)/100;
+  const state=gs('stateField')||'TX', preYrs=gv('preYrs',0), totalYrs=Math.max(1,gv('totalYrs',1));
+  const filingStatus=gs('filingStatus')||'single';
+  const mortBal=gv('mortBal',420000), monthMort=gv('monthMort',2200);
+  const propTax=gv('propTax',500), homeIns=gv('homeIns',180), condoFee=gv('condoFee',0);
+  const breakPen=gv('breakPen',0);
+  const monthRent=gv('monthRent',3200), vacRate=gv('vacRate',5)/100;
+  const maint=gv('maint',300), mgmtFee=gv('mgmtFee',0), llIns=gv('llIns',120), renAdmin=gv('renAdmin',50);
+  const ccaAnn=gv('ccaAnn',0);
+  const agentComm=gv('agentComm',5.5)/100, legalCosts=gv('legalCosts',2500), staging=gv('staging',4000), repairs=gv('repairs',0);
+  const annInc=gv('annInc',95000), acbAdd=gv('acbAdd',0);
+  const reinvRet=gv('reinvRet',7)/100, hrz=Math.max(1,gv('horizon',10));
+  const monthInc=gv('monthInc',8500), otherDebt=gv('otherDebt',600);
+
+  const equity=curVal-mortBal;
+  const totalMonthCost=monthMort+propTax+homeIns+condoFee;
+
+  // ── US CAPITAL GAINS TAX ENGINE ──
+  const rawGain=Math.max(0,curVal-purPrice-acbAdd);
+  // §121 Primary Residence Exclusion
+  const exclusionLimit=filingStatus==='married'?500000:250000;
+  const section121Excluded=preYrs>=2?Math.min(rawGain,exclusionLimit):0;
+  const taxableGain=Math.max(0,rawGain-section121Excluded);
+  // Federal long-term capital gains rate
+  const federalRate=fedCapGainsRate(filingStatus,annInc+taxableGain);
+  const federalTax=taxableGain*federalRate;
+  // Net Investment Income Tax (NIIT) — 3.8% above income threshold
+  const niitThreshold=filingStatus==='married'?250000:200000;
+  const niitApplies=annInc>niitThreshold;
+  const niitAmt=niitApplies?taxableGain*0.038:0;
+  // Depreciation recapture (§1250) — 25% on prior depreciation if property was rented
+  const depBuildVal=gv('dprBuildVal',0), rentedYrs=gv('rentedYrs',0);
+  const estDepreciation=gs('hasRented')==='yes'&&depBuildVal>0?(depBuildVal/27.5)*rentedYrs:0;
+  const depRec=estDepreciation*0.25;
+  // State capital gains tax
+  const stateInfo=STATE_TAX[state]||{capGainsRate:0};
+  const stateRate=stateInfo.capGainsRate;
+  const stateTax=state==='WA'?(taxableGain>262000?(taxableGain-262000)*stateRate:0):taxableGain*stateRate;
+  const cgTax=federalTax+niitAmt+depRec+stateTax;
+
+  const sellCosts=curVal*agentComm+legalCosts+staging+repairs+breakPen;
+  const netProc=curVal-mortBal-sellCosts-cgTax;
+  const futSell=netProc*Math.pow(1+reinvRet,hrz);
+  const monthSell=netProc*reinvRet/12;
+
+  const effRent=monthRent*(1-vacRate);
+  const totRentEx=monthMort+propTax+(llIns||homeIns)+condoFee+maint+mgmtFee+renAdmin;
+  const monthRentCF=effRent-totRentEx;
+  const annNetRent=monthRentCF*12;
+  const taxRentInc=Math.max(0,annNetRent-ccaAnn);
+  const rentFedRate=fedOrdIncomeRate(filingStatus,annInc+Math.max(0,taxRentInc));
+  const rentTax=taxRentInc>0?taxRentInc*(rentFedRate+stateRate):0;
+  const annRentAT=annNetRent-rentTax;
+  const capRate=((effRent*12-(propTax+homeIns+condoFee+maint+mgmtFee+renAdmin)*12)/curVal)*100;
+  const coc=equity>0?(monthRentCF*12/equity*100):0;
+  const futRent=curVal*Math.pow(1+apprec,hrz)-mortBal+annRentAT*hrz;
+
+  const futKeep=curVal*Math.pow(1+apprec,hrz)-mortBal;
+  const dti=monthInc>0?(totalMonthCost+otherDebt)/monthInc*100:0;
+
+  const gCash=gc('g_cash'),gInc=gc('g_income'),gLong=gc('g_longterm'),gSimp=gc('g_simplify'),gStab=gc('g_stability'),gTax=gc('g_tax');
+  const risk=gs('riskTol'),emerg=gs('emergFund'),landlord=gs('landlordRdy'),urg=gs('urgency');
+
+  let ss=50,rs=50,ks=50;
+  if(netProc>0)ss+=12;if(netProc>curVal*0.15)ss+=8;if(cgTax===0)ss+=8;
+  if(gCash)ss+=18;if(gSimp)ss+=10;if(urg==='now')ss+=10;if(gStab)ss-=15;
+  if(apprec>0.05)ss-=8;if(monthRentCF>300)ss-=5;if(emerg==='none'||emerg==='weak')ss+=8;
+  if(monthRentCF>0)rs+=18;if(monthRentCF>400)rs+=8;if(capRate>5)rs+=10;
+  if(gInc)rs+=20;if(gLong)rs+=10;if(landlord==='yes')rs+=12;if(landlord==='no')rs-=22;
+  if(gSimp)rs-=12;if(risk==='low')rs-=10;
+  if(gStab)ks+=20;if(apprec>0.05)ks+=15;if(dti<35)ks+=12;if(gLong)ks+=10;
+  if(risk==='low')ks+=8;if(gCash)ks-=15;if(urg==='now')ks-=12;if(emerg==='none')ks-=5;
+  ss=Math.min(100,Math.max(15,ss));rs=Math.min(100,Math.max(15,rs));ks=Math.min(100,Math.max(15,ks));
+  const mx=Math.max(ss,rs,ks);
+  const winnerName=ss===mx?'selling':rs===mx?'renting it out':'keeping and living in it';
+
+  setTimeout(() => {
+  hideCalcOverlay();
+  document.getElementById('formMain').style.display='none';
+  document.getElementById('previewPanel').style.display='none';
+  document.getElementById('previewPill').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const scenarios=[
+    {key:'sell',icon:'🏷️',name:'Sell It',score:ss,rows:[
+      {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
+      {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
+      {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
+      {l:'Equity unlocked today',v:fmt(equity),c:''},
+    ]},
+    {key:'rent',icon:'🔑',name:'Rent It Out',score:rs,rows:[
+      {l:'Monthly cash flow (pre-tax)',v:fmt(monthRentCF),c:monthRentCF>=0?'pos':'neg'},
+      {l:'Cap rate',v:capRate.toFixed(1)+'%',c:capRate>=5?'pos':capRate>=3?'warn-c':'neg'},
+      {l:'Cash-on-cash return',v:coc.toFixed(1)+'%',c:coc>=6?'pos':''},
+      {l:`${hrz}-yr projected equity`,v:fmtK(futRent),c:'pos'},
+    ]},
+    {key:'keep',icon:'🏠',name:'Keep Living Here',score:ks,rows:[
+      {l:'Monthly ownership cost',v:fmt(totalMonthCost),c:'neg'},
+      {l:'Debt-to-income ratio',v:dti.toFixed(0)+'%',c:dti<35?'pos':dti<44?'warn-c':'neg'},
+      {l:`${hrz}-yr projected equity`,v:fmtK(futKeep),c:'pos'},
+      {l:'Annual appreciation gain',v:fmtK(curVal*apprec),c:'pos'},
+    ]},
+  ];
+
+  document.getElementById('scGrid').innerHTML=scenarios.map(sc=>`
+    <div class="sc-card ${sc.key} ${sc.score===mx?'best':''}">
+      ${sc.score===mx?'<div class="best-tag">⭐ BEST MATCH</div>':''}
+      <div class="sc-icon">${sc.icon}</div>
+      <div class="sc-name">${sc.name}</div>
+      <div class="sc-slbl">Match Score</div>
+      <div class="sc-score">${sc.score}</div>
+      <div class="sc-bar"><div class="sc-fill" style="width:${sc.score}%"></div></div>
+      <div class="sc-rows">${sc.rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('')}</div>
+    </div>`).join('');
+
+  document.getElementById('taxBlock').innerHTML=`
+    <div class="tax-box">
+      <h4>🇺🇸 US Capital Gains Breakdown (Sell Scenario)</h4>
+      <div class="t-row"><span class="tl">Sale Price</span><span class="tv">${fmt(curVal)}</span></div>
+      <div class="t-row"><span class="tl">Less: Cost Basis + Improvements</span><span class="tv">− ${fmt(purPrice+acbAdd)}</span></div>
+      <div class="t-row"><span class="tl">= Gross Capital Gain</span><span class="tv">${fmt(rawGain)}</span></div>
+      <div class="t-row"><span class="tl">§121 Exclusion (${preYrs} yrs as primary residence${preYrs>=2?'':' — does not qualify'})</span><span class="tv">− ${fmt(section121Excluded)}</span></div>
+      <div class="t-row"><span class="tl">= Taxable Capital Gain</span><span class="tv">${fmt(taxableGain)}</span></div>
+      <div class="t-row"><span class="tl">Federal Rate (${(federalRate*100).toFixed(0)}% long-term cap gains)</span><span class="tv">${fmt(federalTax)}</span></div>
+      ${niitApplies?`<div class="t-row"><span class="tl">NIIT (3.8% — income above threshold)</span><span class="tv">${fmt(niitAmt)}</span></div>`:''}
+      ${depRec>0?`<div class="t-row"><span class="tl">Depreciation Recapture (25% on §1250)</span><span class="tv">${fmt(depRec)}</span></div>`:''}
+      <div class="t-row"><span class="tl">State Tax (${stateInfo.name} — ${(stateRate*100).toFixed(2)}%)</span><span class="tv">${fmt(stateTax)}</span></div>
+      <div class="t-row"><span class="tl">Total Estimated Tax</span><span class="tv">${fmt(cgTax)}</span></div>
+    </div>
+    <p style="font-size:0.73rem;color:var(--text-muted);margin-top:0.5rem;padding:0 0.2rem;">⚠️ State tax rates are estimates based on top marginal rates. Some states have additional rules — consult a CPA.</p>`;
+
+  const ins=[];
+  if(cgTax===0)ins.push({i:'🎉',t:'Zero capital gains tax',b:`The §121 exclusion covers your full gain and your state has no capital gains tax — you'd owe $0 on this sale. That's a significant tax-free advantage.`});
+  else if(section121Excluded>0)ins.push({i:'🏠',t:'§121 exclusion reduces your tax bill',b:`The exclusion shelters ${fmt(section121Excluded)} of your ${fmt(rawGain)} gain. The remaining ${fmt(taxableGain)} is taxable at a ${(federalRate*100).toFixed(0)}% federal rate — estimated total tax ${fmt(cgTax)}.`});
+  else ins.push({i:'⚠️',t:'No §121 exclusion applies',b:`You haven't lived there 2+ years as a primary residence, so the full ${fmt(rawGain)} gain is taxable. Estimated total tax: ${fmt(cgTax)}. Living there another ${2-preYrs} year(s) could unlock a ${fmt(exclusionLimit)} exclusion.`});
+  if(monthRentCF>300)ins.push({i:'📬',t:'Solid rental cash flow',b:`At ${fmt(monthRentCF)}/mo pre-tax, the rental path is cash-flow positive with a ${capRate.toFixed(1)}% cap rate.`});
+  else if(monthRentCF<0)ins.push({i:'⚠️',t:'Rental cash flow is negative',b:`Renting costs ~${fmt(Math.abs(monthRentCF))}/mo out-of-pocket. You'd be counting on appreciation to make up the difference.`});
+  if(apprec>0.05)ins.push({i:'📈',t:'Your market forecast favors holding',b:`At ${(apprec*100).toFixed(1)}%/yr, the property could be worth ${fmtK(curVal*Math.pow(1+apprec,hrz))} in ${hrz} years.`});
+  if(dti>44)ins.push({i:'🚨',t:'High debt-to-income ratio',b:`Property + other debt uses ${dti.toFixed(0)}% of your income. Lenders typically stress-test at 43–45%. This may affect future borrowing ability.`});
+  if(landlord==='no')ins.push({i:'🧘',t:'Being a landlord isn\'t for everyone',b:`You flagged this isn't your thing — worth factoring in honestly. Tenant disputes, evictions, and maintenance calls are real costs beyond the spreadsheet.`});
+  while(ins.length<4)ins.push({i:'🔍',t:'The long-term picture',b:`Over ${hrz} years: sell path → ${fmtK(futSell)}, rent path → ${fmtK(futRent)}, keep path → ${fmtK(futKeep)} in projected equity.`});
+
+  document.getElementById('insGrid').innerHTML=ins.slice(0,4).map(i=>`
+    <div class="ins-card"><div class="ii">${i.i}</div><div><div class="it">${i.t}</div><div class="ib">${i.b}</div></div></div>`).join('');
+
+  setTimeout(()=>{
+    const yrs=Array.from({length:hrz+1},(_,i)=>i);
+    new Chart(document.getElementById('chart1'),{type:'line',data:{labels:yrs.map(y=>y===0?'Now':`Yr ${y}`),datasets:[
+      {label:'Sell & Reinvest',data:yrs.map(y=>Math.max(0,netProc)*Math.pow(1+reinvRet,y)),borderColor:'#E8735A',backgroundColor:'rgba(232,115,90,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Rent It Out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#6B9E78',backgroundColor:'rgba(107,158,120,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Keep & Live',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#5B8DB8',backgroundColor:'rgba(91,141,184,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+    ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:10}},grid:{display:false}}}}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(invested return)','Rent Out\n(cash flow)','Keep\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(107,158,120,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#6B9E78','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+  },80);
+
+  const rows=[
+    {l:'Net proceeds / equity unlocked',s:fmt(netProc),r:'$0 (hold)',k:'$0 (hold)'},
+    {l:'Monthly cash position',s:'+'+fmt(monthSell)+'/mo',r:(monthRentCF>=0?'+':'')+fmt(monthRentCF)+'/mo',k:'-'+fmt(totalMonthCost)+'/mo'},
+    {l:`Projected value (${hrz} yrs)`,s:fmtK(futSell),r:fmtK(futRent),k:fmtK(futKeep)},
+    {l:'Capital gains tax (est.)',s:fmt(cgTax),r:'Deferred',k:'Deferred'},
+    {l:'§121 Exclusion',s:section121Excluded>0?'✅ '+fmt(section121Excluded)+' sheltered':'❌ None',r:'⏳ Future decision',k:'⏳ Future decision'},
+    {l:'Liquidity / cash access',s:'✅ High',r:'⚠️ Low',k:'⚠️ Low'},
+    {l:'Monthly passive income',s:'❌ No',r:'✅ Yes',k:'❌ No'},
+    {l:'Benefits from future appreciation',s:'❌ No',r:'✅ Yes',k:'✅ Yes'},
+    {l:'Landlord responsibilities',s:'✅ None',r:'⚠️ Yes',k:'✅ None'},
+    {l:'Housing stability',s:'❌ Must move',r:'❌ Must move',k:'✅ Stay put'},
+    {l:'Depreciation (Schedule E)',s:'N/A',r:ccaAnn>0?'✅ '+fmt(ccaAnn)+'/yr':'—',k:'N/A'},
+    {l:'Match score',s:ss+'/100',r:rs+'/100',k:ks+'/100'},
+  ];
+  document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tr">🔑 Rent</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.r}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
+
+  const prompt=`You are a helpful, warm US real estate and financial advisor. A homeowner used a property decision tool. Write a warm, plain-English 3-paragraph analysis. Be specific to their numbers — interpret what they actually mean, don't just list them. Be honest about tradeoffs. Reference US tax context (§121 exclusion, federal capital gains rate, NIIT, IRS rules, state taxes) where relevant. Do NOT give definitive tax or legal advice. End with one balanced, genuine closing thought.
+
+Data:
+- State: ${stateInfo.name}, Filing status: ${filingStatus}, Value: ${fmt(curVal)}, bought for ${fmt(purPrice)}
+- Mortgage: ${fmt(mortBal)} remaining at ${gv('intRate',5.2)}%, ${gv('yrsLeft',18)} yrs left
+- §121: ${preYrs} yrs as primary → excludes ${fmt(section121Excluded)} of ${fmt(rawGain)} gain → taxable gain ${fmt(taxableGain)}
+- Federal rate: ${(federalRate*100).toFixed(0)}% → ${fmt(federalTax)}${niitApplies?' | NIIT 3.8%: '+fmt(niitAmt):''}${depRec>0?' | Depreciation recapture: '+fmt(depRec):''}
+- State tax (${stateInfo.name} ${(stateRate*100).toFixed(2)}%): ${fmt(stateTax)} | Total tax: ${fmt(cgTax)}
+- Monthly costs (own): ${fmt(totalMonthCost)}/mo
+- Rental: ${fmt(monthRent)}/mo → ${fmt(monthRentCF)}/mo cash flow pre-tax, cap rate ${capRate.toFixed(1)}%
+- Net sale proceeds: ${fmt(netProc)} | Reinvested ${hrz} yrs at ${(reinvRet*100).toFixed(1)}%: ${fmtK(futSell)}
+- ${hrz}-yr projected equity: sell ${fmtK(futSell)}, rent ${fmtK(futRent)}, keep ${fmtK(futKeep)}
+- Appreciation forecast: ${(apprec*100).toFixed(1)}%/yr
+- Goals: cash=${gCash}, income=${gInc}, long-term=${gLong}, simplify=${gSimp}, stability=${gStab}, tax=${gTax}
+- Risk: ${risk}, emergency fund: ${emerg}, landlord: ${landlord}, urgency: ${urg}
+- DTI: ${dti.toFixed(0)}%, Scores: Sell ${ss}, Rent ${rs}, Keep ${ks}, top: ${winnerName}
+
+Write exactly 3 paragraphs separated by blank lines. Conversational, warm, and genuinely useful.`;
+
+  callClaude(prompt);
+  }, 1800); // end loading overlay setTimeout
+}
+
+async function callClaude(prompt){
+  try{
+    const res=await fetch('/.netlify/functions/analyze',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.map(b=>b.text||'').join('')||'';
+    if(text){
+      const paras=text.split(/\n\n+/).filter(p=>p.trim());
+      document.getElementById('aiBody').innerHTML=paras.map(p=>`<p>${p.trim()}</p>`).join('');
+    } else { fallback(); }
+  }catch(e){ fallback(); }
+}
+
+function fallback(){
+  document.getElementById('aiBody').innerHTML=`<p>The AI interpretation isn't available right now — it needs a live connection to Claude. But don't worry, everything below still gives you a complete picture: your match scores, the full capital gains breakdown, key insights, charts, and the side-by-side comparison. Dig in — the numbers are all there.</p>`;
+}
+
+function restart(){
+  document.getElementById('results').style.display='none';
+  document.getElementById('formMain').style.display='block';
+  document.getElementById('previewPanel').style.display='';
+  document.getElementById('previewPill').style.display='';
+  goTo(0);
+}
+
+// ══════════════════════════════════════
+// MOTIVATED SELLER DIRECTORY
+// ══════════════════════════════════════
+
+let _activeSigs = new Set();
+let _dirProperties = [];
+
+function showDirectory() {
+  document.getElementById('formMain').style.display = 'none';
+  document.getElementById('previewPanel').style.display = 'none';
+  document.getElementById('previewPill').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.prog-wrap').style.display = 'none';
+  document.getElementById('stepCtr').style.display = 'none';
+  document.getElementById('dirNavBtn').style.display = 'none';
+  document.getElementById('directory').style.display = 'block';
+}
+
+function showCalculator() {
+  document.getElementById('directory').style.display = 'none';
+  document.getElementById('formMain').style.display = 'block';
+  document.querySelector('.tabs').style.display = 'flex';
+  document.querySelector('.prog-wrap').style.display = 'block';
+  document.getElementById('stepCtr').style.display = '';
+  document.getElementById('dirNavBtn').style.display = '';
+  document.getElementById('previewPanel').style.display = '';
+  document.getElementById('previewPill').style.display = '';
+}
+
+function renderSignalChips() {
+  const container = document.getElementById('sigChips');
+  if (!container) return;
+  container.innerHTML = Object.entries(SIGNALS).map(([key, s]) => `
+    <div class="sig-chip" id="chip_${key}" onclick="toggleSig('${key}')">
+      ${s.icon} ${s.label}
+      <div class="sig-chip-tip">${s.tooltip}</div>
+    </div>`).join('');
+}
+
+function toggleSig(key) {
+  const chip = document.getElementById('chip_' + key);
+  if (_activeSigs.has(key)) {
+    _activeSigs.delete(key);
+    chip?.classList.remove('active');
+  } else {
+    _activeSigs.add(key);
+    chip?.classList.add('active');
+  }
+}
+
+function fmtVal(n) {
+  if (!n && n !== 0) return '—';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '$' + Math.round(n / 1000) + 'K';
+  return '$' + n.toLocaleString('en-US');
+}
+
+function updateDirLabel() {
+  const minV = parseInt(document.getElementById('valMin')?.value || 0);
+  const maxV = parseInt(document.getElementById('valMax')?.value || 3000000);
+  const eq = parseInt(document.getElementById('equityMin')?.value || 0);
+  const lbl = document.getElementById('valLabel');
+  if (lbl) lbl.textContent = (minV === 0 && maxV >= 3000000) ? 'Any' : `${fmtVal(minV)} – ${maxV >= 3000000 ? '$3M+' : fmtVal(maxV)}`;
+  const elbl = document.getElementById('equityLabel');
+  if (elbl) elbl.textContent = eq + '%' + (eq === 0 ? '' : '+');
+}
+
+async function searchDirectory() {
+  const zip = document.getElementById('dirZip')?.value?.trim();
+  if (!zip) { showToast('⚠️ Enter a zip code or city to search'); return; }
+
+  const minV = parseInt(document.getElementById('valMin')?.value || 0);
+  const maxV = parseInt(document.getElementById('valMax')?.value || 3000000);
+  const eq = parseInt(document.getElementById('equityMin')?.value || 0);
+
+  const container = document.getElementById('dirResults');
+  container.innerHTML = '<div class="dir-empty"><div class="de-icon">⏳</div>Searching…</div>';
+
+  try {
+    const res = await fetch('/.netlify/functions/directory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        zip,
+        signals: [..._activeSigs],
+        minValue: minV,
+        maxValue: maxV,
+        minEquityPct: eq
+      })
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'Search failed');
+    renderDirectoryResults(json.data, json.isMock);
+  } catch (err) {
+    container.innerHTML = `<div class="dir-empty"><div class="de-icon">⚠️</div>Could not load results — ${err.message}</div>`;
+  }
+}
+
+function renderDirectoryResults(props, isMock) {
+  _dirProperties = props || [];
+  const container = document.getElementById('dirResults');
+  if (!props || props.length === 0) {
+    container.innerHTML = '<div class="dir-empty"><div class="de-icon">🔍</div>No properties matched your filters. Try adjusting the signals or value range.</div>';
+    return;
+  }
+
+  const mockBanner = isMock ? `<div class="dir-mock-notice">⚠️ Showing sample data — add a PROPSTREAM_KEY environment variable to see live results.</div>` : '';
+  const countLabel = `<div class="dir-results-header"><div class="dir-count">${props.length} propert${props.length === 1 ? 'y' : 'ies'} found</div></div>`;
+  const cards = props.map((p, i) => renderPropCard(p, i)).join('');
+
+  container.innerHTML = mockBanner + countLabel + `<div class="prop-cards">${cards}</div>`;
+}
+
+function renderPropCard(p, index) {
+  const locked = index >= 5;
+  const signals = (p.signals || []).map(key => {
+    const s = SIGNALS[key];
+    if (!s) return '';
+    return `<div class="prop-sig">${s.icon} ${s.label}<div class="prop-sig-tip">${s.tooltip}</div></div>`;
+  }).join('');
+
+  const lastSale = p.lastSaleDate ? ` · bought ${p.lastSaleDate.slice(0,4)} for ${fmtVal(p.lastSalePrice)}` : '';
+  const listing = p.lastListedPrice ? `Last listed ${fmtVal(p.lastListedPrice)}${p.daysOnMarket ? ` · ${p.daysOnMarket} days on market` : ''}${p.priceReductions > 0 ? ` · ${p.priceReductions} price cuts` : ''}` : 'Not currently listed';
+
+  const inner = `
+    <div class="prop-card-top">
+      <div>
+        <div class="prop-address">${p.address}</div>
+        <div class="prop-city">${p.city}, ${p.state} ${p.zip}</div>
+      </div>
+    </div>
+    <div class="prop-stats">
+      <div class="ps-stat"><label>Est. Value</label><div class="ps-val">${fmtVal(p.estimatedValue)}</div></div>
+      <div class="ps-stat"><label>Equity</label><div class="ps-val green">${fmtVal(p.estimatedEquity)} (${p.equityPercent}%)</div></div>
+      <div class="ps-stat"><label>Years Owned</label><div class="ps-val">${p.yearsOwned} yrs</div></div>
+    </div>
+    <div class="prop-signals">${signals}</div>
+    <div class="prop-owner">
+      <strong>${p.ownerName}</strong>${p.isAbsentee ? ' · Absentee owner' : ''}<br>
+      📬 ${p.ownerMailingAddress}${lastSale}<br>
+      <span style="color:var(--text-muted);font-size:0.74rem;">${listing}</span>
+    </div>
+    <div class="prop-actions">
+      <button class="btn-analyze" onclick="runAnalysis(${index})">🏠 Run Keep/Sell Analysis</button>
+      <button class="btn-skip-trace" onclick="showComingSoon()">📞 Skip Trace</button>
+    </div>`;
+
+  if (locked) {
+    return `
+      <div class="prop-card locked" data-index="${index}">
+        <div class="prop-card-inner">${inner}</div>
+        <div class="prop-card-paywall">
+          <div class="pw-lock">🔒</div>
+          <div class="pw-title">See all results</div>
+          <div class="pw-sub">Unlock the full directory — $29/mo</div>
+          <button class="btn-unlock" onclick="showComingSoon()">Start free trial</button>
+        </div>
+      </div>`;
+  }
+  return `<div class="prop-card" data-index="${index}"><div class="prop-card-inner">${inner}</div></div>`;
+}
+
+function runAnalysis(index) {
+  const p = _dirProperties[index];
+  if (!p) return;
+  // Store to sessionStorage for pre-fill
+  sessionStorage.setItem('dirProperty', JSON.stringify({
+    estimatedValue: p.estimatedValue,
+    lastSalePrice: p.lastSalePrice,
+    state: p.state,
+    address: `${p.address}, ${p.city}, ${p.state} ${p.zip}`
+  }));
+  showCalculator();
+  // Pre-fill fields if data available
+  const cur = document.getElementById('curVal');
+  const pur = document.getElementById('purPrice');
+  const stateField = document.getElementById('stateField');
+  if (cur && p.estimatedValue) { cur.value = p.estimatedValue; _dirtyFields.add('curVal'); }
+  if (pur && p.lastSalePrice) { pur.value = p.lastSalePrice; _dirtyFields.add('purPrice'); }
+  if (stateField && p.state) { stateField.value = p.state; _dirtyFields.add('stateField'); }
+  // Show banner
+  const banner = document.getElementById('prefillBanner');
+  if (banner) banner.classList.add('show');
+  goTo(1);
+  updatePreview();
+  showToast(`🏠 Pre-filled from ${p.address}`);
+}
+
+function showComingSoon() {
+  document.getElementById('csOverlay').classList.add('show');
+}
+function closeComingSoon(e) {
+  // Close if clicking backdrop directly or via button
+  if (!e || !e.target || e.target === document.getElementById('csOverlay')) {
+    document.getElementById('csOverlay').classList.remove('show');
+  }
+}
+
+// Init on load
+renderSignalChips();
+updateDirLabel();
+</script>
+</body>
+</html>
