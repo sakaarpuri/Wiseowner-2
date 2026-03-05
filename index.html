@@ -1867,38 +1867,32 @@ function initAutocomplete() {
   ac.addListener('place_changed', () => {
     const place = ac.getPlace();
     if (!place || !place.formatted_address) return;
-    onAddressSelected(place.formatted_address);
-  });
-}
 
-async function onAddressSelected(address) {
-  // Step 1: geocode → get state
-  try {
-    const geoRes = await fetch('/.netlify/functions/geocode', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ address }),
-    });
-    const geo = await geoRes.json();
-    if (geo.success && geo.data.state) {
-      safeSet('stateField', geo.data.state);
-      // Step 2: fetch property data
-      fetchPropertyData(address, geo.data);
+    // Extract state/city/zip directly from Places result — no geocode round-trip needed
+    function getComp(types, useShort) {
+      const c = (place.address_components || []).find(a => types.some(t => a.types.includes(t)));
+      return c ? (useShort ? c.short_name : c.long_name) : null;
     }
-  } catch (err) {
-    console.warn('Geocode failed:', err);
-  }
+    const geoData = {
+      state:  getComp(['administrative_area_level_1'], true),  // "TX"
+      city:   getComp(['locality', 'sublocality', 'postal_town'], false),
+      zip:    getComp(['postal_code'], false),
+    };
+
+    if (geoData.state) safeSet('stateField', geoData.state);
+
+    const streetAddress = place.formatted_address.split(',')[0]?.trim() || place.formatted_address;
+    fetchPropertyData(streetAddress, geoData);
+  });
 }
 
 async function fetchPropertyData(address, geoData) {
   try {
-    const parts = address.split(',');
-    const streetAddress = parts[0]?.trim() || address;
     const res = await fetch('/.netlify/functions/property-data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        address: streetAddress,
+        address: address,
         city: geoData.city || '',
         state: geoData.state || '',
         zip: geoData.zip || '',
