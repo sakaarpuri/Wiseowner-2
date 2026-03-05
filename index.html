@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keep or Sell — Your Home, Your Numbers</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
@@ -37,7 +37,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -83,7 +84,7 @@ header {
   position: sticky; top: 0; z-index: 200;
 }
 .logo {
-  font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 900;
   color: var(--text); letter-spacing: -1px;
   display: flex; align-items: center; gap: 0.35rem;
 }
@@ -95,7 +96,7 @@ header {
   border: 1px solid var(--glass-border); border-radius: 8px;
   padding: 0.3rem 1.6rem 0.3rem 0.7rem;
   font-size: 0.73rem; font-weight: 700;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text-mid); background: var(--glass);
   cursor: pointer; outline: none; appearance: none;
 }
@@ -151,7 +152,7 @@ header {
 @keyframes pulse-dot {
   0%,100% { opacity: 1; } 50% { opacity: 0.4; box-shadow: 0 0 10px var(--green); }
 }
-.heading { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
+.heading { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
 .subtext { color: var(--text-mid); font-size: 0.93rem; line-height: 1.65; margin-bottom: 2rem; max-width: 540px; }
 
 /* ── GLASS CARDS ── */
@@ -178,7 +179,7 @@ header {
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 .card-title {
-  font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 600;
   color: var(--text); margin-bottom: 1.2rem;
   display: flex; align-items: center; gap: 0.45rem;
 }
@@ -204,7 +205,7 @@ input[type="number"], select {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   padding: 0.7rem 0.9rem;
-  font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem; font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text);
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.04);
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
@@ -357,7 +358,7 @@ select option { background: #1a2035; color: var(--text); }
   background: linear-gradient(135deg, var(--green-d), #16a34a);
   color: #0b1a0f; border: none; border-radius: 12px;
   padding: 0.82rem 2rem; font-size: 0.95rem; font-weight: 700;
-  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
   box-shadow: 0 0 20px rgba(74,222,128,0.3);
   transition: all 0.2s;
 }
@@ -366,14 +367,14 @@ select option { background: #1a2035; color: var(--text); }
   background: transparent; color: var(--text-muted);
   border: 1px solid var(--glass-border); border-radius: 12px;
   padding: 0.82rem 1.5rem; font-size: 0.9rem; font-weight: 600;
-  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all 0.2s;
 }
 .btn-back:hover { border-color: var(--glass-border-hover); color: var(--text); }
 .btn-cta {
   background: linear-gradient(135deg, var(--green-d), #15803d);
   color: #0b1a0f; border: none; border-radius: 14px;
   padding: 0.95rem 2.5rem; font-size: 1rem; font-weight: 700;
-  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
   box-shadow: 0 0 28px rgba(74,222,128,0.35), 0 4px 20px rgba(0,0,0,0.3);
   transition: all 0.2s; position: relative; overflow: hidden;
 }
@@ -401,21 +402,15 @@ select option { background: #1a2035; color: var(--text); }
 }
 
 .big-logo {
-  font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 900;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3.2rem; font-weight: 900;
   color: var(--text); margin-bottom: 0.5rem;
   display: flex; align-items: center; gap: 0.4rem;
   position: relative; z-index: 1;
 }
 .big-logo em {
   color: var(--green); font-style: normal;
-  position: relative;
-}
-.big-logo em::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--green), var(--blue));
-  border-radius: 2px;
-  box-shadow: 0 0 12px rgba(74,222,128,0.5);
+  border-bottom: 2.5px solid var(--green);
+  padding-bottom: 1px;
 }
 .intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin-bottom: 1.8rem; }
 
@@ -435,7 +430,7 @@ select option { background: #1a2035; color: var(--text); }
 .path-item:hover { border-color: var(--glass-border-hover); }
 .path-item:hover::after { opacity: 1; }
 .path-item .pi { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
-.path-item .pn { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; }
+.path-item .pn { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; }
 .path-item.sell .pn { color: var(--coral); }
 .path-item.rent .pn { color: var(--green); }
 .path-item.keep .pn { color: var(--blue); }
@@ -469,7 +464,7 @@ select option { background: #1a2035; color: var(--text); }
 /* ── RESULTS ── */
 #results { display: none; }
 .res-header { text-align: center; padding: 2.5rem 0 1.5rem; position: relative; }
-.res-header h1 { font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
+.res-header h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2.3rem; font-weight: 900; color: var(--text); margin-bottom: 0.4rem; }
 .res-header p { color: var(--text-mid); font-size: 0.93rem; }
 
 /* SCORE CARDS */
@@ -516,12 +511,12 @@ select option { background: #1a2035; color: var(--text); }
 .keep .best-tag { background: var(--blue); }
 
 .sc-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
-.sc-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+.sc-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
 .sell .sc-name { color: var(--coral); }
 .rent .sc-name { color: var(--green); }
 .keep .sc-name { color: var(--blue); }
 .sc-slbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
-.sc-score { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; line-height: 1; margin: 0.2rem 0 0.8rem; }
+.sc-score { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3rem; font-weight: 900; line-height: 1; margin: 0.2rem 0 0.8rem; }
 .sell .sc-score { color: var(--coral); }
 .rent .sc-score { color: var(--green); }
 .keep .sc-score { color: var(--blue); }
@@ -538,6 +533,21 @@ select option { background: #1a2035; color: var(--text); }
 .pos { color: var(--green) !important; }
 .neg { color: var(--coral) !important; }
 .warn-c { color: var(--gold) !important; }
+
+/* ── PROPERTY TYPE SELECTOR ── */
+.proptype-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-bottom: 1.4rem; }
+.proptype-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  padding: 1.1rem 0.5rem; border-radius: 16px;
+  background: var(--glass); border: 1.5px solid var(--glass-border);
+  cursor: pointer; transition: all 0.2s; text-align: center; user-select: none;
+}
+.proptype-btn:hover { border-color: var(--glass-border-hover); background: var(--surface-hover); }
+.proptype-btn.selected { border-color: var(--green); background: var(--green-dim); }
+.pt-icon { font-size: 1.9rem; line-height: 1; }
+.pt-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+.pt-desc { font-size: 0.7rem; color: var(--text-muted); }
+.inv-note { display:none; background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.18); border-radius: 12px; padding: 0.8rem 1rem; margin-top: 0.5rem; font-size: 0.83rem; color: var(--text-mid); line-height: 1.5; }
 
 /* ── CARD TINTS ── */
 .card.optional { background: rgba(251,191,36,0.04); border-color: rgba(251,191,36,0.12); }
@@ -582,12 +592,12 @@ select option { background: #1a2035; color: var(--text); }
 .verdict-top { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.2rem; }
 .verdict-icon { font-size: 2.8rem; line-height: 1; }
 .verdict-title-wrap { flex: 1; }
-.verdict-name { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900; line-height: 1.1; }
+.verdict-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.1; }
 .sell .verdict-name { color: var(--coral); }
 .rent .verdict-name { color: var(--green); }
 .keep .verdict-name { color: var(--blue); }
 .verdict-score-pill {
-  font-family: 'Fraunces', serif; font-size: 0.9rem; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
   padding: 0.3rem 0.9rem; border-radius: 999px;
   background: rgba(255,255,255,0.07); color: var(--text); white-space: nowrap;
 }
@@ -632,7 +642,7 @@ select option { background: #1a2035; color: var(--text); }
 }
 .ai-hdr { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
 .ai-hdr .ao { font-size: 1.5rem; }
-.ai-hdr h3 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700; color: var(--green); }
+.ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--green); }
 .ai-hdr .al {
   margin-left: auto; background: rgba(74,222,128,0.15);
   color: var(--green); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
@@ -657,14 +667,14 @@ select option { background: #1a2035; color: var(--text); }
   border-radius: 18px; padding: 1.5rem; margin-bottom: 1.5rem;
   backdrop-filter: blur(10px);
 }
-.tax-box h4 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; }
+.tax-box h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; }
 .t-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 0.38rem 0; border-bottom: 1px solid rgba(251,191,36,0.1); }
 .t-row:last-child { border-bottom: none; font-weight: 700; font-size: 0.9rem; }
 .t-row .tl { color: var(--text-muted); }
 .t-row .tv { font-weight: 600; color: var(--text); }
 
 /* SECTION HEADINGS */
-.sec { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
+.sec { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
 
 /* INSIGHTS */
 .ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
@@ -697,10 +707,10 @@ select option { background: #1a2035; color: var(--text); }
 }
 .tbl th {
   padding: 0.9rem 1rem; font-weight: 700; text-align: center;
-  font-family: 'Fraunces', serif; font-size: 0.92rem;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.92rem;
   background: rgba(255,255,255,0.04);
 }
-.tbl th:first-child { text-align: left; font-family: 'DM Sans', sans-serif; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.tbl th:first-child { text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 .tbl th.ts { color: var(--coral); }
 .tbl th.tr { color: var(--green); }
 .tbl th.tk { color: var(--blue); }
@@ -717,7 +727,7 @@ select option { background: #1a2035; color: var(--text); }
 }
 .restart-btn {
   display: block; text-align: center; margin: 1.5rem auto;
-  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  background: none; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.83rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;
 }
 
@@ -751,7 +761,7 @@ select option { background: #1a2035; color: var(--text); }
   background: var(--glass); border-radius: 10px;
   padding: 0.6rem 1.1rem; font-size: 0.8rem; font-weight: 600;
   color: var(--text-mid); cursor: pointer;
-  font-family: 'DM Sans', sans-serif; transition: all 0.18s;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.18s;
   backdrop-filter: blur(10px);
 }
 .share-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-dim); }
@@ -797,7 +807,7 @@ select option { background: #1a2035; color: var(--text); }
 
 /* ── RESULTS SECTION HEADER ── */
 .sec {
-  font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 700; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text);
   margin: 2.5rem 0 1.1rem;
   display: flex; align-items: center; gap: 0.6rem;
   padding-bottom: 0.7rem;
@@ -843,7 +853,7 @@ select option { background: #1a2035; color: var(--text); }
   width: 100%; background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
   padding: 0.8rem 1rem 0.8rem 2.6rem;
-  font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .addr-wrap input[type="text"]:focus {
@@ -868,7 +878,7 @@ select option { background: #1a2035; color: var(--text); }
 .pac-container {
   background: #1a2035; border: 1px solid var(--glass-border);
   border-radius: 12px; margin-top: 4px;
-  font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 .pac-item { padding: 0.5rem 1rem; color: var(--text-mid); cursor: pointer; border-top: 1px solid rgba(255,255,255,0.05); }
@@ -1005,7 +1015,7 @@ select option { background: #1a2035; color: var(--text); }
   cursor: pointer; line-height: 1; padding: 0;
 }
 .ps-title {
-  font-family: 'Fraunces', serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -1053,7 +1063,7 @@ select option { background: #1a2035; color: var(--text); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .calc-label {
-  font-family: 'Fraunces', serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1.25rem; font-weight: 700; color: var(--text);
 }
 .calc-sub { font-size: 0.8rem; color: var(--text-muted); }
@@ -1069,7 +1079,7 @@ select option { background: #1a2035; color: var(--text); }
   padding: 0.4rem 0.9rem;
   font-size: 0.78rem;
   font-weight: 600;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   cursor: pointer;
   transition: all 0.18s;
   white-space: nowrap;
@@ -1082,7 +1092,7 @@ select option { background: #1a2035; color: var(--text); }
 .dir-back-btn {
   background: none; border: none;
   color: var(--blue); font-size: 0.84rem; font-weight: 600;
-  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
   padding: 0; margin-bottom: 1.5rem;
   display: flex; align-items: center; gap: 0.3rem;
 }
@@ -1090,7 +1100,7 @@ select option { background: #1a2035; color: var(--text); }
 
 .dir-hero { text-align: center; margin-bottom: 2rem; }
 .dir-hero h1 {
-  font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 700;
   background: linear-gradient(135deg, var(--text) 40%, var(--blue) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   margin-bottom: 0.4rem;
@@ -1103,7 +1113,7 @@ select option { background: #1a2035; color: var(--text); }
   flex: 1; background: rgba(255,255,255,0.05);
   border: 1px solid var(--glass-border); border-radius: 14px;
   padding: 0.85rem 1.2rem; font-size: 0.95rem;
-  font-family: 'DM Sans', sans-serif; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text);
   outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .dir-search-input:focus { border-color: rgba(96,165,250,0.5); box-shadow: 0 0 0 3px rgba(96,165,250,0.1); }
@@ -1166,7 +1176,7 @@ select option { background: #1a2035; color: var(--text); }
   display: flex; justify-content: space-between; align-items: flex-start;
   margin-bottom: 0.9rem; flex-wrap: wrap; gap: 0.5rem;
 }
-.prop-address { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.prop-address { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text); }
 .prop-city { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
 .prop-stats {
   display: grid; grid-template-columns: repeat(3,1fr);
@@ -1199,14 +1209,14 @@ select option { background: #1a2035; color: var(--text); }
   background: linear-gradient(135deg, var(--green-d), var(--green));
   color: #0b0f1a; border: none; border-radius: 10px;
   padding: 0.55rem 1.1rem; font-size: 0.82rem; font-weight: 700;
-  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: opacity 0.18s;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: opacity 0.18s;
 }
 .btn-analyze:hover { opacity: 0.88; }
 .btn-skip-trace {
   background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
   color: var(--text-mid); border-radius: 10px;
   padding: 0.55rem 1.1rem; font-size: 0.82rem; font-weight: 600;
-  font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.18s;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all 0.18s;
 }
 .btn-skip-trace:hover { background: rgba(255,255,255,0.09); color: var(--text); }
 
@@ -1220,13 +1230,13 @@ select option { background: #1a2035; color: var(--text); }
 }
 .prop-card.locked .prop-card-paywall { display: flex; }
 .pw-lock { font-size: 1.8rem; }
-.pw-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; }
+.pw-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; }
 .pw-sub { font-size: 0.78rem; color: var(--text-muted); }
 .btn-unlock {
   background: linear-gradient(135deg, var(--blue-d), var(--blue));
   color: #fff; border: none; border-radius: 10px;
   padding: 0.5rem 1.2rem; font-size: 0.82rem; font-weight: 700;
-  font-family: 'DM Sans', sans-serif; cursor: pointer; margin-top: 0.3rem;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; margin-top: 0.3rem;
 }
 
 /* Coming soon modal */
@@ -1242,13 +1252,13 @@ select option { background: #1a2035; color: var(--text); }
   max-width: 400px; width: 90%; text-align: center;
 }
 .cs-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
-.cs-title { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
+.cs-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
 .cs-sub { font-size: 0.88rem; color: var(--text-mid); margin-bottom: 1.5rem; line-height: 1.55; }
 .cs-close {
   background: none; border: 1px solid var(--glass-border);
   color: var(--text-mid); border-radius: 10px;
   padding: 0.55rem 1.4rem; font-size: 0.85rem;
-  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
 }
 
 /* Empty state */
@@ -1323,7 +1333,26 @@ select option { background: #1a2035; color: var(--text); }
   <div class="step" id="step-1">
     <div class="eyebrow">Step 1 of 5</div>
     <h2 class="heading">Your property 🏠</h2>
-    <p class="subtext">Just the basics. Ballpark numbers work fine here.</p>
+    <p class="subtext">Start by telling us what kind of property this is.</p>
+
+    <div class="proptype-grid">
+      <div class="proptype-btn selected" id="pt-primary" onclick="onPropTypeChange('primary',this)">
+        <span class="pt-icon">🏠</span>
+        <span class="pt-name">My Main Home</span>
+        <span class="pt-desc">I live here</span>
+      </div>
+      <div class="proptype-btn" id="pt-investment" onclick="onPropTypeChange('investment',this)">
+        <span class="pt-icon">🏢</span>
+        <span class="pt-name">Rental / Investment</span>
+        <span class="pt-desc">I rent it out</span>
+      </div>
+      <div class="proptype-btn" id="pt-vacation" onclick="onPropTypeChange('vacation',this)">
+        <span class="pt-icon">🏖️</span>
+        <span class="pt-name">Vacation / Cottage</span>
+        <span class="pt-desc">Second home</span>
+      </div>
+    </div>
+    <input type="hidden" id="propType" value="primary">
 
     <!-- ADDRESS AUTOCOMPLETE -->
     <div class="addr-card">
@@ -1343,13 +1372,13 @@ select option { background: #1a2035; color: var(--text); }
       <div class="grid g2">
         <div class="field" id="f-curVal">
           <label>What do you think it's worth today?</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000"></div>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000" onblur="blurCheck('curVal', v=>v>0)"></div>
           <span class="hint">Your best guess is fine — check Zillow, Redfin, or Realtor.com for recent comps nearby.</span>
           <span class="err-msg">Please enter a property value to continue</span>
         </div>
         <div class="field" id="f-purPrice">
           <label>What did you pay for it?</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="purPrice" class="has-pfx" placeholder="500,000"></div>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="purPrice" class="has-pfx" placeholder="500,000" onblur="blurCheck('purPrice', v=>v>0)"></div>
           <span class="err-msg">Please enter your original purchase price</span>
         </div>
         <div class="field">
@@ -1380,10 +1409,6 @@ select option { background: #1a2035; color: var(--text); }
           </select>
         </div>
         <div class="field">
-          <label>Type of property</label>
-          <select id="propType"><option value="primary">My main home</option><option value="investment">Rental / investment property</option><option value="vacation">Cottage / vacation home</option></select>
-        </div>
-        <div class="field">
           <label>Style of property</label>
           <select id="propCat"><option value="detached">Detached House</option><option value="semi">Semi-Detached</option><option value="condo">Condo / Apartment</option><option value="townhouse">Townhouse</option><option value="multi">Multi-Unit (Duplex/Triplex)</option></select>
         </div>
@@ -1404,7 +1429,10 @@ select option { background: #1a2035; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
+    <div id="invNote" class="inv-note">📋 <strong>Rental / Investment property:</strong> The §121 exclusion doesn't apply — we'll calculate depreciation recapture (§1250 at 25%) automatically based on how long it was rented. Make sure "Did you ever rent this?" is set to Yes below.</div>
+    <div id="vacNote" class="inv-note">🏖️ <strong>Vacation / Cottage:</strong> The §121 exclusion generally doesn't apply to second homes. We'll calculate your full capital gain without an exclusion.</div>
+
+    <div id="s121Card" class="card">
       <div class="card-title">🏠 §121 Primary Residence Exclusion</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">The IRS <strong>§121 exclusion</strong> can shield up to <strong>$250,000</strong> of your gain from capital gains tax (or <strong>$500,000</strong> if married filing jointly) — but only if you owned and lived there as your main home for at least <strong>2 of the last 5 years</strong>.</p>
       <div class="grid g2">
@@ -1466,7 +1494,7 @@ select option { background: #1a2035; color: var(--text); }
       <div class="grid g2">
         <div class="field" id="f-mortBal">
           <label>How much do you still owe?</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000"></div>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000" onblur="blurCheck('mortBal', v=>v>=0&&!isNaN(v))"></div>
           <span class="hint">The remaining balance on your mortgage statement.</span>
           <span class="err-msg">Enter your mortgage balance ($0 if it's paid off)</span>
         </div>
@@ -1518,7 +1546,7 @@ select option { background: #1a2035; color: var(--text); }
       <div class="grid g2">
         <div class="field" id="f-monthRent">
           <label>Estimated monthly rent</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200" onblur="blurCheck('monthRent', v=>v>0)"></div>
           <span class="hint" id="rentHint">We'll estimate this from your address — or enter your own number.</span>
           <span class="err-msg">Enter an estimated rent, even a rough guess</span>
         </div>
@@ -2046,6 +2074,13 @@ function setErr(id) {
   const f = document.getElementById('f-'+id);
   if(f) { f.classList.add('field-err'); f.querySelector('input,select')?.focus(); }
 }
+// Blur validation — only fires if user has entered something (prevents premature errors)
+function blurCheck(id, testFn) {
+  const el = document.getElementById(id);
+  if (!el || el.value.trim() === '') return; // untouched — ignore
+  const val = parseFloat(el.value);
+  if (!testFn(val)) setErr(id); else clearErr(id);
+}
 function validateStep(n) {
   let ok = true;
   const checks = {
@@ -2229,6 +2264,41 @@ function toggleGoal(id, card){
   if(!cb) return;
   cb.checked=!cb.checked;
   card.classList.toggle('selected', cb.checked);
+}
+
+function onPropTypeChange(type, btn) {
+  document.querySelectorAll('.proptype-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('propType').value = type;
+
+  const s121  = document.getElementById('s121Card');
+  const invNote = document.getElementById('invNote');
+  const vacNote = document.getElementById('vacNote');
+  const hasRentedEl = document.getElementById('hasRented');
+  const rentedDetails = document.getElementById('rentedDetails');
+
+  if (type === 'primary') {
+    s121.style.display = '';
+    invNote.style.display = 'none';
+    vacNote.style.display = 'none';
+  } else if (type === 'investment') {
+    s121.style.display = 'none';
+    invNote.style.display = 'block';
+    vacNote.style.display = 'none';
+    // Investment = always rented — pre-expand depreciation section
+    if (hasRentedEl) { hasRentedEl.value = 'yes'; }
+    if (rentedDetails) { rentedDetails.style.display = 'block'; }
+    // No §121 exclusion
+    const preYrsEl = document.getElementById('preYrs');
+    if (preYrsEl && !preYrsEl.value) preYrsEl.value = '0';
+  } else if (type === 'vacation') {
+    s121.style.display = 'none';
+    invNote.style.display = 'none';
+    vacNote.style.display = 'block';
+    const preYrsEl = document.getElementById('preYrs');
+    if (preYrsEl && !preYrsEl.value) preYrsEl.value = '0';
+  }
+  updatePreview();
 }
 
 function toggleWhyNot(toggleEl) {
