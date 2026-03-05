@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WiseOwner — Property Decision Tool</title>
+<title>Keep or Sell — Your Home, Your Numbers</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
 /* ═══════════════════════════════════════════════
-   WISEOWNER — GLASSMORPHISM / AI-ERA DESIGN
+   KEEP OR SELL — GLASSMORPHISM / AI-ERA DESIGN
    ═══════════════════════════════════════════════ */
 :root {
   /* Brand colours */
@@ -27,7 +27,7 @@
   --glass-border: rgba(255,255,255,0.10);
   --glass-border-hover: rgba(255,255,255,0.2);
   /* Text */
-  --text: #f0f4ff; --text-mid: rgba(240,244,255,0.6); --text-muted: rgba(240,244,255,0.35);
+  --text: #f0f4ff; --text-mid: rgba(240,244,255,0.75); --text-muted: rgba(240,244,255,0.52);
   /* Glow */
   --glow-green: 0 0 24px rgba(74,222,128,0.25);
   --glow-coral: 0 0 24px rgba(251,113,133,0.25);
@@ -1194,7 +1194,7 @@ select option { background: #1a2035; color: var(--text); }
 </div>
 
 <header>
-  <div class="logo">🏠 Wise<em>Owner</em></div>
+  <div class="logo">🏠 Keep or <em>Sell</em></div>
   <div class="step-ctr" id="stepCtr"></div>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()">🔍 Find Deals</button>
   <div class="country-sel">
@@ -1221,24 +1221,24 @@ select option { background: #1a2035; color: var(--text); }
   <!-- STEP 0: INTRO -->
   <div class="step active" id="step-0">
     <div class="intro-hero">
-      <div class="big-logo">🏠 Wise<em>Owner</em></div>
-      <div class="intro-desc">Not sure what to do with your property? Answer a few quick questions — we'll compare all three paths and an AI will explain what the numbers actually mean for you.</div>
+      <div class="big-logo">🏠 Keep or <em>Sell</em></div>
+      <div class="intro-desc">You've probably been going back and forth on this. Sell and cash out? Keep renting it? Stay put and build equity? Give us 5 minutes — we'll run the real numbers on all three paths, specific to your situation, your equity, and your state's tax rules.</div>
       <div class="path-row">
-        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">Cash out, move on</div></div>
-        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Earn monthly income</div></div>
-        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Keep Living Here</div><div class="pd">Stay put, build equity</div></div>
+        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">What you'd actually net after taxes & costs</div></div>
+        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Monthly cash flow & 10-year return</div></div>
+        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Stay Put</div><div class="pd">Equity growth & true cost of staying</div></div>
       </div>
       <div class="quick-badges">
         <div class="qb">⏱️ ~5 minutes</div>
-        <div class="qb">🇺🇸 Built for the US</div>
-        <div class="qb">🔒 Nothing is saved</div>
-        <div class="qb">🤖 AI interpretation included</div>
+        <div class="qb">🇺🇸 Real US tax math</div>
+        <div class="qb">🔒 Nothing stored</div>
+        <div class="qb">🤖 AI reads it for you</div>
       </div>
       <div class="ai-intro-card">
         <div class="ai-icon">🤖</div>
-        <div><strong>More than just a calculator</strong><p>Once you fill in your numbers, Claude AI writes a plain-English read of your specific situation — not just scores and tables.</p></div>
+        <div><strong>Not just a calculator</strong><p>After your numbers are in, an AI gives you a straight-talk read of your specific situation — what the math actually means, and what questions you should be asking next.</p></div>
       </div>
-      <div class="btn-row" style="margin-top:1.5rem;"><button class="btn-cta" onclick="goTo(1)">Let's figure this out →</button></div>
+      <div class="btn-row" style="margin-top:1.5rem;"><button class="btn-cta" onclick="goTo(1)">Show me the numbers →</button></div>
     </div>
   </div>
 
@@ -1674,7 +1674,7 @@ select option { background: #1a2035; color: var(--text); }
 <!-- RESULTS -->
 <div id="results">
   <div class="main">
-    <div class="res-header"><h1>🏠 Your WiseOwner Report</h1><p>Based on your numbers and US federal &amp; state tax rules. The final call is always yours.</p></div>
+    <div class="res-header"><h1>🏠 Your Keep or Sell Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="sc-grid" id="scGrid"></div>
     <div class="ai-box" id="aiBox">
       <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
