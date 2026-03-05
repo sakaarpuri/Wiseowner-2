@@ -425,14 +425,14 @@ select option { background: #1a2035; color: var(--text); }
   border-radius: 0 0 18px 18px; opacity: 0; transition: opacity 0.25s;
 }
 .path-item.sell::after { background: var(--coral); }
-.path-item.rent::after { background: var(--green); }
+.path-item.rent::after { background: var(--gold); }
 .path-item.keep::after { background: var(--blue); }
 .path-item:hover { border-color: var(--glass-border-hover); }
 .path-item:hover::after { opacity: 1; }
 .path-item .pi { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
 .path-item .pn { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; }
 .path-item.sell .pn { color: var(--coral); }
-.path-item.rent .pn { color: var(--green); }
+.path-item.rent .pn { color: var(--gold); }
 .path-item.keep .pn { color: var(--blue); }
 .path-item .pd { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
 
@@ -487,7 +487,7 @@ select option { background: #1a2035; color: var(--text); }
   box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 .sc-card.best.sell { border-color: rgba(251,113,133,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-coral); }
-.sc-card.best.rent { border-color: rgba(74,222,128,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-green); }
+.sc-card.best.rent { border-color: rgba(251,191,36,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 24px rgba(251,191,36,0.25); }
 .sc-card.best.keep { border-color: rgba(96,165,250,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.4), var(--glow-blue); }
 /* Glow orb behind best card */
 .sc-card.best::after {
@@ -497,7 +497,7 @@ select option { background: #1a2035; color: var(--text); }
   filter: blur(30px); opacity: 0.3;
 }
 .sc-card.best.sell::after { background: var(--coral); }
-.sc-card.best.rent::after { background: var(--green); }
+.sc-card.best.rent::after { background: var(--gold); }
 .sc-card.best.keep::after { background: var(--blue); }
 
 .best-tag {
@@ -507,23 +507,23 @@ select option { background: #1a2035; color: var(--text); }
   color: #0b1a0f;
 }
 .sell .best-tag { background: var(--coral); }
-.rent .best-tag { background: var(--green); }
+.rent .best-tag { background: var(--gold); color: #1a1200; }
 .keep .best-tag { background: var(--blue); }
 
 .sc-icon { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
 .sc-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
 .sell .sc-name { color: var(--coral); }
-.rent .sc-name { color: var(--green); }
+.rent .sc-name { color: var(--gold); }
 .keep .sc-name { color: var(--blue); }
 .sc-slbl { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
 .sc-score { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3rem; font-weight: 900; line-height: 1; margin: 0.2rem 0 0.8rem; }
 .sell .sc-score { color: var(--coral); }
-.rent .sc-score { color: var(--green); }
+.rent .sc-score { color: var(--gold); }
 .keep .sc-score { color: var(--blue); }
 .sc-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-bottom: 1.2rem; overflow: hidden; }
 .sc-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
 .sell .sc-fill { background: linear-gradient(90deg, var(--coral-d), var(--coral)); }
-.rent .sc-fill { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.rent .sc-fill { background: linear-gradient(90deg, #d97706, var(--gold)); }
 .keep .sc-fill { background: linear-gradient(90deg, var(--blue-d), var(--blue)); }
 .sc-rows { text-align: left; }
 .sc-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.78rem; }
@@ -584,8 +584,8 @@ select option { background: #1a2035; color: var(--text); }
 }
 .verdict-card.sell { border-color: rgba(251,113,133,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-coral); }
 .verdict-card.sell::after { background: var(--coral); }
-.verdict-card.rent { border-color: rgba(74,222,128,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-green); }
-.verdict-card.rent::after { background: var(--green); }
+.verdict-card.rent { border-color: rgba(251,191,36,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 24px rgba(251,191,36,0.2); }
+.verdict-card.rent::after { background: var(--gold); }
 .verdict-card.keep { border-color: rgba(96,165,250,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-blue); }
 .verdict-card.keep::after { background: var(--blue); }
 .verdict-eyebrow { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.7rem; }
@@ -594,7 +594,7 @@ select option { background: #1a2035; color: var(--text); }
 .verdict-title-wrap { flex: 1; }
 .verdict-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.1; }
 .sell .verdict-name { color: var(--coral); }
-.rent .verdict-name { color: var(--green); }
+.rent .verdict-name { color: var(--gold); }
 .keep .verdict-name { color: var(--blue); }
 .verdict-score-pill {
   font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
@@ -604,7 +604,7 @@ select option { background: #1a2035; color: var(--text); }
 .verdict-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; margin: 0.8rem 0 1.2rem; overflow: hidden; }
 .verdict-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
 .sell .verdict-fill { background: linear-gradient(90deg, var(--coral-d), var(--coral)); }
-.rent .verdict-fill { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.rent .verdict-fill { background: linear-gradient(90deg, #d97706, var(--gold)); }
 .keep .verdict-fill { background: linear-gradient(90deg, var(--blue-d), var(--blue)); }
 .verdict-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.2rem; }
 @media(max-width:520px){ .verdict-rows { grid-template-columns: 1fr; } }
@@ -628,27 +628,30 @@ select option { background: #1a2035; color: var(--text); }
 
 /* AI BOX */
 .ai-box {
-  background: linear-gradient(145deg, rgba(74,222,128,0.06), rgba(96,165,250,0.04));
-  border: 1px solid rgba(74,222,128,0.2);
-  border-radius: 20px; padding: 1.8rem; margin-bottom: 1.8rem;
+  background: linear-gradient(145deg, rgba(74,222,128,0.11), rgba(96,165,250,0.06));
+  border: 1.5px solid rgba(74,222,128,0.35);
+  border-radius: 20px; padding: 2.2rem 2rem 2rem; margin-bottom: 2rem;
   position: relative; overflow: hidden;
   backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 28px rgba(74,222,128,0.1);
 }
 .ai-box::before {
   content: '';
-  position: absolute; top: -50px; right: -50px; width: 180px; height: 180px;
-  background: radial-gradient(circle, rgba(74,222,128,0.08), transparent 70%);
+  position: absolute; top: -60px; right: -60px; width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 70%);
   border-radius: 50%;
+  pointer-events: none;
 }
-.ai-hdr { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.1rem; }
-.ai-hdr .ao { font-size: 1.5rem; }
-.ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--green); }
+.ai-hdr { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.3rem; }
+.ai-hdr .ao { font-size: 2rem; line-height: 1; }
+.ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--green); }
 .ai-hdr .al {
-  margin-left: auto; background: rgba(74,222,128,0.15);
-  color: var(--green); font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
-  padding: 0.22rem 0.7rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.25);
+  margin-left: auto; background: rgba(74,222,128,0.18);
+  color: var(--green); font-size: 0.62rem; font-weight: 800; letter-spacing: 1.8px;
+  padding: 0.28rem 0.85rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.4);
+  text-transform: uppercase; white-space: nowrap;
 }
-.ai-body { font-size: 0.9rem; color: var(--text-mid); line-height: 1.8; }
+.ai-body { font-size: 0.93rem; color: var(--text-mid); line-height: 1.85; }
 .ai-body p { margin-bottom: 0.9rem; }
 .ai-body p:last-child { margin-bottom: 0; }
 .ai-loading { display: flex; align-items: center; gap: 0.8rem; color: var(--text-muted); font-size: 0.88rem; }
@@ -712,7 +715,7 @@ select option { background: #1a2035; color: var(--text); }
 }
 .tbl th:first-child { text-align: left; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 .tbl th.ts { color: var(--coral); }
-.tbl th.tr { color: var(--green); }
+.tbl th.tr { color: var(--gold); }
 .tbl th.tk { color: var(--blue); }
 .tbl td { padding: 0.7rem 1rem; border-top: 1px solid rgba(255,255,255,0.04); text-align: center; font-weight: 600; color: var(--text); }
 .tbl td:first-child { text-align: left; font-weight: 400; color: var(--text-mid); }
@@ -724,6 +727,22 @@ select option { background: #1a2035; color: var(--text); }
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px; padding: 1rem 1.2rem;
   font-size: 0.74rem; color: var(--text-muted); line-height: 1.6;
+}
+.disc-wrap { margin: 1rem 0 1.5rem; }
+.disc-toggle {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.75rem; color: var(--text-muted); font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; gap: 0.4rem; padding: 0;
+  transition: color 0.2s; text-decoration: underline; text-underline-offset: 3px;
+}
+.disc-toggle:hover { color: var(--text-mid); }
+.disc-toggle .disc-arrow { display: inline-block; transition: transform 0.2s; }
+.disc-toggle.open .disc-arrow { transform: rotate(180deg); }
+.disc-body {
+  display: none; margin-top: 0.7rem;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px; padding: 0.9rem 1.1rem;
+  font-size: 0.72rem; color: var(--text-muted); line-height: 1.65;
 }
 .restart-btn {
   display: block; text-align: center; margin: 1.5rem auto;
@@ -827,7 +846,8 @@ select option { background: #1a2035; color: var(--text); }
 
 /* ── PRINT ── */
 @media print {
-  header,.tabs,.prog-wrap,.share-bar,.restart-btn,.btn-row,.disclaimer { display: none !important; }
+  header,.tabs,.prog-wrap,.share-bar,.restart-btn,.btn-row,.disclaimer,.disc-toggle { display: none !important; }
+  .disc-body { display: block !important; font-size: 0.7rem; }
   body { background: white; color: #111; }
   .card,.sc-card,.ai-box,.tax-box,.ins-card,.chart-card { background: white !important; border: 1px solid #ddd !important; box-shadow: none !important; backdrop-filter: none !important; }
   .text,.sc-name,.ai-hdr h3,.heading,.res-header h1 { color: #111 !important; }
@@ -1472,8 +1492,8 @@ select option { background: #1a2035; color: var(--text); }
           </div>
           <div class="field">
             <label>Estimated building value (not land)</label>
-            <div class="wrap"><span class="pfx">$</span><input type="number" id="dprBuildVal" class="has-pfx" placeholder="350,000"></div>
-            <div class="explain">Used to estimate prior depreciation (building ÷ 27.5 × years rented). The building is typically 70–85% of total value.</div>
+            <div class="wrap"><span class="pfx">$</span><input type="number" id="dprBuildVal" class="has-pfx" placeholder="350,000" oninput="syncBuildingVal('dprBuildVal',this.value)"></div>
+            <div class="explain">Used to estimate prior depreciation (building ÷ 27.5 × years rented). The building is typically 70–85% of total value. <strong>Also pre-fills Step 3 depreciation.</strong></div>
           </div>
         </div>
       </div>
@@ -1561,10 +1581,10 @@ select option { background: #1a2035; color: var(--text); }
     <div class="card">
       <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
       <div class="grid g2">
-        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint">A rough rule: budget 1% of the property's value per year, divided by 12. So $600k property → ~$500/mo.</span></div>
-        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd manage it yourself.</span></div>
-        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="120"></div><span class="hint">Usually $100–$200/mo. A bit higher than regular home insurance.</span></div>
-        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="50"></div><span class="hint">Tax filing, leases, occasional legal advice — roughly $50–$100/mo averaged out.</span></div>
+        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint" id="maintHint">Estimated at 1% of property value ÷ 12 — adjust if you know better.</span></div>
+        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd self-manage.</span></div>
+        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="150" value="150"></div><span class="hint">Estimated — typically $100–$200/mo. Adjust to your actual policy.</span></div>
+        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="75" value="75"></div><span class="hint">Estimated — tax filing, leases, occasional legal advice. Adjust as needed.</span></div>
       </div>
     </div>
 
@@ -1574,13 +1594,14 @@ select option { background: #1a2035; color: var(--text); }
       <div class="grid g2">
         <div class="field">
           <label>Estimated building value (not land)</label>
-          <div class="wrap"><span class="pfx">$</span><input type="number" id="buildingVal" class="has-pfx" placeholder="400,000"></div>
-          <div class="explain">You can only depreciate the structure — not the land. Building value is typically <strong>70–85% of total value</strong>. So a $600k property → ~$420k building. A cost segregation study or appraiser can confirm the split.</div>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="buildingVal" class="has-pfx" placeholder="400,000" oninput="syncBuildingVal('buildingVal',this.value)"></div>
+          <span class="hint" id="buildingValHint">Pre-filled from Step 1 if you entered it there — adjust if needed.</span>
+          <div class="explain">You can only depreciate the structure — not the land. Building value is typically <strong>70–85% of total value</strong>. So a $600k property → ~$420k building.</div>
         </div>
         <div class="field">
           <label>Annual depreciation deduction (building ÷ 27.5)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="ccaAnn" class="has-pfx" placeholder="14,545"></div>
-          <div class="explain">Divide your building value by 27.5. E.g. $400k building → ~$14,545/yr. <strong>Leave at $0 to skip</strong> — but note the IRS may still assume depreciation was taken when you sell.</div>
+          <div class="explain">Auto-computed from building value ÷ 27.5 — adjust if you know the exact figure. <strong>Leave at $0 to skip</strong> — but note the IRS may still assume depreciation was taken when you sell.</div>
         </div>
       </div>
       <div class="callout info"><span class="ci">⚠️</span><div><strong>Depreciation recapture:</strong> The IRS taxes recaptured depreciation at 25% (§1250) when you sell — even if you didn't claim it. This is separate from capital gains tax. Talk to a CPA before deciding whether to claim it.</div></div>
@@ -1789,7 +1810,7 @@ select option { background: #1a2035; color: var(--text); }
     <div class="sc-grid" id="scGrid"></div>
     <div class="ai-box" id="aiBox">
       <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
-      <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Reading your numbers</span><div class="dots"><span></span><span></span><span></span></div></div></div>
+      <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
     </div>
     <div id="taxBlock"></div>
     <div class="sec">💡 Key Insights</div>
@@ -1805,7 +1826,10 @@ select option { background: #1a2035; color: var(--text); }
       <button class="share-btn" onclick="copyLink()">🔗 Copy link to share</button>
       <button class="share-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
     </div>
-    <div class="disclaimer">⚠️ <strong>Decision-support tool — not tax or financial advice.</strong> US federal and state tax rules (§121 exclusion, capital gains brackets, NIIT, depreciation recapture) are approximated using top marginal rates. Actual tax liability depends on your full situation and IRS interpretation. State rates shown are estimates — some states have additional rules, deductions, or thresholds. Claude's analysis is informational only. Always consult a CPA or financial advisor before major property decisions.</div>
+    <div class="disc-wrap">
+      <button class="disc-toggle" onclick="toggleDisc(this)">ⓘ Methodology &amp; disclaimer <span class="disc-arrow">▾</span></button>
+      <div class="disc-body" id="discBody">⚠️ <strong>Decision-support tool — not tax or financial advice.</strong> US federal and state tax rules (§121 exclusion, capital gains brackets, NIIT, depreciation recapture) are approximated using top marginal rates. Actual tax liability depends on your full situation and IRS interpretation. State rates shown are estimates — some states have additional rules, deductions, or thresholds. Claude's analysis is informational only. Always consult a CPA or financial advisor before major property decisions.</div>
+    </div>
     <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
   </div>
 </div>
@@ -2016,8 +2040,17 @@ async function fetchPropertyData(address, geoData) {
     let prefilled = false;
     if (d.estimatedValue) {
       safeSet('curVal', Math.round(d.estimatedValue));
-      // Auto-guess closing costs: ~1% of home value, capped at $3,000
+      // Closing costs: ~1% of home value capped at $3k
       safeSet('legalCosts', Math.round(Math.min(d.estimatedValue * 0.01, 3000)));
+      // Maintenance: 1% of value ÷ 12 (standard rule of thumb)
+      const maintEst = Math.round(d.estimatedValue * 0.01 / 12);
+      safeSet('maint', maintEst);
+      const maintHint = document.getElementById('maintHint');
+      if (maintHint) maintHint.textContent = `Estimated at 1% of your property value ÷ 12 ($${maintEst.toLocaleString()}/mo) — adjust if you know better.`;
+      // Auto-suggest building value (75% of property = typical structure/land split)
+      const buildEst = Math.round(d.estimatedValue * 0.75);
+      safeSet('dprBuildVal', buildEst);
+      syncBuildingVal('dprBuildVal', buildEst);
       prefilled = true;
     }
     if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; }
@@ -2266,6 +2299,21 @@ function toggleGoal(id, card){
   card.classList.toggle('selected', cb.checked);
 }
 
+function syncBuildingVal(sourceId, val) {
+  const n = parseFloat(val);
+  if (!n || n <= 0) return;
+  // Mirror the other field
+  const otherId = sourceId === 'dprBuildVal' ? 'buildingVal' : 'dprBuildVal';
+  const otherEl = document.getElementById(otherId);
+  if (otherEl && !otherEl.dataset.manuallyEdited) otherEl.value = Math.round(n);
+  // Auto-compute annual depreciation (building ÷ 27.5)
+  const ccaEl = document.getElementById('ccaAnn');
+  if (ccaEl && !ccaEl.dataset.manuallyEdited) ccaEl.value = Math.round(n / 27.5);
+  // Mark source as manually edited so future auto-fills don't overwrite
+  const srcEl = document.getElementById(sourceId);
+  if (srcEl) srcEl.dataset.manuallyEdited = '1';
+}
+
 function onPropTypeChange(type, btn) {
   document.querySelectorAll('.proptype-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -2315,6 +2363,13 @@ function toggleSnap(titleEl) {
   arrow.classList.toggle('open');
 }
 
+function toggleDisc(btn) {
+  const body = document.getElementById('discBody');
+  const open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  btn.classList.toggle('open', !open);
+}
+
 // Wire updatePreview to all form inputs/selects
 document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
   el.addEventListener('input',updatePreview);
@@ -2356,7 +2411,7 @@ function calculate(){
   const niitApplies=annInc>niitThreshold;
   const niitAmt=niitApplies?taxableGain*0.038:0;
   // Depreciation recapture (§1250) — 25% on prior depreciation if property was rented
-  const depBuildVal=gv('dprBuildVal',0), rentedYrs=gv('rentedYrs',0);
+  const depBuildVal=gv('buildingVal',0)||gv('dprBuildVal',0), rentedYrs=gv('rentedYrs',0);
   const estDepreciation=gs('hasRented')==='yes'&&depBuildVal>0?(depBuildVal/27.5)*rentedYrs:0;
   const depRec=estDepreciation*0.25;
   // State capital gains tax
@@ -2496,10 +2551,10 @@ function calculate(){
     const yrs=Array.from({length:hrz+1},(_,i)=>i);
     new Chart(document.getElementById('chart1'),{type:'line',data:{labels:yrs.map(y=>y===0?'Now':`Yr ${y}`),datasets:[
       {label:'Sell & Reinvest',data:yrs.map(y=>Math.max(0,netProc)*Math.pow(1+reinvRet,y)),borderColor:'#E8735A',backgroundColor:'rgba(232,115,90,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
-      {label:'Rent It Out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#6B9E78',backgroundColor:'rgba(107,158,120,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Rent It Out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
       {label:'Keep & Live',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#5B8DB8',backgroundColor:'rgba(91,141,184,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
-    ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'DM Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:10}},grid:{display:false}}}}});
-    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(invested return)','Rent Out\n(cash flow)','Keep\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(107,158,120,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#6B9E78','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'DM Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'DM Sans',size:9}},grid:{display:false}}}}});
+    ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'Plus Jakarta Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:10}},grid:{display:false}}}}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(invested return)','Rent Out\n(cash flow)','Keep\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(251,191,36,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#fbbf24','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:9}},grid:{display:false}}}}});
   },80);
 
   const rows=[
