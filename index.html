@@ -539,6 +539,83 @@ select option { background: #1a2035; color: var(--text); }
 .neg { color: var(--coral) !important; }
 .warn-c { color: var(--gold) !important; }
 
+/* ── CARD TINTS ── */
+.card.optional { background: rgba(251,191,36,0.04); border-color: rgba(251,191,36,0.12); }
+.card.technical { background: rgba(167,139,250,0.05); border-color: rgba(167,139,250,0.14); }
+.opt-badge {
+  display: inline-block; font-size: 0.58rem; font-weight: 700; letter-spacing: 1.2px;
+  text-transform: uppercase; background: rgba(251,191,36,0.18); color: var(--gold);
+  border: 1px solid rgba(251,191,36,0.3); border-radius: 6px;
+  padding: 0.15rem 0.5rem; vertical-align: middle; margin-left: 0.5rem;
+}
+/* ── SNAPSHOT COLLAPSIBLE ── */
+.snap-toggle { cursor: pointer; display: flex; align-items: center; user-select: none; }
+.snap-toggle:hover { opacity: 0.85; }
+.snap-arrow { margin-left: auto; font-size: 0.9rem; transition: transform 0.25s; }
+.snap-arrow.open { transform: rotate(180deg); }
+.snap-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; max-height: 0; opacity: 0; }
+.snap-body.open { max-height: 600px; opacity: 1; }
+
+/* ── VERDICT CARD ── */
+.sc-grid { display: block; margin-bottom: 2rem; }
+.verdict-card {
+  background: var(--glass); backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border); border-radius: 22px;
+  padding: 2rem 2rem 1.6rem; position: relative; overflow: hidden; margin-bottom: 1rem;
+}
+.verdict-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+}
+.verdict-card::after {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 220px; height: 220px; border-radius: 50%;
+  filter: blur(50px); opacity: 0.15; pointer-events: none;
+}
+.verdict-card.sell { border-color: rgba(251,113,133,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-coral); }
+.verdict-card.sell::after { background: var(--coral); }
+.verdict-card.rent { border-color: rgba(74,222,128,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-green); }
+.verdict-card.rent::after { background: var(--green); }
+.verdict-card.keep { border-color: rgba(96,165,250,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.4), var(--glow-blue); }
+.verdict-card.keep::after { background: var(--blue); }
+.verdict-eyebrow { font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.7rem; }
+.verdict-top { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.2rem; }
+.verdict-icon { font-size: 2.8rem; line-height: 1; }
+.verdict-title-wrap { flex: 1; }
+.verdict-name { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900; line-height: 1.1; }
+.sell .verdict-name { color: var(--coral); }
+.rent .verdict-name { color: var(--green); }
+.keep .verdict-name { color: var(--blue); }
+.verdict-score-pill {
+  font-family: 'Fraunces', serif; font-size: 0.9rem; font-weight: 700;
+  padding: 0.3rem 0.9rem; border-radius: 999px;
+  background: rgba(255,255,255,0.07); color: var(--text); white-space: nowrap;
+}
+.verdict-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; margin: 0.8rem 0 1.2rem; overflow: hidden; }
+.verdict-fill { height: 100%; border-radius: 3px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+.sell .verdict-fill { background: linear-gradient(90deg, var(--coral-d), var(--coral)); }
+.rent .verdict-fill { background: linear-gradient(90deg, var(--green-d), var(--green)); }
+.keep .verdict-fill { background: linear-gradient(90deg, var(--blue-d), var(--blue)); }
+.verdict-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.2rem; }
+@media(max-width:520px){ .verdict-rows { grid-template-columns: 1fr; } }
+/* ── WHY NOT ACCORDIONS ── */
+.why-not-wrap { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+.why-not-item { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; overflow: hidden; }
+.why-not-toggle {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.9rem 1.2rem; cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; color: var(--text-mid);
+  transition: background 0.2s; user-select: none;
+}
+.why-not-toggle:hover { background: rgba(255,255,255,0.04); }
+.why-not-label { flex: 1; }
+.why-score { font-size: 0.75rem; color: var(--text-muted); }
+.wn-arrow { font-size: 0.8rem; transition: transform 0.25s; color: var(--text-muted); }
+.wn-arrow.open { transform: rotate(180deg); }
+.why-not-body { max-height: 0; overflow: hidden; padding: 0 1.2rem; transition: max-height 0.35s ease, opacity 0.25s; opacity: 0; }
+.why-not-body.open { max-height: 400px; padding: 0.2rem 1.2rem 1rem; opacity: 1; }
+.why-not-body .sc-bar { margin: 0.5rem 0 0.7rem; }
+
 /* AI BOX */
 .ai-box {
   background: linear-gradient(145deg, rgba(74,222,128,0.06), rgba(96,165,250,0.04));
@@ -1511,7 +1588,7 @@ select option { background: #1a2035; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
+    <div class="card technical">
       <div class="card-title">🇺🇸 Estimated US Capital Gains Tax</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">When you sell for a profit, the IRS taxes <strong>long-term capital gains</strong> at 0%, 15%, or 20% depending on your income. The <strong>§121 exclusion</strong> from Step 1 can reduce or eliminate that entirely. Higher earners may also owe a 3.8% <strong>Net Investment Income Tax (NIIT)</strong>. We calculate all of this automatically.</p>
       <div class="grid g2">
@@ -1562,7 +1639,7 @@ select option { background: #1a2035; color: var(--text); }
     <h2 class="heading">A bit about you 💰</h2>
     <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
 
-    <div class="card">
+    <div class="card optional">
       <div class="card-title">🎯 What matters most to you right now?</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Tap everything that applies — helps tailor the recommendation to you.</p>
       <div class="goal-grid">
@@ -1578,8 +1655,8 @@ select option { background: #1a2035; color: var(--text); }
           <div class="gc-title">Monthly income</div>
           <div class="gc-desc">Want rent coming in every month</div>
         </div>
-        <div class="goal-card" id="gc_longterm" onclick="toggleGoal('g_longterm',this)">
-          <input type="checkbox" id="g_longterm" style="display:none">
+        <div class="goal-card selected" id="gc_longterm" onclick="toggleGoal('g_longterm',this)">
+          <input type="checkbox" id="g_longterm" style="display:none" checked>
           <div class="gc-emoji">📈</div>
           <div class="gc-title">Long-term wealth</div>
           <div class="gc-desc">Building equity over time is the priority</div>
@@ -1605,7 +1682,7 @@ select option { background: #1a2035; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
+    <div class="card optional">
       <div class="card-title">🎛️ How do you feel about risk?</div>
       <div class="grid g2">
         <div class="field"><label>Risk comfort level</label><select id="riskTol"><option value="low">Low — I'd rather play it safe</option><option value="medium" selected>Medium — balanced</option><option value="high">High — I'm comfortable with uncertainty</option></select></div>
@@ -1615,13 +1692,19 @@ select option { background: #1a2035; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🏦 Quick financial snapshot</div>
-      <div class="grid g2">
-        <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div></div>
-        <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Car payments, student loans, lines of credit.</span></div>
-        <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
-        <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
+    <div class="card optional">
+      <div class="card-title snap-toggle" onclick="toggleSnap(this)">
+        🏦 Quick financial snapshot <span class="opt-badge">Optional</span>
+        <span class="snap-arrow">▾</span>
+      </div>
+      <div id="snapBody" class="snap-body">
+        <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:0.9rem;">Helps calibrate the debt-to-income ratio and landlord readiness score. Skip it if you prefer.</p>
+        <div class="grid g2">
+          <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div></div>
+          <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Car payments, student loans, lines of credit.</span></div>
+          <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
+          <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
+        </div>
       </div>
     </div>
 
@@ -1903,7 +1986,12 @@ async function fetchPropertyData(address, geoData) {
     const d = json.data;
 
     let prefilled = false;
-    if (d.estimatedValue) { safeSet('curVal', Math.round(d.estimatedValue)); prefilled = true; }
+    if (d.estimatedValue) {
+      safeSet('curVal', Math.round(d.estimatedValue));
+      // Auto-guess closing costs: ~1% of home value, capped at $3,000
+      safeSet('legalCosts', Math.round(Math.min(d.estimatedValue * 0.01, 3000)));
+      prefilled = true;
+    }
     if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; }
     if (d.lastSaleDate) {
       const yr = new Date(d.lastSaleDate).getFullYear();
@@ -2139,6 +2227,20 @@ function toggleGoal(id, card){
   card.classList.toggle('selected', cb.checked);
 }
 
+function toggleWhyNot(toggleEl) {
+  const body = toggleEl.nextElementSibling;
+  const arrow = toggleEl.querySelector('.wn-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function toggleSnap(titleEl) {
+  const body = document.getElementById('snapBody');
+  const arrow = titleEl.querySelector('.snap-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
 // Wire updatePreview to all form inputs/selects
 document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
   el.addEventListener('input',updatePreview);
@@ -2254,16 +2356,37 @@ function calculate(){
     ]},
   ];
 
-  document.getElementById('scGrid').innerHTML=scenarios.map(sc=>`
-    <div class="sc-card ${sc.key} ${sc.score===mx?'best':''}">
-      ${sc.score===mx?'<div class="best-tag">⭐ BEST MATCH</div>':''}
-      <div class="sc-icon">${sc.icon}</div>
-      <div class="sc-name">${sc.name}</div>
-      <div class="sc-slbl">Match Score</div>
-      <div class="sc-score">${sc.score}</div>
-      <div class="sc-bar"><div class="sc-fill" style="width:${sc.score}%"></div></div>
-      <div class="sc-rows">${sc.rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('')}</div>
-    </div>`).join('');
+  const sorted=[...scenarios].sort((a,b)=>b.score-a.score);
+  const winner=sorted[0], others=sorted.slice(1);
+  const rowsHtml=rows=>rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('');
+
+  document.getElementById('scGrid').innerHTML=`
+    <div class="verdict-card ${winner.key}">
+      <div class="verdict-eyebrow">⭐ Our Recommendation</div>
+      <div class="verdict-top">
+        <div class="verdict-icon">${winner.icon}</div>
+        <div class="verdict-title-wrap">
+          <div class="verdict-name">${winner.name}</div>
+        </div>
+        <div class="verdict-score-pill">${winner.score}/100</div>
+      </div>
+      <div class="verdict-bar"><div class="verdict-fill" style="width:${winner.score}%"></div></div>
+      <div class="verdict-rows">${rowsHtml(winner.rows)}</div>
+    </div>
+    <div class="why-not-wrap">
+      ${others.map((sc,i)=>`
+        <div class="why-not-item">
+          <div class="why-not-toggle" onclick="toggleWhyNot(this)">
+            <span class="why-not-label">${sc.icon} Why not ${sc.name.toLowerCase()}?</span>
+            <span class="why-score">${sc.score}/100</span>
+            <span class="wn-arrow">▾</span>
+          </div>
+          <div class="why-not-body">
+            <div class="sc-bar ${sc.key}"><div class="sc-fill ${sc.key}" style="width:${sc.score}%"></div></div>
+            ${rowsHtml(sc.rows)}
+          </div>
+        </div>`).join('')}
+    </div>`;
 
   document.getElementById('taxBlock').innerHTML=`
     <div class="tax-box">
