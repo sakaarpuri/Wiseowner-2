@@ -52,16 +52,24 @@ exports.handler = async function (event) {
       console.warn("Rentcast properties endpoint:", propRes.status);
     }
 
-    // ── 2. Fetch AVM (estimated value) ──
+    // ── 2. Fetch AVM value + rent estimate (parallel for speed) ──
     const avmParams = new URLSearchParams({
       address: fullAddress,
       ...(property?.propertyType && { propertyType: property.propertyType }),
     });
 
-    const avmRes = await fetch(
-      `https://api.rentcast.io/v1/avm/value?${avmParams.toString()}`,
-      { method: "GET", headers }
-    );
+    const rentParams = new URLSearchParams({
+      address: fullAddress,
+      ...(property?.propertyType && { propertyType: property.propertyType }),
+      ...(property?.bedrooms     && { bedrooms:     property.bedrooms }),
+      ...(property?.bathrooms    && { bathrooms:    property.bathrooms }),
+      ...(property?.squareFootage && { squareFootage: property.squareFootage }),
+    });
+
+    const [avmRes, rentRes] = await Promise.all([
+      fetch(`https://api.rentcast.io/v1/avm/value?${avmParams.toString()}`, { method: "GET", headers }),
+      fetch(`https://api.rentcast.io/v1/avm/rent/long-term?${rentParams.toString()}`, { method: "GET", headers }),
+    ]);
 
     let estimatedValue = null;
     if (avmRes.ok) {
@@ -71,8 +79,18 @@ exports.handler = async function (event) {
       console.warn("Rentcast AVM endpoint:", avmRes.status);
     }
 
-    // If we got nothing from either endpoint, return no data silently
-    if (!property && estimatedValue === null) {
+    let estimatedRent = null, rentRangeLow = null, rentRangeHigh = null;
+    if (rentRes.ok) {
+      const rentData = await rentRes.json();
+      estimatedRent  = rentData.rent ?? null;
+      rentRangeLow   = rentData.rentRangeLow  ?? null;
+      rentRangeHigh  = rentData.rentRangeHigh ?? null;
+    } else if (rentRes.status !== 404) {
+      console.warn("Rentcast rent estimate endpoint:", rentRes.status);
+    }
+
+    // If we got nothing from any endpoint, return no data silently
+    if (!property && estimatedValue === null && estimatedRent === null) {
       return {
         statusCode: 200,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
@@ -83,6 +101,9 @@ exports.handler = async function (event) {
     // ── 3. Map to our standard shape ──
     const data = {
       estimatedValue:  estimatedValue                         ?? null,
+      estimatedRent:   estimatedRent                          ?? null,
+      rentRangeLow:    rentRangeLow                           ?? null,
+      rentRangeHigh:   rentRangeHigh                         ?? null,
       lastSalePrice:   property?.lastSalePrice                ?? null,
       lastSaleDate:    property?.lastSaleDate                 ?? null,
       propertyType:    property?.propertyType                 ?? null,

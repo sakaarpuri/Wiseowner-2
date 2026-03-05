@@ -1442,7 +1442,7 @@ select option { background: #1a2035; color: var(--text); }
         <div class="field" id="f-monthRent">
           <label>Estimated monthly rent</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200"></div>
-          <span class="hint">Check <a href="https://www.rentometer.com" target="_blank" style="color:var(--green);font-weight:600;">Rentometer</a> or Zillow Rental Manager for what similar units in your area are going for.</span>
+          <span class="hint" id="rentHint">We'll estimate this from your address — or enter your own number.</span>
           <span class="err-msg">Enter an estimated rent, even a rough guess</span>
         </div>
         <div class="field">
@@ -1916,6 +1916,18 @@ async function fetchPropertyData(address, geoData) {
       };
       const mapped = typeMap[d.propertyType];
       if (mapped) { safeSet('propCat', mapped); prefilled = true; }
+    }
+    if (d.estimatedRent) {
+      safeSet('monthRent', Math.round(d.estimatedRent));
+      prefilled = true;
+      // Update hint to show Rentcast range
+      const hint = document.getElementById('rentHint');
+      if (hint) {
+        const lo = d.rentRangeLow  ? '$' + Math.round(d.rentRangeLow).toLocaleString()  : null;
+        const hi = d.rentRangeHigh ? '$' + Math.round(d.rentRangeHigh).toLocaleString() : null;
+        const range = (lo && hi) ? ` (market range: ${lo}–${hi})` : '';
+        hint.textContent = `Estimated by Rentcast based on similar properties nearby${range}. Adjust if you know your market.`;
+      }
     }
 
     if (prefilled) {
