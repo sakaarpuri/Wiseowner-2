@@ -1713,7 +1713,7 @@ select option { background: #1a2035; color: var(--text); }
 
 </div><!-- end .main -->
 
-  <aside class="preview-panel" id="previewPanel">
+  <aside class="preview-panel" id="previewPanel" style="display:none">
     <div class="pv-card">
       <div class="pv-title">📊 Quick Snapshot</div>
       <div class="pv-row"><span class="pv-lbl">Estimated equity</span><span class="pv-val" id="pvEquity">—</span></div>
@@ -1738,7 +1738,7 @@ select option { background: #1a2035; color: var(--text); }
 </div><!-- end .form-wrap -->
 
 <!-- MOBILE PREVIEW PILL + SHEET -->
-<div class="preview-pill" id="previewPill" onclick="openPreviewSheet()">
+<div class="preview-pill" id="previewPill" onclick="openPreviewSheet()" style="display:none">
   <span>💰 Equity</span><span class="pp-eq" id="pillEquity">—</span>
 </div>
 <div class="preview-sheet" id="previewSheet">
@@ -2123,6 +2123,10 @@ function goTo(n){
   const sc=document.getElementById('stepCtr');
   if(sc)sc.textContent=n>0?`Step ${n} of 5`:'';
   document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
+  // Hide preview panel on homepage (step 0), show from step 1 onwards
+  const onHome = n === 0;
+  document.getElementById('previewPanel').style.display = onHome ? 'none' : '';
+  document.getElementById('previewPill').style.display   = onHome ? 'none' : '';
   window.scrollTo({top:0,behavior:'smooth'});
   updatePreview();
 }
