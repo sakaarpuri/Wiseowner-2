@@ -106,27 +106,29 @@ header {
 }
 
 /* ── PROGRESS ── */
-.prog-wrap { height: 2px; background: var(--glass-border); position: sticky; top: 62px; z-index: 199; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.6); }
-
 /* ── TABS ── */
 .tabs {
   background: rgba(11,15,26,0.8);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--glass-border);
-  display: flex; padding: 0 2rem;
+  display: flex; padding: 0 0.8rem;
   overflow-x: auto; scrollbar-width: none;
   position: sticky; top: 64px; z-index: 198;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
-  padding: 0.65rem 1rem; font-size: 0.72rem; font-weight: 600;
+  padding: 0.55rem 0.85rem 0.75rem; font-size: 0.72rem; font-weight: 600;
   color: var(--text-muted); border-bottom: 2px solid transparent;
   white-space: nowrap; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 0.3rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  flex-shrink: 0;
 }
+.tab .ti { font-size: 1.05rem; line-height: 1; }
+.tab .tl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.3px; }
 .tab.done { color: var(--green); }
 .tab.active { color: var(--green); border-bottom-color: var(--green); }
+.prog-wrap { height: 3px; background: var(--glass-border); position: absolute; bottom: 0; left: 0; right: 0; z-index: 1; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.5); }
 
 /* ── LAYOUT ── */
 .main { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; position: relative; z-index: 1; }
@@ -154,6 +156,12 @@ header {
 }
 .heading { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 0.55rem; }
 .subtext { color: var(--text-mid); font-size: 0.93rem; line-height: 1.65; margin-bottom: 2rem; max-width: 540px; }
+.trust-strip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+  background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 30px; padding: 0.28rem 0.85rem; margin-bottom: 1.6rem;
+}
 
 /* ── GLASS CARDS ── */
 .card {
@@ -236,20 +244,45 @@ select option { background: #1a2035; color: var(--text); }
 #apprec[type="range"] {
   width: 100%; height: 6px; cursor: pointer;
   accent-color: var(--green);
-  margin-top: 0.2rem;
+  margin: 0.5rem 0 0;
+  /* 44px touch target on mobile */
+  min-height: 44px;
+  -webkit-appearance: none; appearance: none;
+  background: transparent;
 }
+#apprec[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; background: var(--glass-border); border-radius: 3px;
+}
+#apprec[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--green); cursor: pointer; margin-top: -8px;
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.2);
+}
+#apprec[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--green); cursor: pointer; border: none;
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.2);
+}
+/* Large value badge above slider */
+.fc-badge {
+  display: inline-block;
+  font-size: 1.3rem; font-weight: 800;
+  color: var(--green); background: var(--green-dim);
+  border: 1.5px solid rgba(74,222,128,0.3);
+  border-radius: 40px; padding: 0.4rem 1.2rem;
+  margin-bottom: 0.4rem;
+  transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+  letter-spacing: -0.3px;
+}
+.fc-badge.pop { transform: scale(1.12); }
+.fc-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 0.3rem; }
 .fc-track {
   display: flex;
   justify-content: space-between;
   font-size: 0.72rem;
   color: var(--text-muted);
-  margin-top: 0.45rem;
-}
-.fc-center {
-  font-weight: 700;
-  color: var(--green);
-  font-size: 0.82rem;
-  text-align: center;
+  margin-top: 0.3rem;
 }
 .fc-sentence {
   margin-top: 0.8rem;
@@ -460,6 +493,42 @@ select option { background: #1a2035; color: var(--text); }
 .ai-intro-card .ai-icon { font-size: 1.8rem; flex-shrink: 0; }
 .ai-intro-card strong { display: block; font-size: 0.86rem; font-weight: 700; color: var(--green); margin-bottom: 0.2rem; }
 .ai-intro-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
+/* ── SOCIAL PROOF PREVIEW ── */
+.sp-wrap { margin: 1.6rem 0 1.8rem; }
+.sp-caption {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem;
+}
+.sp-caption::before, .sp-caption::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
+.sp-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 1.3rem 1.4rem;
+  pointer-events: none; user-select: none; position: relative; overflow: hidden;
+  opacity: 0.92;
+}
+.sp-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 55%, rgba(13,17,35,0.85) 100%);
+  border-radius: 18px; pointer-events: none;
+}
+.sp-verdict-top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem; }
+.sp-eyebrow { font-size: 0.58rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.55rem; }
+.sp-icon { font-size: 2rem; }
+.sp-name { font-size: 1.5rem; font-weight: 900; color: var(--coral); flex: 1; }
+.sp-pill { font-size: 0.78rem; font-weight: 700; background: rgba(255,255,255,0.07); padding: 0.2rem 0.7rem; border-radius: 999px; }
+.sp-bar { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; margin-bottom: 0.9rem; overflow: hidden; }
+.sp-fill { height: 100%; width: 83%; background: linear-gradient(90deg, #c0392b, var(--coral)); border-radius: 2px; }
+.sp-rows { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem 1rem; }
+.sp-row { display: flex; flex-direction: column; gap: 0.15rem; }
+.sp-lbl { font-size: 0.62rem; color: var(--text-muted); font-weight: 600; }
+.sp-val { font-size: 0.85rem; font-weight: 700; color: var(--text); filter: blur(5px); }
+.sp-divider { height: 1px; background: var(--glass-border); margin: 0.85rem 0 0.8rem; }
+.sp-ai-hdr { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; }
+.sp-ai-hdr span { font-size: 1.1rem; }
+.sp-ai-hdr strong { font-size: 0.82rem; font-weight: 800; color: var(--green); flex: 1; }
+.sp-ai-tag { font-size: 0.56rem; font-weight: 800; letter-spacing: 1.4px; background: rgba(74,222,128,0.15); color: var(--green); padding: 0.18rem 0.6rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.25); }
+.sp-ai-body { font-size: 0.78rem; color: var(--text-mid); line-height: 1.7; filter: blur(4px); }
 
 /* ── RESULTS ── */
 #results { display: none; }
@@ -795,13 +864,16 @@ select option { background: #1a2035; color: var(--text); }
   .sc-card.best { transform: none; box-shadow: 0 0 24px rgba(74,222,128,0.15); }
   header { padding: 0 1rem; }
   .tabs { padding: 0 0.5rem; }
-  .main { padding: 2rem 1rem 5rem; }
+  .main { padding: 2rem 1rem 6rem; } /* extra bottom padding for sticky bar */
   .tbl { font-size: 0.72rem; }
   .tbl th, .tbl td { padding: 0.55rem 0.5rem; }
   .share-bar { gap: 0.5rem; }
   .share-btn { font-size: 0.74rem; padding: 0.5rem 0.8rem; }
   .quick-badges { gap: 0.4rem; }
   .qb { font-size: 0.68rem; }
+  .btn-row .btn-cta:only-child { width: 100%; }
+  .sp-rows { grid-template-columns: 1fr 1fr; }
+  .sp-ai-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 }
 
 /* ── SCAN LINE ON AI BOX ── */
@@ -986,28 +1058,36 @@ select option { background: #1a2035; color: var(--text); }
   transition: opacity 0.5s;
 }
 .pv-updated.show { opacity: 1; }
-/* Mobile floating pill */
+/* Mobile sticky bottom bar */
 .preview-pill {
   display: none;
   position: fixed;
-  bottom: 1.2rem;
-  right: 1.2rem;
+  bottom: 0; left: 0; right: 0;
   z-index: 200;
-  background: rgba(11,15,26,0.92);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(16px);
-  border-radius: 30px;
-  padding: 0.5rem 1rem;
-  font-size: 0.76rem;
+  background: rgba(11,15,26,0.96);
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  border-radius: 0;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   align-items: center;
-  gap: 0.45rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+  gap: 0;
+  justify-content: space-between;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
   transition: transform 0.15s;
 }
-.preview-pill:active { transform: scale(0.96); }
+.preview-pill:active { transform: scale(0.99); }
 .pp-eq { color: var(--green); }
+.pp-bar-items { display: flex; gap: 1.2rem; align-items: center; }
+.pp-bar-item { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+.pp-bar-lbl { font-size: 0.54rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.pp-bar-val { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+.pp-bar-val.pos { color: var(--green); }
+.pp-bar-val.neg { color: var(--coral); }
+.pp-open-icon { font-size: 0.75rem; color: var(--text-muted); }
 @media (max-width: 1059px) {
   .preview-pill { display: flex; }
 }
@@ -1313,14 +1393,14 @@ select option { background: #1a2035; color: var(--text); }
     </div>
   </div>
 </header>
-<div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
 <div class="tabs" id="tabs">
-  <div class="tab active" data-s="0">🏠 Start</div>
-  <div class="tab" data-s="1">📍 Property</div>
-  <div class="tab" data-s="2">💳 Mortgage</div>
-  <div class="tab" data-s="3">🔑 Rental</div>
-  <div class="tab" data-s="4">🏷️ Sale</div>
-  <div class="tab" data-s="5">💰 You</div>
+  <div class="tab active" data-s="0"><span class="ti">🏠</span><span class="tl">Start</span></div>
+  <div class="tab" data-s="1"><span class="ti">📍</span><span class="tl">Property</span></div>
+  <div class="tab" data-s="2"><span class="ti">💳</span><span class="tl">Mortgage</span></div>
+  <div class="tab" data-s="3"><span class="ti">🔑</span><span class="tl">Rental</span></div>
+  <div class="tab" data-s="4"><span class="ti">🏷️</span><span class="tl">Sale</span></div>
+  <div class="tab" data-s="5"><span class="ti">💰</span><span class="tl">You</span></div>
+  <div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
 </div>
 
 <div class="form-wrap"><div class="main" id="formMain">
@@ -1341,11 +1421,31 @@ select option { background: #1a2035; color: var(--text); }
         <div class="qb">🔒 Nothing stored</div>
         <div class="qb">🤖 AI reads it for you</div>
       </div>
+      <div class="sp-wrap">
+        <div class="sp-caption">Here's what your report looks like</div>
+        <div class="sp-card">
+          <div class="sp-eyebrow">⭐ Our Recommendation</div>
+          <div class="sp-verdict-top">
+            <span class="sp-icon">🏷️</span>
+            <span class="sp-name">Sell It</span>
+            <span class="sp-pill">83/100</span>
+          </div>
+          <div class="sp-bar"><div class="sp-fill"></div></div>
+          <div class="sp-rows">
+            <div class="sp-row"><span class="sp-lbl">Net proceeds</span><span class="sp-val">$247,400</span></div>
+            <div class="sp-row"><span class="sp-lbl">Est. tax owed</span><span class="sp-val">$28,500</span></div>
+            <div class="sp-row"><span class="sp-lbl">10-yr projection</span><span class="sp-val">$381,200</span></div>
+          </div>
+          <div class="sp-divider"></div>
+          <div class="sp-ai-hdr"><span>🤖</span><strong>Claude's Take</strong><span class="sp-ai-tag">AI ANALYSIS</span></div>
+          <div class="sp-ai-body">Your numbers point toward selling. With $247k in net proceeds and a 15% federal rate thanks to the §121 exclusion covering most of your gain, the opportunity cost of holding is real — rental cash flow turns negative at current expenses, and the market is cooling...</div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:0.5rem;"><button class="btn-cta" onclick="goTo(1)">Show me the numbers →</button></div>
       <div class="ai-intro-card">
         <div class="ai-icon">🤖</div>
         <div><strong>Not just a calculator</strong><p>After your numbers are in, an AI gives you a straight-talk read of your specific situation — what the math actually means, and what questions you should be asking next.</p></div>
       </div>
-      <div class="btn-row" style="margin-top:1.5rem;"><button class="btn-cta" onclick="goTo(1)">Show me the numbers →</button></div>
     </div>
   </div>
 
@@ -1354,6 +1454,7 @@ select option { background: #1a2035; color: var(--text); }
     <div class="eyebrow">Step 1 of 5</div>
     <h2 class="heading">Your property 🏠</h2>
     <p class="subtext">Start by telling us what kind of property this is.</p>
+    <div class="trust-strip">🔒 Nothing stored on our servers — your numbers never leave your browser.</div>
 
     <div class="proptype-grid">
       <div class="proptype-btn selected" id="pt-primary" onclick="onPropTypeChange('primary',this)">
@@ -1437,11 +1538,13 @@ select option { background: #1a2035; color: var(--text); }
 
     <div class="card">
       <div class="card-title">🔮 Where do you see the value going?</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1.1rem;line-height:1.55;">Drag to set your expected annual appreciation for your neighbourhood.</p>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;line-height:1.55;">Drag to set your expected annual appreciation for your neighbourhood.</p>
+      <div class="fc-wrap">
+        <div class="fc-badge" id="fcBadge">📈 +4.0% / yr</div>
+      </div>
       <input type="range" id="apprec" min="-2" max="10" step="0.5" value="4" oninput="syncForecast(this.value)">
       <div class="fc-track">
         <span>📉 −2%</span>
-        <span class="fc-center" id="fcLabel">📈 +4.0% / yr</span>
         <span>🔥 10%</span>
       </div>
       <div class="fc-sentence" id="fcSentence">
@@ -1788,7 +1891,12 @@ select option { background: #1a2035; color: var(--text); }
 
 <!-- MOBILE PREVIEW PILL + SHEET -->
 <div class="preview-pill" id="previewPill" onclick="openPreviewSheet()" style="display:none">
-  <span>💰 Equity</span><span class="pp-eq" id="pillEquity">—</span>
+  <div class="pp-bar-items">
+    <div class="pp-bar-item"><span class="pp-bar-lbl">Equity</span><span class="pp-bar-val pos" id="pillEquity">—</span></div>
+    <div class="pp-bar-item"><span class="pp-bar-lbl">Net proceeds</span><span class="pp-bar-val" id="pillNetProc">—</span></div>
+    <div class="pp-bar-item"><span class="pp-bar-lbl">Rent CF/mo</span><span class="pp-bar-val" id="pillCashFlow">—</span></div>
+  </div>
+  <span class="pp-open-icon">▲ Details</span>
 </div>
 <div class="preview-sheet" id="previewSheet">
   <button class="ps-close" onclick="closePreviewSheet()">×</button>
@@ -1827,8 +1935,13 @@ select option { background: #1a2035; color: var(--text); }
       <button class="share-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
     </div>
     <div class="disc-wrap">
-      <button class="disc-toggle" onclick="toggleDisc(this)">ⓘ Methodology &amp; disclaimer <span class="disc-arrow">▾</span></button>
-      <div class="disc-body" id="discBody">⚠️ <strong>Decision-support tool — not tax or financial advice.</strong> US federal and state tax rules (§121 exclusion, capital gains brackets, NIIT, depreciation recapture) are approximated using top marginal rates. Actual tax liability depends on your full situation and IRS interpretation. State rates shown are estimates — some states have additional rules, deductions, or thresholds. Claude's analysis is informational only. Always consult a CPA or financial advisor before major property decisions.</div>
+      <button class="disc-toggle" onclick="toggleDisc(this)">📐 How we calculate this <span class="disc-arrow">▾</span></button>
+      <div class="disc-body" id="discBody">
+        <strong>Capital gains tax:</strong> We apply IRS §121 exclusion ($250k single / $500k married), then compute federal long-term capital gains at 0%, 15%, or 20% based on your income bracket (2024 thresholds). Net Investment Income Tax (NIIT) at 3.8% applies above $200k/$250k AGI. Depreciation recapture (§1250) taxed at 25% if you rented the property. State rate is the top marginal capital gains rate for your state — <a href="https://taxfoundation.org/data/all/state/state-capital-gains-tax-rates-2024/" target="_blank" style="color:var(--green)">see Tax Foundation</a>.<br><br>
+        <strong>Rental cash flow:</strong> Gross rent × (1 − vacancy rate) − mortgage − property tax − insurance − maintenance − management fee − landlord insurance.<br><br>
+        <strong>10-year projections:</strong> Sell path compounds net proceeds at your reinvestment return. Rent path = appreciation on property value + cumulative after-tax cash flow (discounted 30%). Keep path = appreciated property value minus outstanding mortgage balance.<br><br>
+        ⚠️ These are estimates. Consult a CPA or financial advisor before major property decisions. IRS links: <a href="https://www.irs.gov/taxtopics/tc701" target="_blank" style="color:var(--green)">§121 exclusion</a> · <a href="https://www.irs.gov/taxtopics/tc409" target="_blank" style="color:var(--green)">capital gains</a> · <a href="https://www.irs.gov/taxtopics/tc414" target="_blank" style="color:var(--green)">rental income</a>.
+      </div>
     </div>
     <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
   </div>
@@ -2164,10 +2277,13 @@ function fmtK(n){if(!isFinite(n))return'$0';const sg=n<0?'-':'';const a=Math.abs
 // Forecast slider
 function syncForecast(pct){
   const n=parseFloat(pct);
-  const lbl=document.getElementById('fcLabel');
-  if(lbl){
+  const badge=document.getElementById('fcBadge');
+  if(badge){
     const emoji=n<=-1?'📉':n===0?'➡️':n<4?'📈':n<7?'🚀':'🔥';
-    lbl.textContent=`${emoji} ${n>0?'+':''}${n.toFixed(1)}% / yr`;
+    badge.textContent=`${emoji} ${n>0?'+':''}${n.toFixed(1)}% / yr`;
+    badge.classList.add('pop');
+    clearTimeout(badge._pt);
+    badge._pt=setTimeout(()=>badge.classList.remove('pop'),220);
   }
   const curVal=gv('curVal',0);
   const hrz=Math.max(1,gv('horizon',10));
@@ -2266,8 +2382,11 @@ function updatePreview(){
   const upd=document.getElementById('pvUpdated');
   if(upd){upd.classList.add('show');clearTimeout(upd._t);upd._t=setTimeout(()=>upd.classList.remove('show'),1800);}
 
-  // Mobile pill + sheet
+  // Mobile bottom bar + sheet
   set('pillEquity',fmt(equity));
+  set('pillNetProc',fmt(netProc));
+  const pillCF=document.getElementById('pillCashFlow');
+  if(pillCF){pillCF.textContent=monthRent>0?fmt(monthRentCF):'—';pillCF.className='pp-bar-val'+(monthRent>0?(monthRentCF>=0?' pos':' neg'):'');}
   set('psEquity',fmt(equity));
   set('psNetProc',fmt(netProc));
   setClass('psNetProc','ps-val',netProc>=0?'pos':'neg');
