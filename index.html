@@ -1196,7 +1196,7 @@ select option { background: #1a2035; color: var(--text); }
 <header>
   <div class="logo">🏠 Keep or <em>Sell</em></div>
   <div class="step-ctr" id="stepCtr"></div>
-  <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()">🔍 Find Deals</button>
+  <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
   <div class="country-sel">
     <div class="sel-wrap">
       <select onchange="void(0)" title="Country">
@@ -1700,7 +1700,7 @@ select option { background: #1a2035; color: var(--text); }
 </div>
 
 <!-- MOTIVATED SELLER DIRECTORY -->
-<div id="directory">
+<div id="directory" style="display:none">
   <div class="dir-wrap">
     <button class="dir-back-btn" onclick="showCalculator()">← Back to Keep/Sell</button>
     <div class="dir-hero">
