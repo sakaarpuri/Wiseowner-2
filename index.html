@@ -720,6 +720,14 @@ select option { background: #1a2035; color: var(--text); }
 .snap-arrow.open { transform: rotate(180deg); }
 .snap-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; max-height: 0; opacity: 0; }
 .snap-body.open { max-height: 600px; opacity: 1; }
+.disclosure-toggle { cursor: pointer; display: flex; align-items: flex-start; gap: 0.8rem; user-select: none; }
+.disclosure-toggle:hover { opacity: 0.9; }
+.disclosure-copy { flex: 1; }
+.disclosure-copy p { font-size: 0.84rem; color: var(--text-mid); line-height: 1.55; margin-top: 0.35rem; }
+.disclosure-arrow { margin-left: auto; font-size: 0.9rem; transition: transform 0.25s; color: var(--text-muted); }
+.disclosure-arrow.open { transform: rotate(180deg); }
+.disclosure-body { overflow: hidden; transition: max-height 0.35s ease, opacity 0.25s ease; max-height: 0; opacity: 0; }
+.disclosure-body.open { max-height: 1000px; opacity: 1; margin-top: 1rem; }
 
 /* ── VERDICT CARD ── */
 .sc-grid { display: block; margin-bottom: 2rem; }
@@ -1597,6 +1605,71 @@ select option { background: #1a2035; color: var(--text); }
 .gate-signin-link { font-size: 0.76rem; color: var(--text-muted); }
 .gate-signin-link span { color: var(--green); cursor: pointer; font-weight: 600; }
 .gate-signin-link span:hover { text-decoration: underline; }
+.premium-gate {
+  display: none;
+  background: rgba(255,252,247,0.96);
+  border: 1px solid var(--glass-border);
+  border-radius: 22px;
+  padding: 1.6rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+.premium-gate.visible { display: block; }
+.premium-gate-head { text-align: center; margin-bottom: 1.25rem; }
+.premium-gate-head .gate-icon { margin-bottom: 0.45rem; }
+.premium-gate-head .gate-title { margin-bottom: 0.45rem; }
+.premium-gate-head .gate-desc { max-width: 520px; margin: 0 auto; }
+.premium-feature-list { display: grid; gap: 0.9rem; margin-bottom: 1.2rem; }
+.premium-feature {
+  background: rgba(249,244,235,0.82);
+  border: 1px solid rgba(115,100,80,0.12);
+  border-radius: 16px;
+  padding: 1rem 1.05rem;
+}
+.premium-feature h4 {
+  font-size: 0.98rem;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+.premium-feature p {
+  font-size: 0.84rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+}
+.premium-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.1rem 0 1rem;
+  color: #8b6b49;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.premium-divider::before,
+.premium-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(121,103,84,0.16);
+}
+.gate-overlay.compact {
+  position: static;
+  inset: auto;
+  display: none;
+  border-radius: 16px;
+  background: rgba(249,244,235,0.72);
+  backdrop-filter: none;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+  text-align: left;
+}
+.gate-overlay.compact.visible { display: flex; }
+.gate-overlay.compact .gate-icon { font-size: 1.15rem; margin: 0; }
+.gate-overlay.compact .gate-title { font-size: 0.88rem; margin: 0 0 0.15rem; }
+.gate-overlay.compact .gate-desc { font-size: 0.76rem; max-width: none; margin: 0; }
 
 /* Upgrade success banner */
 .upgrade-banner {
@@ -2484,7 +2557,15 @@ select option { background: #fffaf4; color: var(--text); }
     <div id="vacNote" class="inv-note">🏖️ <strong>Vacation / Cottage:</strong> Second homes usually do not get the same primary-home tax break. We’ll estimate the sale assuming no main-home exclusion.</div>
 
     <div id="s121Card" class="card">
-      <div class="card-title">🏠 Primary-home tax break</div>
+      <div class="card-title disclosure-toggle" onclick="toggleS121(this)">
+        <span>🏠</span>
+        <div class="disclosure-copy">
+          <div>Primary-home tax questions <span class="opt-badge">More accuracy</span></div>
+          <p>Optional now. Expand this only if you want us to estimate your sale tax more accurately.</p>
+        </div>
+        <span class="disclosure-arrow">▾</span>
+      </div>
+      <div id="s121Body" class="disclosure-body">
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">If this was your main home, part of your profit may be tax-free when you sell. In many cases that is up to <strong>$250,000</strong> of gain, or <strong>$500,000</strong> if married filing jointly, as long as you owned and lived there for at least <strong>2 of the last 5 years</strong>.</p>
       <div class="grid g2">
         <div class="field">
@@ -2494,17 +2575,17 @@ select option { background: #fffaf4; color: var(--text); }
             <option value="married">Married Filing Jointly</option>
             <option value="hoh">Head of Household</option>
           </select>
-          <span class="hint">This affects the size of your potential home-sale tax break and the federal tax estimate.</span>
+          <span class="hint">Why we ask: your filing status can change how much profit may be tax-free when you sell. A best estimate is fine.</span>
         </div>
         <div class="field">
           <label>Years you lived there as your main home</label>
           <div class="wrap"><span class="sfx">yrs</span><input type="number" id="preYrs" class="has-sfx" placeholder="3" min="0"></div>
-          <div class="explain">You usually need <strong>2+ years</strong> living there as your main home to qualify. Enter 0 if it was always a rental or second home.</div>
+          <div class="explain">Why we ask: living there long enough can reduce or eliminate sale tax if this was your main home. Enter 0 if it was always a rental or second home.</div>
         </div>
         <div class="field">
           <label>Total years owned</label>
           <div class="wrap"><span class="sfx">yrs</span><input type="number" id="totalYrs" class="has-sfx" placeholder="5" min="1"></div>
-          <div class="explain">From purchase year to today. E.g. bought in 2019 = ~6 years.</div>
+          <div class="explain">Why we ask: this helps us judge how long the property was yours and makes the tax estimate more realistic. Rough math is fine.</div>
         </div>
         <div class="field">
           <label>Did you ever rent this property out?</label>
@@ -2512,7 +2593,7 @@ select option { background: #fffaf4; color: var(--text); }
             <option value="no" selected>No</option>
             <option value="yes">Yes</option>
           </select>
-          <span class="hint">If yes, we’ll account for the extra tax treatment that can come with prior rental use.</span>
+          <span class="hint">Why we ask: past rental use can change your sale tax estimate.</span>
         </div>
       </div>
       <div id="rentedDetails" style="display:none;margin-top:0.8rem;">
@@ -2520,15 +2601,17 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="field">
             <label>How many years was it rented?</label>
             <div class="wrap"><span class="sfx">yrs</span><input type="number" id="rentedYrs" class="has-sfx" placeholder="3" min="0"></div>
+            <span class="hint">Only needed if the property was a rental for part of the time.</span>
           </div>
           <div class="field">
             <label>Estimated building value (not land)</label>
             <div class="wrap"><span class="pfx">$</span><input type="number" id="dprBuildVal" class="has-pfx" placeholder="350,000" oninput="syncBuildingVal('dprBuildVal',this.value)"></div>
-            <div class="explain">Used to estimate prior rental write-offs. The building is typically 70–85% of total value. <strong>This also pre-fills the rental section.</strong></div>
+            <div class="explain">Why we ask: this helps estimate past rental deductions that can affect taxes when you sell. The building is typically 70–85% of total value. <strong>This also pre-fills the rental section.</strong></div>
           </div>
         </div>
       </div>
       <div class="callout info"><span class="ci">💡</span><div>This home-sale tax break applies only to a <strong>main home</strong>. Vacation homes and pure rentals usually do not qualify. We keep the technical rule details in the final breakdown and methodology.</div></div>
+      </div>
     </div>
 
     <div class="btn-row"><button class="btn-back" onclick="goTo(0)">← Back</button><button class="btn-next" onclick="goTo(2)">Next: Mortgage →</button></div>
@@ -2546,13 +2629,13 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field" id="f-mortBal">
           <label>How much do you still owe?</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000" onblur="blurCheck('mortBal', v=>v>=0&&!isNaN(v))"></div>
-          <span class="hint">The remaining balance on your mortgage statement.</span>
+          <span class="hint">Why we ask: this affects how much cash you would actually unlock if you sold.</span>
           <span class="err-msg">Enter your mortgage balance ($0 if it's paid off)</span>
         </div>
         <div class="field">
           <label>Your monthly mortgage payment</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="monthMort" class="has-pfx" placeholder="2,200"></div>
-          <span class="hint">Principal + interest only. Don't include property tax or insurance if they're billed separately.</span>
+          <span class="hint">Why we ask: this helps compare your monthly ownership cost with the rental option.</span>
         </div>
         <div class="field">
           <label>Interest rate</label>
@@ -2569,7 +2652,7 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field">
           <label>Penalty if you break it early (if closed)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="breakPen" class="has-pfx" placeholder="5,000"></div>
-          <div class="explain">Call your lender and ask: <em>"What's my prepayment penalty today?"</em> It's usually 3 months of interest, or an IRD calculation — whichever is higher. Enter $0 if your mortgage is open.</div>
+          <div class="explain">Why we ask: this can reduce what you keep if you sell before the mortgage term ends. Enter $0 if your mortgage is open.</div>
         </div>
       </div>
     </div>
@@ -2577,7 +2660,7 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="card">
       <div class="card-title">🧾 What you pay each month to own it</div>
       <div class="grid g3">
-        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Annual bill ÷ 12</span></div>
+        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Why we ask: this is part of your true monthly cost to keep the home. Annual bill ÷ 12.</span></div>
         <div class="field"><label>Home insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="homeIns" class="has-pfx" placeholder="180"></div></div>
         <div class="field"><label>Condo / strata fees</label><div class="wrap"><span class="pfx">$</span><input type="number" id="condoFee" class="has-pfx" placeholder="0"></div><span class="hint">$0 if not applicable</span></div>
       </div>
@@ -2598,13 +2681,13 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field" id="f-monthRent">
           <label>Estimated monthly rent</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="monthRent" class="has-pfx" placeholder="3,200" onblur="blurCheck('monthRent', v=>v>0)"></div>
-          <span class="hint" id="rentHint">We'll estimate this from your address — or enter your own number.</span>
+          <span class="hint" id="rentHint">Why we ask: this tells us whether renting would actually create monthly income. We can estimate it from your address.</span>
           <span class="err-msg">Enter an estimated rent, even a rough guess</span>
         </div>
         <div class="field">
           <label>How often might it sit empty? (vacancy)</label>
           <div class="wrap"><span class="sfx">%</span><input type="number" id="vacRate" class="has-sfx" placeholder="5" min="0" max="50"></div>
-          <div class="explain">This is the % of the year with no tenant. <strong>Tight market (NYC, LA, Austin)?</strong> Use 3–5%. <strong>Smaller city or uncertain?</strong> Use 8–10%. It's basically: how many weeks per year without rent × (100 ÷ 52).</div>
+          <div class="explain">Why we ask: even strong rentals are not occupied 100% of the time. If you do not know, use 3–5% for a tight market or 8–10% if you're less sure.</div>
         </div>
       </div>
     </div>
@@ -2612,9 +2695,9 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="card">
       <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
       <div class="grid g2">
-        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint" id="maintHint">Estimated at 1% of property value ÷ 12 — adjust if you know better.</span></div>
-        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Usually 8–12% of monthly rent. Enter $0 if you'd self-manage.</span></div>
-        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="150" value="150"></div><span class="hint">Estimated — typically $100–$200/mo. Adjust to your actual policy.</span></div>
+        <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint" id="maintHint">Why we ask: rent profit can disappear if upkeep is ignored. We start with a rough estimate and you can adjust it.</span></div>
+        <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Why we ask: this affects whether renting feels worth it after real-world management costs.</span></div>
+        <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="150" value="150"></div><span class="hint">Why we ask: renting often changes your insurance cost. Rough estimate is fine.</span></div>
         <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="75" value="75"></div><span class="hint">Estimated — tax filing, leases, occasional legal advice. Adjust as needed.</span></div>
       </div>
     </div>
@@ -2626,13 +2709,13 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field">
           <label>Estimated building value (not land)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="buildingVal" class="has-pfx" placeholder="400,000" oninput="syncBuildingVal('buildingVal',this.value)"></div>
-          <span class="hint" id="buildingValHint">Pre-filled from Step 1 if you entered it there — adjust if needed.</span>
-          <div class="explain">You can only depreciate the structure — not the land. Building value is typically <strong>70–85% of total value</strong>. So a $600k property → ~$420k building.</div>
+          <span class="hint" id="buildingValHint">Why we ask: only needed if it was a rental. This helps estimate past rental deductions that may affect sale tax.</span>
+          <div class="explain">If you do not know, use roughly <strong>70–85%</strong> of the property value for the building itself.</div>
         </div>
         <div class="field">
           <label>Annual depreciation deduction (building ÷ 27.5)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="ccaAnn" class="has-pfx" placeholder="14,545"></div>
-          <div class="explain">Auto-computed from building value ÷ 27.5 — adjust if you know the exact figure. <strong>Leave at $0 to skip</strong> — but note the IRS may still assume depreciation was taken when you sell.</div>
+          <div class="explain">Why we ask: this helps estimate the paper deduction landlords often claim each year. Leave at $0 if you are unsure and we will keep the estimate simple.</div>
         </div>
       </div>
       <div class="callout info"><span class="ci">⚠️</span><div><strong>Depreciation recapture:</strong> The IRS taxes recaptured depreciation at 25% (§1250) when you sell — even if you didn't claim it. This is separate from capital gains tax. Talk to a CPA before deciding whether to claim it.</div></div>
@@ -2675,12 +2758,12 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field">
           <label>Estimated annual household income (all sources)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="annInc" class="has-pfx" placeholder="95,000"></div>
-          <div class="explain">Used to estimate your federal tax bracket and any higher-income surtax. A rough number is fine — check your last W-2, 1099, or tax return.</div>
+          <div class="explain">Why we ask: your income can affect the tax rate used in the sale estimate. A rough number is fine.</div>
         </div>
         <div class="field">
           <label>Capital improvements done to the property</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="acbAdd" class="has-pfx" placeholder="0"></div>
-          <div class="explain">A kitchen remodel, new addition, finished basement — these increase your <strong>cost basis</strong> (IRS Form 1040 Schedule D) and reduce your taxable gain. Include permanent improvements, not regular repairs. Keep all receipts.</div>
+          <div class="explain">Why we ask: larger upgrades can reduce your taxable profit when you sell. Include major improvements, not routine repairs.</div>
         </div>
       </div>
       <div class="callout forest"><span class="ci">🧮</span><div>We calculate your gain automatically, then apply the relevant home-sale tax break, federal rate, any higher-income surtax, and your state rate. The line-by-line breakdown appears in results.</div></div>
@@ -2692,12 +2775,12 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field">
           <label>If you invest the proceeds, what return do you expect?</label>
           <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
-          <span class="hint">S&P 500 index fund historical avg ~10%/yr. Balanced portfolio ~6%. Bonds ~4%. HYSA ~4.5%.</span>
+          <span class="hint">Why we ask: if you sell, this estimates what the freed-up cash might do elsewhere. A rough planning number is fine.</span>
         </div>
         <div class="field">
           <label>How many years ahead are you comparing?</label>
           <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
-          <span class="hint">10 years is a common planning horizon. Use 5 if you're deciding soon, 20 if you're thinking retirement.</span>
+          <span class="hint">Why we ask: this sets how far out to compare the long-term paths. Use 5 if the decision is near-term, 10 if unsure.</span>
         </div>
         <div class="field">
           <label>Tax-advantaged account room (401k, IRA, etc.)?</label>
@@ -2780,8 +2863,8 @@ select option { background: #fffaf4; color: var(--text); }
       <div id="snapBody" class="snap-body">
         <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:0.9rem;">Helps calibrate the debt-to-income ratio and landlord readiness score. Skip it if you prefer.</p>
         <div class="grid g2">
-          <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div></div>
-          <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Car payments, student loans, lines of credit.</span></div>
+          <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div><span class="hint">Why we ask: this helps us judge whether keeping or renting would feel comfortable month to month.</span></div>
+          <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Why we ask: this helps us judge how tight or flexible your monthly picture really is.</span></div>
           <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
           <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
         </div>
@@ -2845,47 +2928,58 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="res-header"><h1>🏠 Your Keep or Sell Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="sc-grid" id="scGrid"></div>
     <div class="upgrade-banner" id="upgradeBanner">🎉 Welcome to Pro! Your full report is now unlocked.</div>
+    <div class="premium-gate" id="premiumGate">
+      <div class="premium-gate-head">
+        <div class="gate-icon">🔓</div>
+        <div class="gate-title">Unlock the full report</div>
+        <div class="gate-desc">See what the math means in plain English and review the line-by-line tax detail behind the sell scenario.</div>
+      </div>
+      <div class="premium-feature-list">
+        <div class="premium-feature">
+          <h4>Plain-English interpretation</h4>
+          <p>See what the math means, which tradeoffs stand out, and what to think through next.</p>
+        </div>
+        <div class="premium-feature">
+          <h4>Full tax breakdown</h4>
+          <p>See the line-by-line estimate behind the sale outcome, including federal, state, and prior-rental effects when relevant.</p>
+        </div>
+      </div>
+      <div class="premium-divider">Choose a plan</div>
+      <div class="gate-plans">
+        <div class="gate-plan" onclick="startCheckout('monthly')">
+          <div class="gp-price">$7</div><div class="gp-period">/ month</div>
+          <div class="gp-label">Monthly</div>
+        </div>
+        <div class="gate-plan" onclick="startCheckout('lifetime')">
+          <div class="gp-price">$49</div><div class="gp-period">one-time</div>
+          <div class="gp-label">Lifetime ✨</div>
+        </div>
+      </div>
+      <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
+    </div>
     <!-- AI Analysis — gated for free users -->
     <div class="gate-wrap">
       <div class="ai-box" id="aiBox">
         <div class="ai-hdr"><span class="ao">📝</span><h3>Plain-English Read of Your Situation</h3><span class="al">PREMIUM</span></div>
         <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
       </div>
-      <div class="gate-overlay" id="aiGate">
-        <div class="gate-icon">🤖</div>
-        <div class="gate-title">Unlock the full interpretation</div>
-        <div class="gate-desc">Get a plain-English read of your situation — what the math means, what tradeoffs stand out, and what to think through next.</div>
-        <div class="gate-plans">
-          <div class="gate-plan" onclick="startCheckout('monthly')">
-            <div class="gp-price">$7</div><div class="gp-period">/ month</div>
-            <div class="gp-label">Monthly</div>
-          </div>
-          <div class="gate-plan" onclick="startCheckout('lifetime')">
-            <div class="gp-price">$49</div><div class="gp-period">one-time</div>
-            <div class="gp-label">Lifetime ✨</div>
-          </div>
+      <div class="gate-overlay compact" id="aiGate">
+        <div class="gate-icon">📝</div>
+        <div>
+          <div class="gate-title">Included in the full report</div>
+          <div class="gate-desc">Plain-English interpretation is part of the shared upgrade above.</div>
         </div>
-        <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
       </div>
     </div>
     <!-- Tax breakdown — gated for free users -->
     <div class="gate-wrap">
       <div id="taxBlock"></div>
-      <div class="gate-overlay" id="taxGate">
+      <div class="gate-overlay compact" id="taxGate">
         <div class="gate-icon">🇺🇸</div>
-        <div class="gate-title">Full Tax Breakdown Locked</div>
-        <div class="gate-desc">See your exact §121 exclusion, federal rate, NIIT, depreciation recapture, and state tax — line by line.</div>
-        <div class="gate-plans">
-          <div class="gate-plan" onclick="startCheckout('monthly')">
-            <div class="gp-price">$7</div><div class="gp-period">/ month</div>
-            <div class="gp-label">Monthly</div>
-          </div>
-          <div class="gate-plan" onclick="startCheckout('lifetime')">
-            <div class="gp-price">$49</div><div class="gp-period">one-time</div>
-            <div class="gp-label">Lifetime ✨</div>
-          </div>
+        <div>
+          <div class="gate-title">Included in the full report</div>
+          <div class="gate-desc">Full tax detail is part of the shared upgrade above.</div>
         </div>
-        <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
       </div>
     </div>
     <div class="sec">💡 Key Insights</div>
@@ -3410,6 +3504,8 @@ function onPropTypeChange(type, btn) {
   document.getElementById('propType').value = type;
 
   const s121  = document.getElementById('s121Card');
+  const s121Body = document.getElementById('s121Body');
+  const s121Arrow = s121?.querySelector('.disclosure-arrow');
   const invNote = document.getElementById('invNote');
   const vacNote = document.getElementById('vacNote');
   const hasRentedEl = document.getElementById('hasRented');
@@ -3419,6 +3515,8 @@ function onPropTypeChange(type, btn) {
     s121.style.display = '';
     invNote.style.display = 'none';
     vacNote.style.display = 'none';
+    if (s121Body) s121Body.classList.remove('open');
+    if (s121Arrow) s121Arrow.classList.remove('open');
   } else if (type === 'investment') {
     s121.style.display = 'none';
     invNote.style.display = 'block';
@@ -3437,6 +3535,15 @@ function onPropTypeChange(type, btn) {
     if (preYrsEl && !preYrsEl.value) preYrsEl.value = '0';
   }
   updatePreview();
+}
+
+function toggleS121(toggleEl) {
+  const card = toggleEl.closest('#s121Card');
+  const body = card?.querySelector('#s121Body');
+  const arrow = toggleEl.querySelector('.disclosure-arrow');
+  if (!body || !arrow) return;
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
 }
 
 function toggleWhyNot(toggleEl) {
@@ -4019,8 +4126,10 @@ function updateAuthUI() {
 // ── Apply / remove paywall overlays ───────────────
 function applyPaywall() {
   const isPaid = userPlan !== 'free';
+  const premiumGate = document.getElementById('premiumGate');
   const aiGate = document.getElementById('aiGate');
   const taxGate = document.getElementById('taxGate');
+  if (premiumGate) premiumGate.classList.toggle('visible', !isPaid);
   if (aiGate) aiGate.classList.toggle('visible', !isPaid);
   if (taxGate) taxGate.classList.toggle('visible', !isPaid);
 }
