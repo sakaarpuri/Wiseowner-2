@@ -10,7 +10,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
 /* ═══════════════════════════════════════════════
-   KEEP OR SELL — GLASSMORPHISM / AI-ERA DESIGN
+   KEEP OR SELL — PREMIUM-LIGHT EDITORIAL UI
    ═══════════════════════════════════════════════ */
 :root {
   /* Brand colours */
@@ -85,9 +85,23 @@ header {
   position: sticky; top: 0; z-index: 200;
 }
 .logo {
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 900;
-  color: var(--text); letter-spacing: -1px;
-  display: flex; align-items: center; gap: 0.35rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  color: var(--text);
+}
+.logo-main {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.logo-sub {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 .logo em { color: var(--green); font-style: normal; }
 .step-ctr { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
@@ -424,35 +438,104 @@ select option { background: #1a2035; color: var(--text); }
 /* ── HERO MESH ── */
 .intro-hero {
   position: relative;
-  padding: 3.5rem 0 1rem;
-  text-align: center;
+  padding: 3.5rem 0 1.8rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+  gap: 2.2rem;
+  align-items: start;
+  text-align: left;
 }
 .intro-hero::before {
   content: '';
-  position: absolute; top: -60px; left: -80px; right: -80px; height: 400px;
+  position: absolute; top: -60px; left: -80px; right: -80px; height: 420px;
   background: radial-gradient(ellipse at 30% 40%, rgba(74,222,128,0.08) 0%, transparent 55%),
               radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.07) 0%, transparent 50%),
               radial-gradient(ellipse at 60% 80%, rgba(251,113,133,0.05) 0%, transparent 45%);
   pointer-events: none; z-index: 0;
 }
+.hero-copy,
+.hero-preview,
+.hero-bottom {
+  position: relative;
+  z-index: 1;
+}
+.hero-copy {
+  padding-top: 2.2rem;
+}
+.hero-preview {
+  background: rgba(255,252,247,0.72);
+  border: 1px solid rgba(121,103,84,0.14);
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: var(--shadow-soft);
+}
+.hero-photo {
+  width: 100%;
+  height: 18rem;
+  object-fit: cover;
+  border-radius: 1.8rem;
+  display: block;
+  margin-bottom: 1.8rem;
+}
+.hero-preview-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.hero-preview-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8b6b49;
+}
+.hero-preview-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.25rem;
+  line-height: 1.04;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.035em;
+}
+.hero-preview-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-mid);
+  max-width: 31rem;
+}
+.hero-bottom {
+  grid-column: 1 / -1;
+  margin-top: 0.75rem;
+}
 
 .big-logo {
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3.2rem; font-weight: 900;
-  color: var(--text); margin-bottom: 0.5rem;
-  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 5.15rem;
+  font-weight: 700;
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 1.35rem;
+  letter-spacing: -0.045em;
   position: relative; z-index: 1;
 }
 .big-logo em {
-  color: var(--green); font-style: normal;
-  border-bottom: 2.5px solid var(--green);
-  padding-bottom: 1px;
+  color: inherit;
+  font-style: normal;
+  border-bottom: none;
+  padding-bottom: 0;
 }
-.intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin: 0 auto 1.8rem; }
+.intro-desc {
+  font-size: 1.08rem;
+  color: var(--text-mid);
+  max-width: 35rem;
+  line-height: 1.55;
+  margin: 0 0 1.8rem;
+}
 
-.path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+.path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
 .path-item {
-  background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 18px; padding: 1.4rem 1rem; text-align: center;
+  background: rgba(255,252,247,0.72); border: 1px solid var(--glass-border);
+  border-radius: 1.5rem; padding: 1.2rem 1rem; text-align: left;
   position: relative; overflow: hidden; transition: all 0.25s;
 }
 .path-item::after {
@@ -464,14 +547,14 @@ select option { background: #1a2035; color: var(--text); }
 .path-item.keep::after { background: var(--blue); }
 .path-item:hover { border-color: var(--glass-border-hover); }
 .path-item:hover::after { opacity: 1; }
-.path-item .pi { font-size: 2rem; margin-bottom: 0.4rem; display: block; }
-.path-item .pn { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; font-weight: 700; }
+.path-item .pi { font-size: 1.4rem; margin-bottom: 0.55rem; display: block; }
+.path-item .pn { font-family: Georgia, "Times New Roman", serif; font-size: 1.1rem; font-weight: 700; }
 .path-item.sell .pn { color: var(--coral); }
 .path-item.rent .pn { color: var(--gold); }
 .path-item.keep .pn { color: var(--blue); }
-.path-item .pd { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
+.path-item .pd { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.45; }
 
-.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.8rem; justify-content: center; }
+.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0; justify-content: flex-start; }
 .qb {
   background: var(--glass); border: 1px solid var(--glass-border);
   border-radius: 20px; padding: 0.32rem 0.85rem;
@@ -484,7 +567,7 @@ select option { background: #1a2035; color: var(--text); }
   background: linear-gradient(135deg, rgba(74,222,128,0.07), rgba(96,165,250,0.05));
   border: 1px solid rgba(74,222,128,0.2);
   border-radius: 18px; padding: 1.2rem 1.4rem;
-  display: flex; gap: 0.9rem; align-items: center; margin-bottom: 2rem;
+  display: flex; gap: 0.9rem; align-items: center; margin-top: 1rem;
   position: relative; overflow: hidden; text-align: left;
 }
 .ai-intro-card::before {
@@ -497,17 +580,17 @@ select option { background: #1a2035; color: var(--text); }
 .ai-intro-card p { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
 
 /* ── SOCIAL PROOF PREVIEW ── */
-.sp-wrap { margin: 1.6rem 0 1.8rem; }
+.sp-wrap { margin: 0; }
 .sp-caption {
   font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
   color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem;
 }
 .sp-caption::before, .sp-caption::after { content: ''; flex: 1; height: 1px; background: var(--glass-border); }
 .sp-card {
-  background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 18px; padding: 1.3rem 1.4rem;
+  background: rgba(255,252,247,0.78); border: 1px solid var(--glass-border);
+  border-radius: 1.65rem; padding: 1.55rem 1.65rem;
   pointer-events: none; user-select: none; position: relative; overflow: hidden;
-  opacity: 0.92;
+  opacity: 0.98;
 }
 .sp-card::after {
   content: ''; position: absolute; inset: 0;
@@ -517,7 +600,7 @@ select option { background: #1a2035; color: var(--text); }
 .sp-verdict-top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem; }
 .sp-eyebrow { font-size: 0.58rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.55rem; }
 .sp-icon { font-size: 2rem; }
-.sp-name { font-size: 1.5rem; font-weight: 900; color: var(--coral); flex: 1; }
+.sp-name { font-size: 1.6rem; font-weight: 700; color: var(--coral); flex: 1; }
 .sp-pill { font-size: 0.78rem; font-weight: 700; background: rgba(255,255,255,0.07); padding: 0.2rem 0.7rem; border-radius: 999px; }
 .sp-bar { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; margin-bottom: 0.9rem; overflow: hidden; }
 .sp-fill { height: 100%; width: 83%; background: linear-gradient(90deg, #c0392b, var(--coral)); border-radius: 2px; }
@@ -530,7 +613,7 @@ select option { background: #1a2035; color: var(--text); }
 .sp-ai-hdr span { font-size: 1.1rem; }
 .sp-ai-hdr strong { font-size: 0.82rem; font-weight: 800; color: var(--green); flex: 1; }
 .sp-ai-tag { font-size: 0.56rem; font-weight: 800; letter-spacing: 1.4px; background: rgba(74,222,128,0.15); color: var(--green); padding: 0.18rem 0.6rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.25); }
-.sp-ai-body { font-size: 0.78rem; color: var(--text-mid); line-height: 1.7; filter: blur(4px); }
+.sp-ai-body { font-size: 0.9rem; color: var(--text-mid); line-height: 1.6; }
 
 /* ── RESULTS ── */
 #results { display: none; }
@@ -860,7 +943,12 @@ select option { background: #1a2035; color: var(--text); }
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .sc-grid,.path-row,.charts,.ins-grid { grid-template-columns: 1fr; }
-  .big-logo { font-size: 2.1rem; }
+  .intro-hero { grid-template-columns: 1fr; gap: 1.4rem; }
+  .hero-copy { padding-top: 0.5rem; }
+  .hero-preview { padding: 1.2rem; }
+  .hero-photo { height: 13rem; margin-bottom: 1rem; }
+  .hero-preview-title { font-size: 2rem; }
+  .big-logo { font-size: 3.1rem; }
   .heading { font-size: 1.65rem; }
   .forecast-tiles { grid-template-columns: 1fr 1fr; }
   .sc-card.best { transform: none; box-shadow: 0 0 24px rgba(74,222,128,0.15); }
@@ -1512,6 +1600,542 @@ select option { background: #1a2035; color: var(--text); }
   font-size: 0.88rem; color: var(--text);
 }
 .upgrade-banner.show { display: block; }
+
+/* ═══════════════════════════════════════
+   PREMIUM-LIGHT OVERRIDES
+   ═══════════════════════════════════════ */
+:root {
+  --green: #305847;
+  --green-d: #244739;
+  --green-dim: rgba(48,88,71,0.10);
+  --coral: #b56d59;
+  --coral-d: #9f5c49;
+  --coral-dim: rgba(181,109,89,0.12);
+  --blue: #4c728d;
+  --blue-d: #35586f;
+  --blue-dim: rgba(76,114,141,0.11);
+  --gold: #b58d4f;
+  --gold-dim: rgba(181,141,79,0.12);
+  --purple: #8a7ca8;
+  --purple-dim: rgba(138,124,168,0.10);
+  --bg: #f4eee5;
+  --surface: rgba(255,252,247,0.92);
+  --surface-hover: rgba(255,250,244,0.98);
+  --surface-active: rgba(247,241,233,0.98);
+  --glass: rgba(255,252,247,0.82);
+  --glass-border: rgba(110,101,88,0.14);
+  --glass-border-hover: rgba(72,64,56,0.26);
+  --text: #20312a;
+  --text-mid: rgba(32,49,42,0.76);
+  --text-muted: rgba(32,49,42,0.56);
+  --shadow-soft: 0 18px 45px rgba(64, 48, 33, 0.08);
+  --shadow-card: 0 10px 24px rgba(64, 48, 33, 0.06);
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(221,232,223,0.8), transparent 26%),
+    radial-gradient(circle at top left, rgba(232,215,196,0.8), transparent 22%),
+    linear-gradient(180deg, #faf6ef 0%, var(--bg) 18%, #f5efe6 100%);
+  color: var(--text);
+  background-size: auto;
+}
+body::before, body::after {
+  filter: blur(100px);
+  opacity: 0.55;
+}
+body::before {
+  background: radial-gradient(circle, rgba(210, 224, 212, 0.7), transparent 70%);
+}
+body::after {
+  background: radial-gradient(circle, rgba(233, 220, 204, 0.65), transparent 72%);
+}
+
+header,
+.tabs {
+  background: rgba(255, 251, 246, 0.88);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.logo, .logo em, .step-ctr, .tab, .tab.done, .tab.active, .country-sel select {
+  color: var(--text);
+}
+.logo em { color: var(--green); }
+.country-sel select,
+.btn-signin,
+.user-chip,
+.share-btn,
+.dir-btn {
+  background: rgba(255,252,247,0.92);
+  border-color: var(--glass-border);
+  color: var(--text-mid);
+  box-shadow: none;
+}
+.btn-signin {
+  color: var(--green);
+  background: rgba(48,88,71,0.08);
+  border-color: rgba(48,88,71,0.18);
+}
+.user-chip:hover,
+.share-btn:hover,
+.dir-btn:hover {
+  background: var(--surface-hover);
+}
+.tab.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+.prog-wrap {
+  background: rgba(32,49,42,0.08);
+}
+.prog-fill {
+  background: linear-gradient(90deg, #557c68, var(--green));
+  box-shadow: none;
+}
+
+.heading,
+.big-logo,
+.res-header h1,
+.sec,
+.verdict-name,
+.sp-name,
+.card-title,
+.cs-title,
+.auth-logo,
+.pv-title,
+.ps-title,
+.sc-name,
+.dir-hero h1,
+.verdict-title-wrap,
+.gate-title {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+.heading,
+.res-header h1 {
+  color: var(--text);
+}
+.res-header h1 {
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+.subtext,
+.intro-desc,
+.res-header p,
+.dir-hero p,
+.hint,
+.gc-desc,
+.sp-ai-body,
+.ai-body,
+.disc-body,
+.cs-sub {
+  color: var(--text-mid);
+}
+.eyebrow,
+.sp-eyebrow,
+.sec,
+.pv-title,
+.ps-title,
+.dir-section-title {
+  color: #8b6b49;
+}
+.eyebrow,
+.trust-strip,
+.qb,
+.sp-pill,
+.opt-badge,
+.pv-badge,
+.disc-body,
+.prefill-banner,
+.dir-mock-notice,
+.upgrade-banner {
+  border-color: rgba(121, 103, 84, 0.16);
+}
+
+.card,
+.verdict-card,
+.sc-card,
+.ins-card,
+.chart-card,
+.pv-card,
+.preview-sheet,
+.auth-modal,
+.tax-box,
+.sp-card,
+.addr-card,
+.dir-sliders,
+.prop-card,
+.cs-modal,
+.tbl,
+.disc-body {
+  background: rgba(255, 252, 247, 0.86);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.card::before,
+.verdict-card::before,
+.sc-card::before,
+.sp-card::after,
+.ai-box::after {
+  display: none;
+}
+.card:hover,
+.ins-card:hover,
+.prop-card:not(.locked):hover,
+.path-item:hover,
+.proptype-btn:hover,
+.goal-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-soft);
+}
+.card.optional,
+.card.technical,
+.fc-sentence,
+.ai-intro-card,
+.tax-box,
+.addr-card {
+  background: rgba(249, 244, 235, 0.9);
+}
+
+input[type="number"],
+select,
+.addr-wrap input[type="text"],
+.auth-field input,
+.dir-search-input {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid rgba(98,87,73,0.16);
+  color: var(--text);
+  box-shadow: none;
+}
+input[type="number"]:focus,
+select:focus,
+.addr-wrap input[type="text"]:focus,
+.auth-field input:focus,
+.dir-search-input:focus {
+  border-color: rgba(48,88,71,0.34);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 0 0 4px rgba(48,88,71,0.08);
+}
+select option { background: #fffaf4; color: var(--text); }
+
+.btn-cta,
+.btn-next,
+.auth-submit,
+.btn-analyze,
+.btn-unlock {
+  background: linear-gradient(135deg, #355847, var(--green));
+  color: #fffdf9;
+  box-shadow: 0 10px 26px rgba(48,88,71,0.18);
+}
+.btn-cta::before { display: none; }
+.btn-cta:hover,
+.btn-next:hover,
+.auth-submit:hover,
+.btn-analyze:hover,
+.btn-unlock:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(48,88,71,0.22);
+}
+.btn-back,
+.cs-close {
+  background: rgba(255,252,247,0.78);
+  color: var(--text-mid);
+  border-color: var(--glass-border);
+}
+
+.intro-hero {
+  padding: 3.1rem 0 1.4rem;
+}
+.intro-hero::before {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(229,217,200,0.8) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 10%, rgba(220,232,223,0.9) 0%, transparent 48%),
+    radial-gradient(ellipse at 55% 88%, rgba(236,229,217,0.95) 0%, transparent 52%);
+  top: -30px;
+  left: -20px;
+  right: -20px;
+  height: 360px;
+}
+.big-logo {
+  font-size: 3.1rem;
+  color: var(--text);
+}
+.big-logo em {
+  color: var(--green);
+  border-bottom: none;
+}
+.intro-desc {
+  font-size: 1.08rem;
+  max-width: 620px;
+  color: var(--text-mid);
+}
+.path-item,
+.goal-card,
+.proptype-btn {
+  background: rgba(255,252,247,0.68);
+  border-color: rgba(110,101,88,0.14);
+}
+.path-item .pn,
+.pt-name,
+.gc-title { color: var(--text); }
+.path-item.sell .pn { color: var(--coral); }
+.path-item.rent .pn { color: var(--gold); }
+.path-item.keep .pn { color: var(--blue); }
+.path-item::after { opacity: 1; height: 3px; }
+.quick-badges { gap: 0.55rem; }
+.qb {
+  background: rgba(255,252,247,0.74);
+  color: var(--text-mid);
+  padding: 0.42rem 0.95rem;
+}
+.sp-card {
+  background: rgba(250,246,239,0.94);
+}
+.sp-pill {
+  background: rgba(48,88,71,0.08);
+  color: var(--green);
+}
+.sp-bar { background: rgba(32,49,42,0.08); }
+.sp-divider { background: rgba(32,49,42,0.08); }
+.sp-ai-hdr strong,
+.ai-hdr h3 { color: var(--green); }
+.sp-ai-tag,
+.ai-hdr .al {
+  background: rgba(48,88,71,0.08);
+  color: var(--green);
+  border-color: rgba(48,88,71,0.14);
+}
+.ai-intro-card {
+  align-items: flex-start;
+  border-color: rgba(115,100,80,0.14);
+}
+.ai-intro-card strong {
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.trust-strip,
+.prefill-banner {
+  background: rgba(48,88,71,0.08);
+  color: var(--green);
+}
+.inv-note,
+.callout,
+.explain {
+  background: rgba(250,246,239,0.88);
+  color: var(--text-mid);
+}
+.field:focus-within label { color: var(--green); }
+
+.preview-panel,
+.preview-sheet {
+  color: var(--text);
+}
+.preview-pill {
+  background: rgba(255,251,246,0.96);
+  border-top: 1px solid var(--glass-border);
+  box-shadow: 0 -8px 30px rgba(64,48,33,0.08);
+}
+.pp-bar-lbl,
+.pp-open-icon,
+.pv-updated,
+.pv-lbl,
+.ps-lbl { color: var(--text-muted); }
+.pp-bar-val,
+.pv-val,
+.ps-val { color: var(--text); }
+
+.ai-box {
+  background: rgba(249,244,235,0.92);
+  border: 1px solid rgba(115,100,80,0.16);
+  box-shadow: var(--shadow-card);
+}
+.tax-box h4,
+.sell .sc-name,
+.sell .sc-score,
+.sell .verdict-name,
+.best-tag,
+.sp-name { color: var(--coral); }
+.rent .sc-name,
+.rent .sc-score,
+.rent .verdict-name { color: var(--gold); }
+.keep .sc-name,
+.keep .sc-score,
+.keep .verdict-name { color: var(--blue); }
+.sc-bar,
+.verdict-bar { background: rgba(32,49,42,0.08); }
+.sc-row,
+.t-row,
+.tbl td,
+.pv-row,
+.ps-row { border-color: rgba(32,49,42,0.08); }
+.tbl th {
+  background: rgba(247,241,233,0.9);
+}
+.tbl tr:hover td {
+  background: rgba(48,88,71,0.04);
+}
+.disc-toggle {
+  color: var(--text-mid);
+}
+.toast {
+  background: rgba(255,251,246,0.96);
+  color: var(--text);
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-soft);
+}
+.calc-overlay {
+  background: rgba(244,238,229,0.9);
+}
+
+.auth-overlay,
+.cs-overlay {
+  background: rgba(58, 46, 35, 0.24);
+  backdrop-filter: blur(10px);
+}
+.auth-modal,
+.cs-modal,
+.user-menu {
+  background: rgba(255,252,247,0.97);
+  border-color: var(--glass-border);
+  box-shadow: 0 24px 60px rgba(64,48,33,0.14);
+}
+.auth-close,
+.user-chip .uc-email,
+.auth-sub,
+.auth-switch,
+.gate-signin-link,
+.gate-desc { color: var(--text-muted); }
+.auth-tab.active,
+.auth-switch span,
+.gate-signin-link span { color: var(--green); }
+.user-chip .uc-avatar {
+  color: #fffdf9;
+}
+.user-menu .um-item,
+.user-chip .uc-plan.free { color: var(--text-mid); }
+
+.gate-overlay {
+  background: linear-gradient(to bottom, rgba(244,238,229,0.5) 0%, rgba(244,238,229,0.92) 38%);
+  backdrop-filter: blur(8px);
+}
+.gate-plan {
+  background: rgba(255,252,247,0.96);
+  border-color: var(--glass-border);
+}
+.gate-plan .gp-price { color: var(--green); }
+.gate-plan:hover { background: rgba(48,88,71,0.06); }
+
+.btn-secondary {
+  background: rgba(255,252,247,0.82);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 0.95rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--glass-border-hover);
+}
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.8rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: rgba(234,226,214,0.88);
+  border: 1px solid rgba(121,103,84,0.16);
+  color: #8b6b49;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.hero-kicker::before {
+  content: '';
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: var(--green);
+}
+.hero-trust {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto 1.4rem;
+  padding: 0.7rem 1rem;
+  border-radius: 18px;
+  background: rgba(255,252,247,0.74);
+  border: 1px solid rgba(121,103,84,0.14);
+  color: var(--text-mid);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.hero-trust strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.sp-val,
+.sp-ai-body {
+  filter: none;
+}
+.sp-caption {
+  color: #8b6b49;
+}
+.sp-caption::before,
+.sp-caption::after {
+  background: rgba(121,103,84,0.16);
+}
+
+.dir-hero h1 {
+  background: none;
+  -webkit-text-fill-color: initial;
+  color: var(--text);
+}
+.dir-wrap,
+#directory { color: var(--text); }
+.dir-search-input,
+.sig-chip,
+.prop-card,
+.dir-sliders { background: rgba(255,252,247,0.86); }
+.prop-card-paywall {
+  background: rgba(244,238,229,0.8);
+}
+.pw-sub,
+.dir-count,
+.prop-city,
+.prop-owner { color: var(--text-mid); }
+
+@media (max-width: 600px) {
+  .big-logo { font-size: 2.5rem; }
+  .intro-desc { font-size: 1rem; }
+  .heading { font-size: 1.9rem; }
+  .hero-trust {
+    gap: 0.55rem;
+    font-size: 0.76rem;
+  }
+  .btn-row.hero-actions {
+    flex-direction: column;
+  }
+  .btn-row.hero-actions .btn-cta,
+  .btn-row.hero-actions .btn-secondary {
+    width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -1523,12 +2147,12 @@ select option { background: #1a2035; color: var(--text); }
 </div>
 
 <header>
-  <div class="logo">🏠 Keep or <em>Sell</em></div>
+  <div class="logo"><span class="logo-main">Keep or Sell</span><span class="logo-sub">thoughtful guidance for a major home decision</span></div>
   <div class="step-ctr" id="stepCtr"></div>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
   <div class="header-auth">
     <!-- Signed-out state -->
-    <button class="btn-signin" id="btnSignIn" onclick="showAuthModal('signin')">Sign in</button>
+    <button class="btn-signin" id="btnSignIn" onclick="showAuthModal('signup')">Start free</button>
     <!-- Signed-in state -->
     <div class="user-chip" id="userChip" onclick="toggleUserMenu(this)">
       <div class="uc-avatar" id="ucAvatar">?</div>
@@ -1566,43 +2190,48 @@ select option { background: #1a2035; color: var(--text); }
   <!-- STEP 0: INTRO -->
   <div class="step active" id="step-0">
     <div class="intro-hero">
-      <div class="big-logo">🏠 Keep or <em>Sell</em></div>
-      <div class="intro-desc">You've probably been going back and forth on this. Sell and cash out? Keep renting it? Stay put and build equity? Give us 5 minutes — we'll run the real numbers on all three paths, specific to your situation, your equity, and your state's tax rules.</div>
-      <div class="path-row">
-        <div class="path-item sell"><div class="pi">🏷️</div><div class="pn">Sell It</div><div class="pd">What you'd actually net after taxes & costs</div></div>
-        <div class="path-item rent"><div class="pi">🔑</div><div class="pn">Rent It Out</div><div class="pd">Monthly cash flow & 10-year return</div></div>
-        <div class="path-item keep"><div class="pi">🏠</div><div class="pn">Stay Put</div><div class="pd">Equity growth & true cost of staying</div></div>
-      </div>
-      <div class="quick-badges">
-        <div class="qb">⏱️ ~5 minutes</div>
-        <div class="qb">🇺🇸 Real US tax math</div>
-        <div class="qb">🔒 Nothing stored</div>
-        <div class="qb">🤖 AI reads it for you</div>
-      </div>
-      <div class="sp-wrap">
-        <div class="sp-caption">Here's what your report looks like</div>
-        <div class="sp-card">
-          <div class="sp-eyebrow">⭐ Our Recommendation</div>
-          <div class="sp-verdict-top">
-            <span class="sp-icon">🏷️</span>
-            <span class="sp-name">Sell It</span>
-            <span class="sp-pill">83/100</span>
-          </div>
-          <div class="sp-bar"><div class="sp-fill"></div></div>
-          <div class="sp-rows">
-            <div class="sp-row"><span class="sp-lbl">Net proceeds</span><span class="sp-val">$247,400</span></div>
-            <div class="sp-row"><span class="sp-lbl">Est. tax owed</span><span class="sp-val">$28,500</span></div>
-            <div class="sp-row"><span class="sp-lbl">10-yr projection</span><span class="sp-val">$381,200</span></div>
-          </div>
-          <div class="sp-divider"></div>
-          <div class="sp-ai-hdr"><span>🤖</span><strong>Claude's Take</strong><span class="sp-ai-tag">AI ANALYSIS</span></div>
-          <div class="sp-ai-body">Your numbers point toward selling. With $247k in net proceeds and a 15% federal rate thanks to the §121 exclusion covering most of your gain, the opportunity cost of holding is real — rental cash flow turns negative at current expenses, and the market is cooling...</div>
+      <div class="hero-copy">
+        <div class="hero-kicker">Private homeowner estimate</div>
+        <div class="big-logo">A better lens on whether this home should stay or go</div>
+        <div class="intro-desc">See what selling, renting, or holding could mean for you, with taxes, costs, and long-term tradeoffs laid out in plain English.</div>
+        <div class="hero-trust">
+          <span><strong>Private, not shared</strong> in your browser</span>
+          <span><strong>About 5 minutes</strong> to compare all 3 paths</span>
+        </div>
+        <div class="btn-row hero-actions" style="margin-top:0.5rem;">
+          <button class="btn-cta" onclick="goTo(1)">Start estimate</button>
+          <button class="btn-secondary" onclick="document.querySelector('.sp-wrap')?.scrollIntoView({behavior:'smooth',block:'center'})">See sample report</button>
         </div>
       </div>
-      <div class="btn-row" style="margin-top:0.5rem;"><button class="btn-cta" onclick="goTo(1)">Show me the numbers →</button></div>
-      <div class="ai-intro-card">
-        <div class="ai-icon">🤖</div>
-        <div><strong>Not just a calculator</strong><p>After your numbers are in, an AI gives you a straight-talk read of your specific situation — what the math actually means, and what questions you should be asking next.</p></div>
+      <div class="hero-preview">
+        <img class="hero-photo" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80" alt="Modern home exterior">
+        <div class="sp-wrap">
+          <div class="sp-caption">Private report preview</div>
+          <div class="sp-card">
+            <div class="sp-ai-hdr"><strong>A better lens on whether this property should stay or go</strong></div>
+            <div class="sp-row" style="padding-bottom:0.9rem;">
+              <span class="sp-lbl">Leading takeaway</span>
+              <span class="sp-pill">Sell</span>
+            </div>
+            <div class="sp-ai-body">Selling now could free up meaningful liquidity, while the rent path looks tighter on monthly cash flow. The estimate compares the immediate cash picture, ongoing ownership costs, and longer-term outcome side by side.</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-bottom">
+        <div class="path-row">
+          <div class="path-item sell"><div class="pn">Sell It</div><div class="pd">What you'd actually net after taxes and selling costs.</div></div>
+          <div class="path-item rent"><div class="pn">Rent It Out</div><div class="pd">Whether renting likely makes or loses money each month.</div></div>
+          <div class="path-item keep"><div class="pn">Stay Put</div><div class="pd">How the hold path looks over time relative to the alternatives.</div></div>
+        </div>
+        <div class="quick-badges">
+          <div class="qb">🇺🇸 US tax-aware estimate</div>
+          <div class="qb">🔒 Private, not shared</div>
+          <div class="qb">📊 Compare all 3 paths</div>
+        </div>
+        <div class="ai-intro-card">
+          <div class="ai-icon">🧾</div>
+          <div><strong>Clear numbers first</strong><p>Start with the estimate. If you want extra help interpreting the tradeoffs, the premium report adds a plain-English read of what the numbers may be telling you.</p></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1610,9 +2239,9 @@ select option { background: #1a2035; color: var(--text); }
   <!-- STEP 1: PROPERTY -->
   <div class="step" id="step-1">
     <div class="eyebrow">Step 1 of 5</div>
-    <h2 class="heading">Your property 🏠</h2>
-    <p class="subtext">Start by telling us what kind of property this is.</p>
-    <div class="trust-strip">🔒 Nothing stored on our servers — your numbers never leave your browser.</div>
+    <h2 class="heading">Start with the property</h2>
+    <p class="subtext">We’ll use this to tailor the estimate and focus on the comparisons and tax rules that actually apply to your situation.</p>
+    <div class="trust-strip">🔒 Private estimate only. Your numbers stay in your browser.</div>
 
     <div class="proptype-grid">
       <div class="proptype-btn selected" id="pt-primary" onclick="onPropTypeChange('primary',this)">
@@ -1635,7 +2264,7 @@ select option { background: #1a2035; color: var(--text); }
 
     <!-- ADDRESS AUTOCOMPLETE -->
     <div class="addr-card">
-      <label style="font-size:0.76rem;font-weight:600;color:var(--green);letter-spacing:0.3px;display:block;margin-bottom:0.6rem;">🔍 Your property address <span style="color:var(--text-muted);font-weight:400;">(optional — auto-fills fields below)</span></label>
+      <label style="font-size:0.76rem;font-weight:600;color:var(--green);letter-spacing:0.3px;display:block;margin-bottom:0.6rem;">🔍 Your property address <span style="color:var(--text-muted);font-weight:400;">(optional — private, and used only to auto-fill fields below)</span></label>
       <div class="addr-wrap">
         <span class="addr-icon">📍</span>
         <input type="text" id="addrInput" placeholder="Type your address..." autocomplete="off">
@@ -1652,7 +2281,7 @@ select option { background: #1a2035; color: var(--text); }
         <div class="field" id="f-curVal">
           <label>What do you think it's worth today?</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000" onblur="blurCheck('curVal', v=>v>0)"></div>
-          <span class="hint">Your best guess is fine — check Zillow, Redfin, or Realtor.com for recent comps nearby.</span>
+          <span class="hint">A rough estimate is fine. Use a recent appraisal, local comps, or your best informed guess.</span>
           <span class="err-msg">Please enter a property value to continue</span>
         </div>
         <div class="field" id="f-purPrice">
@@ -1662,7 +2291,7 @@ select option { background: #1a2035; color: var(--text); }
         </div>
         <div class="field">
           <label>Year you bought it</label>
-          <input type="number" id="purYear" placeholder="2015" min="1950" max="2025">
+          <input type="number" id="purYear" placeholder="2015" min="1950" max="2026">
         </div>
         <div class="field">
           <label>State</label>
@@ -1695,8 +2324,8 @@ select option { background: #1a2035; color: var(--text); }
     </div>
 
     <div class="card">
-      <div class="card-title">🔮 Where do you see the value going?</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;line-height:1.55;">Drag to set your expected annual appreciation for your neighbourhood.</p>
+      <div class="card-title">Where do you think values go from here?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;line-height:1.55;">Set a rough annual appreciation rate for your market. This only affects the long-term comparison.</p>
       <div class="fc-wrap">
         <div class="fc-badge" id="fcBadge">📈 +4.0% / yr</div>
       </div>
@@ -2078,13 +2707,13 @@ select option { background: #1a2035; color: var(--text); }
     <!-- AI Analysis — gated for free users -->
     <div class="gate-wrap">
       <div class="ai-box" id="aiBox">
-        <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
+        <div class="ai-hdr"><span class="ao">📝</span><h3>Plain-English Read of Your Situation</h3><span class="al">PREMIUM</span></div>
         <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
       </div>
       <div class="gate-overlay" id="aiGate">
         <div class="gate-icon">🤖</div>
-        <div class="gate-title">Unlock Claude's Take</div>
-        <div class="gate-desc">Get a plain-English read of your specific situation — what the math means, what risks to watch for, and what questions to ask next.</div>
+        <div class="gate-title">Unlock the full interpretation</div>
+        <div class="gate-desc">Get a plain-English read of your situation — what the math means, what tradeoffs stand out, and what to think through next.</div>
         <div class="gate-plans">
           <div class="gate-plan" onclick="startCheckout('monthly')">
             <div class="gp-price">$7</div><div class="gp-period">/ month</div>
@@ -2134,7 +2763,7 @@ select option { background: #1a2035; color: var(--text); }
     <div class="disc-wrap">
       <button class="disc-toggle" onclick="toggleDisc(this)">📐 How we calculate this <span class="disc-arrow">▾</span></button>
       <div class="disc-body" id="discBody">
-        <strong>Capital gains tax:</strong> We apply IRS §121 exclusion ($250k single / $500k married), then compute federal long-term capital gains at 0%, 15%, or 20% based on your income bracket (2024 thresholds). Net Investment Income Tax (NIIT) at 3.8% applies above $200k/$250k AGI. Depreciation recapture (§1250) taxed at 25% if you rented the property. State rate is the top marginal capital gains rate for your state — <a href="https://taxfoundation.org/data/all/state/state-capital-gains-tax-rates-2024/" target="_blank" style="color:var(--green)">see Tax Foundation</a>.<br><br>
+        <strong>Capital gains tax:</strong> We apply IRS §121 exclusion ($250k single / $500k married), then compute federal long-term capital gains at 0%, 15%, or 20% based on the current thresholds used in this calculator. Net Investment Income Tax (NIIT) at 3.8% applies above $200k/$250k AGI. Depreciation recapture (§1250) taxed at 25% if you rented the property. State rate is the top marginal capital gains rate used for your state — <a href="https://taxfoundation.org/data/all/state/state-capital-gains-tax-rates-2024/" target="_blank" style="color:var(--green)">see Tax Foundation reference</a>.<br><br>
         <strong>Rental cash flow:</strong> Gross rent × (1 − vacancy rate) − mortgage − property tax − insurance − maintenance − management fee − landlord insurance.<br><br>
         <strong>10-year projections:</strong> Sell path compounds net proceeds at your reinvestment return. Rent path = appreciation on property value + cumulative after-tax cash flow (discounted 30%). Keep path = appreciated property value minus outstanding mortgage balance.<br><br>
         ⚠️ These are estimates. Consult a CPA or financial advisor before major property decisions. IRS links: <a href="https://www.irs.gov/taxtopics/tc701" target="_blank" style="color:var(--green)">§121 exclusion</a> · <a href="https://www.irs.gov/taxtopics/tc409" target="_blank" style="color:var(--green)">capital gains</a> · <a href="https://www.irs.gov/taxtopics/tc414" target="_blank" style="color:var(--green)">rental income</a>.
@@ -2187,13 +2816,13 @@ select option { background: #1a2035; color: var(--text); }
   <div class="cs-modal">
     <div class="cs-icon">🚀</div>
     <div class="cs-title">Full directory coming soon</div>
-    <div class="cs-sub">Unlimited results with skip trace, owner contact info, and direct mail integration — launching at $29/mo. Drop your email to get early access.</div>
+    <div class="cs-sub">Unlimited results with skip trace, owner contact info, and direct mail integration are still in progress. This directory view is not fully live yet.</div>
     <button class="cs-close" onclick="closeComingSoon()">Got it</button>
   </div>
 </div>
 
 <script>
-// ── US STATE CAPITAL GAINS RATES (2024) ──
+// ── US STATE CAPITAL GAINS RATES (current configured reference data) ──
 const STATE_TAX={
   AL:{name:"Alabama",capGainsRate:0.05},AK:{name:"Alaska",capGainsRate:0},
   AZ:{name:"Arizona",capGainsRate:0.025},AR:{name:"Arkansas",capGainsRate:0.044},
@@ -2259,7 +2888,7 @@ const SIGNALS={
   }
 };
 
-// Federal long-term capital gains brackets (2024)
+// Federal long-term capital gains brackets (current configured reference data)
 function fedCapGainsRate(filingStatus,totalIncome){
   const b={
     single:  [[47025,0],[518900,0.15],[Infinity,0.20]],
@@ -2282,6 +2911,10 @@ function fedOrdIncomeRate(filingStatus,income){
 }
 
 // ===== ADDRESS AUTOCOMPLETE =====
+const CURRENT_YEAR = new Date().getFullYear();
+const purYearInput = document.getElementById('purYear');
+if (purYearInput) purYearInput.max = String(CURRENT_YEAR);
+
 // Track which fields the user has manually touched so we never overwrite them
 const _dirtyFields = new Set();
 ['curVal','purPrice','purYear','stateField','propType','propCat'].forEach(id => {
