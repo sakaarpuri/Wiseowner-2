@@ -104,7 +104,6 @@ header {
   white-space: nowrap;
 }
 .logo em { color: var(--green); font-style: normal; }
-.step-ctr { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
 .country-sel { margin-left: auto; }
 .country-sel .sel-wrap { position: relative; }
 .country-sel select {
@@ -1737,7 +1736,7 @@ header,
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
-.logo, .logo em, .step-ctr, .tab, .tab.done, .tab.active, .country-sel select {
+.logo, .logo em, .tab, .tab.done, .tab.active, .country-sel select {
   color: var(--text);
 }
 .logo em { color: var(--green); }
@@ -2346,7 +2345,6 @@ select option { background: #fffaf4; color: var(--text); }
 
 <header>
   <div class="logo"><span class="logo-main">Keep or Sell</span><span class="logo-sub">thoughtful guidance for a major home decision</span></div>
-  <div class="step-ctr" id="stepCtr"></div>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
   <div class="header-auth">
     <!-- Signed-out state -->
@@ -3369,8 +3367,6 @@ function goTo(n){
   cur=n;
   document.getElementById('step-'+cur)?.classList.add('active');
   document.getElementById('pbar').style.width=(n/5*100)+'%';
-  const sc=document.getElementById('stepCtr');
-  if(sc)sc.textContent=n>0?`Step ${n} of 5`:'';
   document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
   // Hide preview panel on homepage (step 0), show from step 1 onwards
   const onHome = n === 0;
@@ -3835,7 +3831,6 @@ function showDirectory() {
   document.getElementById('results').style.display = 'none';
   document.querySelector('.tabs').style.display = 'none';
   document.querySelector('.prog-wrap').style.display = 'none';
-  document.getElementById('stepCtr').style.display = 'none';
   document.getElementById('dirNavBtn').style.display = 'none';
   document.getElementById('directory').style.display = 'block';
 }
@@ -3845,7 +3840,6 @@ function showCalculator() {
   document.getElementById('formMain').style.display = 'block';
   document.querySelector('.tabs').style.display = 'flex';
   document.querySelector('.prog-wrap').style.display = 'block';
-  document.getElementById('stepCtr').style.display = '';
   document.getElementById('dirNavBtn').style.display = '';
   document.getElementById('previewPanel').style.display = '';
   document.getElementById('previewPill').style.display = '';
