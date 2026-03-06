@@ -86,7 +86,7 @@ header {
 }
 .logo {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
   color: var(--text);
 }
@@ -1526,9 +1526,10 @@ select option { background: #1a2035; color: var(--text); }
 }
 .btn-signin {
   background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.3);
-  color: var(--green); border-radius: 20px; padding: 0.35rem 0.9rem;
-  font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: all 0.18s; white-space: nowrap;
+  color: var(--green); border-radius: 999px; padding: 0.7rem 1.25rem;
+  font-size: 0.86rem; font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.18s; white-space: nowrap; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
 }
 .btn-signin:hover { background: rgba(74,222,128,0.2); }
 .user-chip {
@@ -1919,11 +1920,19 @@ select option { background: #fffaf4; color: var(--text); }
 .path-item.rent .pn { color: var(--gold); }
 .path-item.keep .pn { color: var(--blue); }
 .path-item::after { opacity: 1; height: 3px; }
+.path-item .pd {
+  font-size: 0.92rem;
+  color: var(--text-mid);
+  margin-top: 0.42rem;
+  line-height: 1.55;
+}
 .quick-badges { gap: 0.55rem; margin-bottom: 1.1rem; }
 .qb {
   background: rgba(255,252,247,0.74);
   color: var(--text-mid);
-  padding: 0.42rem 0.95rem;
+  padding: 0.52rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 .sp-card {
   background: rgba(250,246,239,0.94);
@@ -2004,12 +2013,24 @@ select option { background: #fffaf4; color: var(--text); }
 .ai-intro-card {
   align-items: flex-start;
   border-color: rgba(115,100,80,0.14);
+  padding: 1.25rem 1.35rem;
+  gap: 1rem;
 }
 .ai-intro-card strong {
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 1rem;
-  margin-bottom: 0.3rem;
+  font-size: 1.12rem;
+  margin-bottom: 0.35rem;
+  line-height: 1.2;
+}
+.ai-intro-card .ai-icon {
+  font-size: 1.45rem;
+  margin-top: 0.1rem;
+}
+.ai-intro-card p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-mid);
 }
 
 .trust-strip,
