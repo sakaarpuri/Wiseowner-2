@@ -6,6 +6,7 @@
 <title>Keep or Sell — Your Home, Your Numbers</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
 /* ═══════════════════════════════════════════════
@@ -386,7 +387,7 @@ select option { background: #1a2035; color: var(--text); }
 .goal-card.selected .gc-title { color: var(--green); }
 
 /* ── BUTTONS ── */
-.btn-row { display: flex; gap: 0.8rem; margin-top: 2rem; align-items: center; }
+.btn-row { display: flex; gap: 0.8rem; margin-top: 2rem; align-items: center; justify-content: center; }
 .btn-next {
   background: linear-gradient(135deg, var(--green-d), #16a34a);
   color: #0b1a0f; border: none; border-radius: 12px;
@@ -424,6 +425,7 @@ select option { background: #1a2035; color: var(--text); }
 .intro-hero {
   position: relative;
   padding: 3.5rem 0 1rem;
+  text-align: center;
 }
 .intro-hero::before {
   content: '';
@@ -437,7 +439,7 @@ select option { background: #1a2035; color: var(--text); }
 .big-logo {
   font-family: 'Plus Jakarta Sans', sans-serif; font-size: 3.2rem; font-weight: 900;
   color: var(--text); margin-bottom: 0.5rem;
-  display: flex; align-items: center; gap: 0.4rem;
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
   position: relative; z-index: 1;
 }
 .big-logo em {
@@ -445,7 +447,7 @@ select option { background: #1a2035; color: var(--text); }
   border-bottom: 2.5px solid var(--green);
   padding-bottom: 1px;
 }
-.intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin-bottom: 1.8rem; }
+.intro-desc { font-size: 1.05rem; color: var(--text-mid); max-width: 500px; line-height: 1.7; margin: 0 auto 1.8rem; }
 
 .path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
 .path-item {
@@ -469,7 +471,7 @@ select option { background: #1a2035; color: var(--text); }
 .path-item.keep .pn { color: var(--blue); }
 .path-item .pd { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
 
-.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.quick-badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.8rem; justify-content: center; }
 .qb {
   background: var(--glass); border: 1px solid var(--glass-border);
   border-radius: 20px; padding: 0.32rem 0.85rem;
@@ -483,7 +485,7 @@ select option { background: #1a2035; color: var(--text); }
   border: 1px solid rgba(74,222,128,0.2);
   border-radius: 18px; padding: 1.2rem 1.4rem;
   display: flex; gap: 0.9rem; align-items: center; margin-bottom: 2rem;
-  position: relative; overflow: hidden;
+  position: relative; overflow: hidden; text-align: left;
 }
 .ai-intro-card::before {
   content: ''; position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
@@ -1370,6 +1372,146 @@ select option { background: #1a2035; color: var(--text); }
   .prop-stats { grid-template-columns: 1fr 1fr; }
   .dir-wrap { padding: 1.5rem 1rem 5rem; }
 }
+
+/* ══════════════════════════════════
+   AUTH MODAL
+══════════════════════════════════ */
+.auth-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.auth-overlay.show { display: flex; }
+.auth-modal {
+  background: rgba(17,22,40,0.98); border: 1px solid var(--glass-border);
+  border-radius: 24px; padding: 2.2rem 2rem 2rem;
+  width: 100%; max-width: 420px; position: relative;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  animation: fadeUp 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.auth-close {
+  position: absolute; top: 1.1rem; right: 1.2rem;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 1.3rem; cursor: pointer; line-height: 1;
+  transition: color 0.15s;
+}
+.auth-close:hover { color: var(--text); }
+.auth-logo { font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.2rem; }
+.auth-logo em { color: var(--green); font-style: normal; }
+.auth-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.6rem; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 1.6rem; border-bottom: 1px solid var(--glass-border); }
+.auth-tab {
+  flex: 1; text-align: center; padding: 0.6rem; font-size: 0.83rem; font-weight: 700;
+  color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.2s; margin-bottom: -1px;
+}
+.auth-tab.active { color: var(--green); border-bottom-color: var(--green); }
+.auth-field { margin-bottom: 1rem; }
+.auth-field label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 0.4rem; letter-spacing: 0.3px; }
+.auth-field input {
+  width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 0.75rem 1rem; font-size: 0.9rem; color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: border-color 0.2s; box-sizing: border-box;
+}
+.auth-field input:focus { outline: none; border-color: rgba(74,222,128,0.5); }
+.auth-submit {
+  width: 100%; background: linear-gradient(135deg, var(--green-d), var(--green));
+  border: none; border-radius: 12px; padding: 0.85rem; font-size: 0.93rem;
+  font-weight: 800; color: #0b0f1a; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-top: 0.5rem; transition: opacity 0.18s; letter-spacing: 0.2px;
+}
+.auth-submit:hover { opacity: 0.88; }
+.auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.auth-err { font-size: 0.78rem; color: var(--coral); margin-top: 0.7rem; min-height: 1rem; text-align: center; }
+.auth-switch { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 1.1rem; }
+.auth-switch span { color: var(--green); cursor: pointer; font-weight: 600; }
+.auth-switch span:hover { text-decoration: underline; }
+
+/* Header auth button */
+.header-auth {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.btn-signin {
+  background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.3);
+  color: var(--green); border-radius: 20px; padding: 0.35rem 0.9rem;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.18s; white-space: nowrap;
+}
+.btn-signin:hover { background: rgba(74,222,128,0.2); }
+.user-chip {
+  display: none; align-items: center; gap: 0.5rem;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 0.3rem 0.75rem 0.3rem 0.4rem;
+  cursor: pointer; transition: background 0.18s; position: relative;
+}
+.user-chip:hover { background: rgba(255,255,255,0.07); }
+.user-chip .uc-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green-d), var(--green));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 800; color: #0b0f1a; flex-shrink: 0;
+}
+.user-chip .uc-info { display: flex; flex-direction: column; }
+.user-chip .uc-email { font-size: 0.65rem; font-weight: 600; color: var(--text-mid); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-chip .uc-plan {
+  font-size: 0.54rem; font-weight: 800; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--green);
+}
+.user-chip .uc-plan.free { color: var(--text-muted); }
+.user-menu {
+  display: none; position: absolute; top: calc(100% + 8px); right: 0;
+  background: rgba(17,22,40,0.98); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 0.5rem; min-width: 170px; z-index: 500;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.user-chip.open .user-menu { display: block; }
+.um-item {
+  display: block; width: 100%; text-align: left; background: none; border: none;
+  padding: 0.6rem 0.8rem; border-radius: 10px; font-size: 0.8rem;
+  font-weight: 600; color: var(--text-mid); cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.15s;
+}
+.um-item:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.um-item.danger:hover { background: rgba(232,115,90,0.1); color: var(--coral); }
+
+/* ══════════════════════════════════
+   PAYWALL GATE OVERLAYS
+══════════════════════════════════ */
+.gate-wrap { position: relative; }
+.gate-overlay {
+  display: none; position: absolute; inset: 0; z-index: 10;
+  border-radius: 20px;
+  background: linear-gradient(to bottom, rgba(13,17,35,0.3) 0%, rgba(13,17,35,0.95) 40%);
+  backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+  flex-direction: column; text-align: center; padding: 2rem;
+}
+.gate-overlay.visible { display: flex; }
+.gate-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+.gate-title { font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 0.4rem; }
+.gate-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; max-width: 320px; margin-bottom: 1.2rem; }
+.gate-plans { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.gate-plan {
+  background: var(--glass); border: 1.5px solid var(--glass-border);
+  border-radius: 14px; padding: 0.8rem 1.2rem; cursor: pointer;
+  transition: all 0.2s; min-width: 110px;
+}
+.gate-plan:hover { border-color: var(--green); background: var(--green-dim); }
+.gate-plan .gp-price { font-size: 1.2rem; font-weight: 900; color: var(--green); }
+.gate-plan .gp-period { font-size: 0.65rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; }
+.gate-plan .gp-label { font-size: 0.72rem; font-weight: 700; color: var(--text-mid); margin-top: 0.2rem; }
+.gate-signin-link { font-size: 0.76rem; color: var(--text-muted); }
+.gate-signin-link span { color: var(--green); cursor: pointer; font-weight: 600; }
+.gate-signin-link span:hover { text-decoration: underline; }
+
+/* Upgrade success banner */
+.upgrade-banner {
+  display: none; background: linear-gradient(135deg, rgba(74,222,128,0.15), rgba(96,165,250,0.1));
+  border: 1px solid rgba(74,222,128,0.3); border-radius: 14px;
+  padding: 1rem 1.4rem; margin-bottom: 1.4rem; text-align: center;
+  font-size: 0.88rem; color: var(--text);
+}
+.upgrade-banner.show { display: block; }
 </style>
 </head>
 <body>
@@ -1384,6 +1526,22 @@ select option { background: #1a2035; color: var(--text); }
   <div class="logo">🏠 Keep or <em>Sell</em></div>
   <div class="step-ctr" id="stepCtr"></div>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
+  <div class="header-auth">
+    <!-- Signed-out state -->
+    <button class="btn-signin" id="btnSignIn" onclick="showAuthModal('signin')">Sign in</button>
+    <!-- Signed-in state -->
+    <div class="user-chip" id="userChip" onclick="toggleUserMenu(this)">
+      <div class="uc-avatar" id="ucAvatar">?</div>
+      <div class="uc-info">
+        <span class="uc-email" id="ucEmail">—</span>
+        <span class="uc-plan free" id="ucPlan">Free</span>
+      </div>
+      <div class="user-menu">
+        <button class="um-item" onclick="event.stopPropagation();manageSubscription()">💳 Billing</button>
+        <button class="um-item danger" onclick="event.stopPropagation();signOut()">→ Sign out</button>
+      </div>
+    </div>
+  </div>
   <div class="country-sel">
     <div class="sel-wrap">
       <select onchange="void(0)" title="Country">
@@ -1916,11 +2074,50 @@ select option { background: #1a2035; color: var(--text); }
   <div class="main">
     <div class="res-header"><h1>🏠 Your Keep or Sell Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="sc-grid" id="scGrid"></div>
-    <div class="ai-box" id="aiBox">
-      <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
-      <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
+    <div class="upgrade-banner" id="upgradeBanner">🎉 Welcome to Pro! Your full report is now unlocked.</div>
+    <!-- AI Analysis — gated for free users -->
+    <div class="gate-wrap">
+      <div class="ai-box" id="aiBox">
+        <div class="ai-hdr"><span class="ao">🤖</span><h3>Claude's Take on Your Situation</h3><span class="al">AI ANALYSIS</span></div>
+        <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
+      </div>
+      <div class="gate-overlay" id="aiGate">
+        <div class="gate-icon">🤖</div>
+        <div class="gate-title">Unlock Claude's Take</div>
+        <div class="gate-desc">Get a plain-English read of your specific situation — what the math means, what risks to watch for, and what questions to ask next.</div>
+        <div class="gate-plans">
+          <div class="gate-plan" onclick="startCheckout('monthly')">
+            <div class="gp-price">$7</div><div class="gp-period">/ month</div>
+            <div class="gp-label">Monthly</div>
+          </div>
+          <div class="gate-plan" onclick="startCheckout('lifetime')">
+            <div class="gp-price">$49</div><div class="gp-period">one-time</div>
+            <div class="gp-label">Lifetime ✨</div>
+          </div>
+        </div>
+        <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
+      </div>
     </div>
-    <div id="taxBlock"></div>
+    <!-- Tax breakdown — gated for free users -->
+    <div class="gate-wrap">
+      <div id="taxBlock"></div>
+      <div class="gate-overlay" id="taxGate">
+        <div class="gate-icon">🇺🇸</div>
+        <div class="gate-title">Full Tax Breakdown Locked</div>
+        <div class="gate-desc">See your exact §121 exclusion, federal rate, NIIT, depreciation recapture, and state tax — line by line.</div>
+        <div class="gate-plans">
+          <div class="gate-plan" onclick="startCheckout('monthly')">
+            <div class="gp-price">$7</div><div class="gp-period">/ month</div>
+            <div class="gp-label">Monthly</div>
+          </div>
+          <div class="gate-plan" onclick="startCheckout('lifetime')">
+            <div class="gp-price">$49</div><div class="gp-period">one-time</div>
+            <div class="gp-label">Lifetime ✨</div>
+          </div>
+        </div>
+        <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
+      </div>
+    </div>
     <div class="sec">💡 Key Insights</div>
     <div class="ins-grid" id="insGrid"></div>
     <div class="sec">📊 Visual Comparison</div>
@@ -2945,6 +3142,277 @@ function closeComingSoon(e) {
 // Init on load
 renderSignalChips();
 updateDirLabel();
+
+// ═══════════════════════════════════════════════════
+//  AUTH + SUBSCRIPTION SYSTEM
+// ═══════════════════════════════════════════════════
+
+let _sb = null;           // Supabase client
+let currentUser = null;   // Supabase user object
+let userPlan = 'free';    // 'free' | 'monthly' | 'lifetime'
+
+// ── Init Supabase ──────────────────────────────────
+async function initAuth() {
+  try {
+    const cfg = await fetch('/.netlify/functions/get-config').then(r => r.json());
+    if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
+
+    _sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+    // Restore existing session
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      await fetchUserPlan();
+    }
+    updateAuthUI();
+
+    // Listen for auth changes
+    _sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN') {
+        currentUser = session.user;
+        await fetchUserPlan();
+        updateAuthUI();
+        applyPaywall();
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        userPlan = 'free';
+        updateAuthUI();
+        applyPaywall();
+      }
+    });
+
+    // Handle ?payment=success redirect from Stripe
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success' && currentUser) {
+      // Give webhook a moment to update, then re-fetch plan
+      setTimeout(async () => {
+        await fetchUserPlan();
+        updateAuthUI();
+        applyPaywall();
+        document.getElementById('upgradeBanner')?.classList.add('show');
+        history.replaceState({}, '', window.location.pathname);
+      }, 2000);
+    }
+    if (params.get('payment') === 'cancelled') {
+      history.replaceState({}, '', window.location.pathname);
+    }
+  } catch (e) {
+    console.warn('Auth init failed:', e.message);
+  }
+}
+
+// ── Fetch user plan from Supabase ──────────────────
+async function fetchUserPlan() {
+  if (!_sb || !currentUser) return;
+  try {
+    const { data } = await _sb
+      .from('subscribers')
+      .select('plan, status')
+      .eq('user_id', currentUser.id)
+      .single();
+    userPlan = (data?.plan && ['active'].includes(data?.status)) ? data.plan : 'free';
+  } catch {
+    userPlan = 'free';
+  }
+}
+
+// ── Update header UI based on auth state ──────────
+function updateAuthUI() {
+  const btnSignIn = document.getElementById('btnSignIn');
+  const userChip = document.getElementById('userChip');
+  const ucAvatar = document.getElementById('ucAvatar');
+  const ucEmail = document.getElementById('ucEmail');
+  const ucPlan = document.getElementById('ucPlan');
+
+  if (currentUser) {
+    if (btnSignIn) btnSignIn.style.display = 'none';
+    if (userChip) userChip.style.display = 'flex';
+    const email = currentUser.email || '';
+    if (ucAvatar) ucAvatar.textContent = email.charAt(0).toUpperCase();
+    if (ucEmail) ucEmail.textContent = email;
+    if (ucPlan) {
+      const isPaid = userPlan !== 'free';
+      ucPlan.textContent = userPlan === 'lifetime' ? '✨ Lifetime' : userPlan === 'monthly' ? '⚡ Pro' : 'Free';
+      ucPlan.className = 'uc-plan' + (isPaid ? '' : ' free');
+    }
+  } else {
+    if (btnSignIn) btnSignIn.style.display = '';
+    if (userChip) userChip.style.display = 'none';
+  }
+}
+
+// ── Apply / remove paywall overlays ───────────────
+function applyPaywall() {
+  const isPaid = userPlan !== 'free';
+  const aiGate = document.getElementById('aiGate');
+  const taxGate = document.getElementById('taxGate');
+  if (aiGate) aiGate.classList.toggle('visible', !isPaid);
+  if (taxGate) taxGate.classList.toggle('visible', !isPaid);
+}
+
+// ── Auth modal ─────────────────────────────────────
+function showAuthModal(mode = 'signin') {
+  const el = document.getElementById('authOverlay');
+  if (!el) return;
+  el.classList.add('show');
+  switchAuthTab(mode);
+  setTimeout(() => document.getElementById('authEmail')?.focus(), 100);
+}
+
+function hideAuthModal() {
+  document.getElementById('authOverlay')?.classList.remove('show');
+  document.getElementById('authErr').textContent = '';
+}
+
+function switchAuthTab(mode) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.m === mode));
+  document.getElementById('authConfirmWrap').style.display = mode === 'signup' ? '' : 'none';
+  document.getElementById('authSubmitBtn').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  document.getElementById('authSwitchText').innerHTML = mode === 'signin'
+    ? `New here? <span onclick="switchAuthTab('signup')">Create account</span>`
+    : `Already have an account? <span onclick="switchAuthTab('signin')">Sign in</span>`;
+  document.getElementById('authErr').textContent = '';
+  document.getElementById('authOverlay').dataset.mode = mode;
+}
+
+async function submitAuth() {
+  if (!_sb) { showAuthModal(); return; }
+  const mode = document.getElementById('authOverlay').dataset.mode || 'signin';
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const confirm = document.getElementById('authConfirm').value;
+  const btn = document.getElementById('authSubmitBtn');
+  const err = document.getElementById('authErr');
+
+  if (!email || !password) { err.textContent = 'Email and password are required.'; return; }
+  if (mode === 'signup' && password !== confirm) { err.textContent = 'Passwords do not match.'; return; }
+  if (mode === 'signup' && password.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = mode === 'signup' ? 'Creating account…' : 'Signing in…';
+  err.textContent = '';
+
+  try {
+    let result;
+    if (mode === 'signup') {
+      result = await _sb.auth.signUp({ email, password });
+    } else {
+      result = await _sb.auth.signInWithPassword({ email, password });
+    }
+
+    if (result.error) throw result.error;
+
+    if (mode === 'signup' && !result.data.session) {
+      err.style.color = 'var(--green)';
+      err.textContent = '✓ Check your email to confirm your account.';
+      btn.disabled = false;
+      btn.textContent = 'Create account';
+      return;
+    }
+
+    hideAuthModal();
+  } catch (e) {
+    err.style.color = 'var(--coral)';
+    err.textContent = e.message || 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  }
+}
+
+async function signOut() {
+  toggleUserMenu(null, true);
+  if (_sb) await _sb.auth.signOut();
+}
+
+function toggleUserMenu(chip, forceClose = false) {
+  if (forceClose) {
+    document.getElementById('userChip')?.classList.remove('open');
+    return;
+  }
+  chip?.classList.toggle('open');
+}
+
+// Close user menu when clicking outside
+document.addEventListener('click', (e) => {
+  const chip = document.getElementById('userChip');
+  if (chip && !chip.contains(e.target)) chip.classList.remove('open');
+});
+
+function manageSubscription() {
+  toggleUserMenu(null, true);
+  // For now: show upgrade modal or redirect to Stripe billing portal
+  // Stripe Customer Portal requires a separate serverless function — link to it here when ready
+  showToast('💳 Billing portal coming soon — email support to manage your plan.');
+}
+
+// ── Stripe checkout ────────────────────────────────
+async function startCheckout(plan) {
+  if (!currentUser) {
+    showAuthModal('signup');
+    return;
+  }
+  showToast('⏳ Opening checkout…');
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: currentUser.email,
+        userId: currentUser.id,
+        plan,
+        origin: window.location.origin,
+      }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      showToast('⚠️ Could not open checkout — ' + (data.error || 'try again'));
+    }
+  } catch (e) {
+    showToast('⚠️ Checkout failed: ' + e.message);
+  }
+}
+
+// ── Patch calculate() to apply paywall after results render ──
+const _origCalculate = calculate;
+window.calculate = function() {
+  _origCalculate();
+  // Small delay so DOM is populated before applying overlay
+  setTimeout(applyPaywall, 100);
+};
+
+// Start auth
+initAuth();
 </script>
+
+<!-- AUTH MODAL -->
+<div class="auth-overlay" id="authOverlay" data-mode="signin" onclick="if(event.target===this)hideAuthModal()">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="hideAuthModal()">×</button>
+    <div class="auth-logo">🏠 Keep or <em>Sell</em></div>
+    <div class="auth-sub">Sign in to unlock your full report</div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-m="signin" onclick="switchAuthTab('signin')">Sign in</div>
+      <div class="auth-tab" data-m="signup" onclick="switchAuthTab('signup')">Create account</div>
+    </div>
+    <div class="auth-field">
+      <label>Email</label>
+      <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')submitAuth()">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuth()">
+    </div>
+    <div class="auth-field" id="authConfirmWrap" style="display:none">
+      <label>Confirm password</label>
+      <input type="password" id="authConfirm" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitAuth()">
+    </div>
+    <button class="auth-submit" id="authSubmitBtn" onclick="submitAuth()">Sign in</button>
+    <div class="auth-err" id="authErr"></div>
+    <div class="auth-switch" id="authSwitchText">New here? <span onclick="switchAuthTab('signup')">Create account</span></div>
+  </div>
+</div>
 </body>
 </html>
