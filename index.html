@@ -126,27 +126,28 @@ header {
   background: rgba(11,15,26,0.8);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--glass-border);
-  display: flex; padding: 0 0.8rem;
+  display: flex; padding: 0 1.6rem;
   overflow-x: auto; scrollbar-width: none;
   position: sticky; top: 64px; z-index: 198;
+  gap: 1.2rem;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
-  padding: 0.55rem 0.85rem 0.75rem; font-size: 0.72rem; font-weight: 600;
+  padding: 0.8rem 0 0.9rem; font-size: 0.72rem; font-weight: 600;
   color: var(--text-muted); border-bottom: 2px solid transparent;
   white-space: nowrap; cursor: pointer; transition: all 0.2s;
-  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  display: flex; align-items: center; gap: 0.4rem;
   flex-shrink: 0;
 }
-.tab .ti { font-size: 1.05rem; line-height: 1; }
-.tab .tl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.3px; }
+.tab .ti { display: none; }
+.tab .tl { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.01em; }
 .tab.done { color: var(--green); }
 .tab.active { color: var(--green); border-bottom-color: var(--green); }
 .prog-wrap { height: 3px; background: var(--glass-border); position: absolute; bottom: 0; left: 0; right: 0; z-index: 1; }
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.5); }
 
 /* ── LAYOUT ── */
-.main { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; position: relative; z-index: 1; }
+.main { max-width: 1180px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; position: relative; z-index: 1; }
 .step { display: none; }
 .step.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
@@ -1072,8 +1073,8 @@ select option { background: #1a2035; color: var(--text); }
 /* ── LIVE PREVIEW PANEL ── */
 .form-wrap {
   display: flex;
-  gap: 2rem;
-  max-width: 1160px;
+  gap: 2.5rem;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 0;
   align-items: flex-start;
@@ -1083,9 +1084,13 @@ select option { background: #1a2035; color: var(--text); }
 .form-wrap > .main {
   flex: 1;
   min-width: 0;
-  max-width: 720px;
+  max-width: 1180px;
   margin: 0;
 }
+.step { max-width: 760px; }
+#step-0,
+#results,
+#directory { max-width: none; }
 .preview-panel {
   width: 264px;
   flex-shrink: 0;
@@ -1848,7 +1853,10 @@ select option { background: #fffaf4; color: var(--text); }
 }
 
 .intro-hero {
-  padding: 3.1rem 0 1.4rem;
+  padding: 2.5rem 0 2.4rem;
+  grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+  gap: 2.8rem;
+  align-items: stretch;
 }
 .intro-hero::before {
   background:
@@ -1861,7 +1869,7 @@ select option { background: #fffaf4; color: var(--text); }
   height: 360px;
 }
 .big-logo {
-  font-size: 3.1rem;
+  font-size: 4.8rem;
   color: var(--text);
 }
 .big-logo em {
@@ -1869,9 +1877,28 @@ select option { background: #fffaf4; color: var(--text); }
   border-bottom: none;
 }
 .intro-desc {
-  font-size: 1.08rem;
-  max-width: 620px;
+  font-size: 1.1rem;
+  max-width: 34rem;
   color: var(--text-mid);
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+.hero-preview {
+  align-self: stretch;
+}
+.hero-photo {
+  height: 20rem;
+}
+.btn-row.hero-actions {
+  align-items: stretch;
+}
+.btn-row.hero-actions .btn-cta,
+.btn-row.hero-actions .btn-secondary {
+  min-width: 11rem;
 }
 .path-item,
 .goal-card,
@@ -1886,7 +1913,7 @@ select option { background: #fffaf4; color: var(--text); }
 .path-item.rent .pn { color: var(--gold); }
 .path-item.keep .pn { color: var(--blue); }
 .path-item::after { opacity: 1; height: 3px; }
-.quick-badges { gap: 0.55rem; }
+.quick-badges { gap: 0.55rem; margin-bottom: 1.1rem; }
 .qb {
   background: rgba(255,252,247,0.74);
   color: var(--text-mid);
@@ -1924,6 +1951,10 @@ select option { background: #fffaf4; color: var(--text); }
 .prefill-banner {
   background: rgba(48,88,71,0.08);
   color: var(--green);
+}
+.trust-strip {
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
 }
 .inv-note,
 .callout,
@@ -2135,6 +2166,9 @@ select option { background: #fffaf4; color: var(--text); }
   .btn-row.hero-actions .btn-secondary {
     width: 100%;
   }
+  .tab .ti { display: inline; }
+  .tab { flex-direction: column; gap: 0.15rem; }
+  .tab .tl { font-size: 0.58rem; letter-spacing: 0.3px; }
 }
 </style>
 </head>
@@ -2339,12 +2373,12 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div id="invNote" class="inv-note">📋 <strong>Rental / Investment property:</strong> The §121 exclusion doesn't apply — we'll calculate depreciation recapture (§1250 at 25%) automatically based on how long it was rented. Make sure "Did you ever rent this?" is set to Yes below.</div>
-    <div id="vacNote" class="inv-note">🏖️ <strong>Vacation / Cottage:</strong> The §121 exclusion generally doesn't apply to second homes. We'll calculate your full capital gain without an exclusion.</div>
+    <div id="invNote" class="inv-note">📋 <strong>Rental / Investment property:</strong> Primary-home tax breaks usually do not apply here. We’ll account for prior rental use and any extra tax details automatically in the final estimate.</div>
+    <div id="vacNote" class="inv-note">🏖️ <strong>Vacation / Cottage:</strong> Second homes usually do not get the same primary-home tax break. We’ll estimate the sale assuming no main-home exclusion.</div>
 
     <div id="s121Card" class="card">
-      <div class="card-title">🏠 §121 Primary Residence Exclusion</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">The IRS <strong>§121 exclusion</strong> can shield up to <strong>$250,000</strong> of your gain from capital gains tax (or <strong>$500,000</strong> if married filing jointly) — but only if you owned and lived there as your main home for at least <strong>2 of the last 5 years</strong>.</p>
+      <div class="card-title">🏠 Primary-home tax break</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">If this was your main home, part of your profit may be tax-free when you sell. In many cases that is up to <strong>$250,000</strong> of gain, or <strong>$500,000</strong> if married filing jointly, as long as you owned and lived there for at least <strong>2 of the last 5 years</strong>.</p>
       <div class="grid g2">
         <div class="field">
           <label>Filing status</label>
@@ -2353,12 +2387,12 @@ select option { background: #fffaf4; color: var(--text); }
             <option value="married">Married Filing Jointly</option>
             <option value="hoh">Head of Household</option>
           </select>
-          <span class="hint">Affects your §121 exclusion limit and federal capital gains bracket.</span>
+          <span class="hint">This affects the size of your potential home-sale tax break and the federal tax estimate.</span>
         </div>
         <div class="field">
           <label>Years you lived there as your main home</label>
           <div class="wrap"><span class="sfx">yrs</span><input type="number" id="preYrs" class="has-sfx" placeholder="3" min="0"></div>
-          <div class="explain">You need <strong>2+ years</strong> as your primary residence to qualify for the §121 exclusion. Enter 0 if it was always a rental or vacation home.</div>
+          <div class="explain">You usually need <strong>2+ years</strong> living there as your main home to qualify. Enter 0 if it was always a rental or second home.</div>
         </div>
         <div class="field">
           <label>Total years owned</label>
@@ -2371,7 +2405,7 @@ select option { background: #fffaf4; color: var(--text); }
             <option value="no" selected>No</option>
             <option value="yes">Yes</option>
           </select>
-          <span class="hint">If yes, prior depreciation claimed may be recaptured at 25% when you sell.</span>
+          <span class="hint">If yes, we’ll account for the extra tax treatment that can come with prior rental use.</span>
         </div>
       </div>
       <div id="rentedDetails" style="display:none;margin-top:0.8rem;">
@@ -2383,11 +2417,11 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="field">
             <label>Estimated building value (not land)</label>
             <div class="wrap"><span class="pfx">$</span><input type="number" id="dprBuildVal" class="has-pfx" placeholder="350,000" oninput="syncBuildingVal('dprBuildVal',this.value)"></div>
-            <div class="explain">Used to estimate prior depreciation (building ÷ 27.5 × years rented). The building is typically 70–85% of total value. <strong>Also pre-fills Step 3 depreciation.</strong></div>
+            <div class="explain">Used to estimate prior rental write-offs. The building is typically 70–85% of total value. <strong>This also pre-fills the rental section.</strong></div>
           </div>
         </div>
       </div>
-      <div class="callout info"><span class="ci">💡</span><div>The §121 exclusion only applies to your <strong>primary residence</strong>. Vacation homes and pure rentals don't qualify. Partial exclusions may apply if you moved for work, health, or unforeseen circumstances — consult a CPA.</div></div>
+      <div class="callout info"><span class="ci">💡</span><div>This home-sale tax break applies only to a <strong>main home</strong>. Vacation homes and pure rentals usually do not qualify. We keep the technical rule details in the final breakdown and methodology.</div></div>
     </div>
 
     <div class="btn-row"><button class="btn-back" onclick="goTo(0)">← Back</button><button class="btn-next" onclick="goTo(2)">Next: Mortgage →</button></div>
@@ -2529,12 +2563,12 @@ select option { background: #fffaf4; color: var(--text); }
 
     <div class="card technical">
       <div class="card-title">🇺🇸 Estimated US Capital Gains Tax</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">When you sell for a profit, the IRS taxes <strong>long-term capital gains</strong> at 0%, 15%, or 20% depending on your income. The <strong>§121 exclusion</strong> from Step 1 can reduce or eliminate that entirely. Higher earners may also owe a 3.8% <strong>Net Investment Income Tax (NIIT)</strong>. We calculate all of this automatically.</p>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">When you sell for a profit, taxes can take a meaningful bite out of what you keep. Your income, whether this was your main home, and any rental history all affect that number. We calculate those details automatically and show the full breakdown in results.</p>
       <div class="grid g2">
         <div class="field">
           <label>Estimated annual household income (all sources)</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="annInc" class="has-pfx" placeholder="95,000"></div>
-          <div class="explain">Used to determine your <strong>federal capital gains bracket</strong> and whether NIIT applies. A rough number is fine — check your last W-2, 1099, or tax return.</div>
+          <div class="explain">Used to estimate your federal tax bracket and any higher-income surtax. A rough number is fine — check your last W-2, 1099, or tax return.</div>
         </div>
         <div class="field">
           <label>Capital improvements done to the property</label>
@@ -2542,7 +2576,7 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="explain">A kitchen remodel, new addition, finished basement — these increase your <strong>cost basis</strong> (IRS Form 1040 Schedule D) and reduce your taxable gain. Include permanent improvements, not regular repairs. Keep all receipts.</div>
         </div>
       </div>
-      <div class="callout forest"><span class="ci">🧮</span><div>We calculate your gain automatically: sale price minus cost basis minus improvements. Then we apply the §121 exclusion from Step 1, the federal rate (0/15/20%), NIIT if applicable, and your state's rate. Full breakdown in results.</div></div>
+      <div class="callout forest"><span class="ci">🧮</span><div>We calculate your gain automatically, then apply the relevant home-sale tax break, federal rate, any higher-income surtax, and your state rate. The line-by-line breakdown appears in results.</div></div>
     </div>
 
     <div class="card">
