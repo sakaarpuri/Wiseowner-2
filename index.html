@@ -3095,11 +3095,11 @@ select option { background: #fffaf4; color: var(--text); }
   <!-- STEP 3: RENTAL -->
   <div class="step" id="step-3">
     <div class="eyebrow">Step 3 of 6</div>
-    <h2 class="heading">If you keep it 🔑</h2>
-    <p class="subtext">Use this to see whether keeping the property works better as a home you stay in or a property you rent out. Rough estimates are fine.</p>
+    <h2 class="heading" id="keepHeading">If you keep it 🔑</h2>
+    <p class="subtext" id="keepSubtext">Use this to see whether keeping the property works better as a home you stay in or a property you rent out. Rough estimates are fine.</p>
 
     <div class="card">
-      <div class="card-title">💵 If you rented it out</div>
+      <div class="card-title" id="keepRentTitle">💵 If you rented it out</div>
       <div class="grid g2">
         <div class="field" id="f-monthRent">
           <label>Estimated monthly rent</label>
@@ -4043,6 +4043,9 @@ function onPropTypeChange(type, btn) {
   btn.classList.add('selected');
   document.getElementById('propType').value = type;
 
+  const keepHeading = document.getElementById('keepHeading');
+  const keepSubtext = document.getElementById('keepSubtext');
+  const keepRentTitle = document.getElementById('keepRentTitle');
   const s121  = document.getElementById('s121Card');
   const s121Body = document.getElementById('s121Body');
   const s121Arrow = s121?.querySelector('.disclosure-arrow');
@@ -4052,12 +4055,18 @@ function onPropTypeChange(type, btn) {
   const rentedDetails = document.getElementById('rentedDetails');
 
   if (type === 'primary') {
+    if (keepHeading) keepHeading.textContent = 'If you keep it 🔑';
+    if (keepSubtext) keepSubtext.textContent = 'Use this to see whether keeping the property works better as a home you stay in or a property you rent out. Rough estimates are fine.';
+    if (keepRentTitle) keepRentTitle.textContent = '💵 If you rented it out';
     s121.style.display = '';
     invNote.style.display = 'none';
     vacNote.style.display = 'none';
     if (s121Body) s121Body.classList.remove('open');
     if (s121Arrow) s121Arrow.classList.remove('open');
   } else if (type === 'investment') {
+    if (keepHeading) keepHeading.textContent = 'Rental performance 🔑';
+    if (keepSubtext) keepSubtext.textContent = 'Since this is already a rental, use this section to confirm whether the income and long-term numbers still justify keeping it.';
+    if (keepRentTitle) keepRentTitle.textContent = '💵 Current rental income';
     s121.style.display = 'none';
     invNote.style.display = 'block';
     vacNote.style.display = 'none';
@@ -4068,6 +4077,9 @@ function onPropTypeChange(type, btn) {
     const preYrsEl = document.getElementById('preYrs');
     if (preYrsEl && !preYrsEl.value) preYrsEl.value = '0';
   } else if (type === 'vacation') {
+    if (keepHeading) keepHeading.textContent = 'If you keep it 🔑';
+    if (keepSubtext) keepSubtext.textContent = 'Use this to see whether keeping the property works better as a second home or as a rental. Rough estimates are fine.';
+    if (keepRentTitle) keepRentTitle.textContent = '💵 If you rented it out';
     s121.style.display = 'none';
     invNote.style.display = 'none';
     vacNote.style.display = 'block';
