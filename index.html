@@ -3345,33 +3345,6 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="res-header"><h1>🏠 Your zamindaro Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="result-status" id="resultStatus"></div>
     <div class="sc-grid" id="scGrid"></div>
-    <div class="card post-sell-card" id="postSellCard">
-      <div class="card-title"><span>🌱 If you sell — what then?</span><span class="opt-badge">Skip for now</span></div>
-      <div class="post-sell-note">These questions help refine the long-term sell path after you have seen the first result. A rough planning number is fine.</div>
-      <div class="grid g2">
-        <div class="field">
-          <label>If you invest the proceeds, what return do you expect?</label>
-          <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
-          <span class="hint">Why we ask: this estimates what the freed-up cash might do elsewhere if you sell.</span>
-        </div>
-        <div class="field">
-          <label>How many years ahead are you comparing?</label>
-          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
-          <span class="hint">Why we ask: this sets how far out to compare the long-term paths. Use 5 if the decision is near-term, 10 if unsure.</span>
-        </div>
-        <div class="field">
-          <label>Tax-advantaged account room (401k, IRA, etc.)?</label>
-          <select id="taxShelter"><option value="full">Yes — plenty of 401(k)/IRA room</option><option value="partial" selected>Some room available</option><option value="no">No — mostly used up</option></select>
-        </div>
-        <div class="field">
-          <label>Buying another home with the money?</label>
-          <select id="buyAnother"><option value="yes">Yes — buying another property</option><option value="maybe">Maybe, in a few years</option><option value="no" selected>No — investing or renting</option></select>
-        </div>
-      </div>
-      <div class="btn-row" style="margin-top:1rem;">
-        <button class="btn-secondary" onclick="calculate()">Update this comparison</button>
-      </div>
-    </div>
     <div class="upgrade-banner" id="upgradeBanner">🎉 Welcome to Pro! Your full report is now unlocked.</div>
     <div class="premium-gate" id="premiumGate">
       <div class="premium-gate-head">
@@ -4384,8 +4357,6 @@ function calculate(){
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   renderResultState(missingImportantInputs);
-  const postSellCard = document.getElementById('postSellCard');
-  if (postSellCard) postSellCard.style.display = winnerKey === 'sell' ? '' : 'none';
 
   const rowsHtml=rows=>rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('');
 
@@ -4547,7 +4518,6 @@ Data:
 - Net sale proceeds: ${fmt(netProc)} | Reinvested ${hrz} yrs at ${(reinvRet*100).toFixed(1)}%: ${fmtK(futSell)}
 - ${hrz}-yr projected value: sell ${fmtK(futSell)}, keep by renting ${fmtK(futRent)}, keep by living there ${fmtK(futKeep)}
 - Appreciation forecast: ${(apprec*100).toFixed(1)}%/yr
-- Post-sale plan: tax-advantaged room=${gs('taxShelter')||'partial'}, buying another home=${gs('buyAnother')||'no'}
 - Goals: cash=${gCash}, income=${gInc}, long-term=${gLong}, simplify=${gSimp}, stability=${gStab}, tax=${gTax}
 - Risk: ${risk}, emergency fund: ${emerg}, landlord: ${landlord}, urgency: ${urg}
 - DTI: ${dti.toFixed(0)}%, Scores: Sell ${sellScore}, Keep-live ${keepLiveScore}, Keep-rent ${keepRentScore}, top: ${winnerName}
