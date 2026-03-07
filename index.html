@@ -1066,14 +1066,16 @@ select option { background: #1a2035; color: var(--text); }
 .prefill-banner button:hover { color: var(--text); }
 /* Google Places dropdown styling */
 .pac-container {
-  background: #1a2035; border: 1px solid var(--glass-border);
+  background: rgba(255,252,247,0.98); border: 1px solid rgba(121,103,84,0.18);
   border-radius: 12px; margin-top: 4px;
   font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 14px 34px rgba(64,48,33,0.14);
+  color: var(--text);
+  z-index: 9999;
 }
-.pac-item { padding: 0.5rem 1rem; color: var(--text-mid); cursor: pointer; border-top: 1px solid rgba(255,255,255,0.05); }
+.pac-item { padding: 0.72rem 1rem; color: var(--text-mid); cursor: pointer; border-top: 1px solid rgba(121,103,84,0.10); }
 .pac-item:first-child { border-top: none; }
-.pac-item:hover, .pac-item-selected { background: rgba(74,222,128,0.08); color: var(--text); }
+.pac-item:hover, .pac-item-selected { background: rgba(48,88,71,0.08); color: var(--text); }
 .pac-item-query { color: var(--text); font-weight: 600; }
 .pac-icon { display: none; }
 
@@ -2345,6 +2347,89 @@ select option { background: #fffaf4; color: var(--text); }
   .tab .ti { display: inline; }
   .tab { flex-direction: column; gap: 0.15rem; }
   .tab .tl { font-size: 0.58rem; letter-spacing: 0.3px; }
+}
+
+@media (max-width: 900px) {
+  header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.9rem 1rem;
+    row-gap: 0.75rem;
+  }
+  .logo {
+    width: 100%;
+    gap: 0.6rem;
+  }
+  .logo-sub {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    white-space: normal;
+  }
+  .country-sel {
+    margin-left: auto;
+  }
+  .tabs {
+    top: 92px;
+  }
+  .form-wrap {
+    padding: 0 0.85rem;
+  }
+  .proptype-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 0.85rem 0.85rem 0.75rem;
+  }
+  .main {
+    padding: 1.4rem 0.9rem 6rem;
+  }
+  .big-logo {
+    font-size: 2.55rem;
+    max-width: none;
+  }
+  .hero-preview {
+    width: 100%;
+    padding: 1rem;
+  }
+  .hero-photo {
+    height: 11.5rem;
+    margin-bottom: 0.85rem;
+  }
+  .hero-trust {
+    width: 100%;
+    font-size: 0.78rem;
+  }
+  .country-sel {
+    width: 100%;
+    margin-left: 0;
+  }
+  .country-sel .sel-wrap,
+  .country-sel select {
+    width: 100%;
+  }
+  .tabs {
+    top: 132px;
+  }
+  .card,
+  .addr-card,
+  .tax-box,
+  .ai-box {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .btn-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn-row .btn-back,
+  .btn-row .btn-next,
+  .btn-row .btn-cta,
+  .btn-row .btn-secondary {
+    width: 100%;
+  }
 }
 </style>
 </head>
