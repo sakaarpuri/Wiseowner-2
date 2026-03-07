@@ -553,7 +553,7 @@ select option { background: #1a2035; color: var(--text); }
   margin: 0 0 1.8rem;
 }
 
-.path-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem; }
+.path-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
 .path-item {
   background: rgba(255,252,247,0.72); border: 1px solid var(--glass-border);
   border-radius: 1.5rem; padding: 1.2rem 1rem; text-align: left;
@@ -776,6 +776,7 @@ select option { background: #1a2035; color: var(--text); }
 .verdict-icon { font-size: 2.8rem; line-height: 1; }
 .verdict-title-wrap { flex: 1; }
 .verdict-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.1; }
+.verdict-sub { margin-top: 0.35rem; font-size: 0.92rem; font-weight: 600; color: var(--text-mid); line-height: 1.45; }
 .sell .verdict-name { color: var(--coral); }
 .rent .verdict-name { color: var(--gold); }
 .keep .verdict-name { color: var(--blue); }
@@ -954,7 +955,7 @@ select option { background: #1a2035; color: var(--text); }
 .t-row .tv { font-weight: 600; color: var(--text); }
 
 /* SECTION HEADINGS */
-.sec { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
+.sec { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.55rem; font-weight: 700; color: var(--text); margin: 2.2rem 0 1.1rem; }
 
 /* INSIGHTS */
 .ins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
@@ -965,8 +966,8 @@ select option { background: #1a2035; color: var(--text); }
 }
 .ins-card:hover { border-color: var(--glass-border-hover); }
 .ins-card .ii { font-size: 1.4rem; flex-shrink: 0; }
-.ins-card .it { font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 0.22rem; }
-.ins-card .ib { font-size: 0.76rem; color: var(--text-mid); line-height: 1.5; }
+.ins-card .it { font-size: 0.98rem; font-weight: 700; color: var(--text); margin-bottom: 0.28rem; line-height: 1.35; }
+.ins-card .ib { font-size: 0.9rem; color: var(--text-mid); line-height: 1.65; }
 
 /* CHARTS */
 .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.5rem; }
@@ -2754,11 +2755,11 @@ select option { background: #fffaf4; color: var(--text); }
 <div class="calc-overlay" id="calcOverlay">
   <div class="calc-spinner"></div>
   <div class="calc-label">Crunching your numbers…</div>
-  <div class="calc-sub">Comparing all three paths</div>
+  <div class="calc-sub">Comparing both paths</div>
 </div>
 
 <header>
-  <div class="logo"><span class="logo-main">zamindaro</span><span class="logo-sub">thoughtful guidance for a major home decision</span></div>
+  <div class="logo"><span class="logo-main">zamindaro</span></div>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
   <div class="header-auth">
     <!-- Signed-out state -->
@@ -2789,10 +2790,10 @@ select option { background: #fffaf4; color: var(--text); }
   <div class="tab active" data-s="0"><span class="ti">🏠</span><span class="tl">Start</span></div>
   <div class="tab" data-s="1"><span class="ti">📍</span><span class="tl">Property</span></div>
   <div class="tab" data-s="2"><span class="ti">💳</span><span class="tl">Mortgage</span></div>
-  <div class="tab" data-s="3"><span class="ti">🔑</span><span class="tl">Rental</span></div>
+  <div class="tab" data-s="3"><span class="ti">🔑</span><span class="tl">Keep</span></div>
   <div class="tab" data-s="4"><span class="ti">📈</span><span class="tl">Outlook</span></div>
-  <div class="tab" data-s="5"><span class="ti">🏷️</span><span class="tl">Sale</span></div>
-  <div class="tab" data-s="6"><span class="ti">💰</span><span class="tl">You</span></div>
+  <div class="tab" data-s="5"><span class="ti">🏷️</span><span class="tl">Sell</span></div>
+  <div class="tab" data-s="6"><span class="ti">💰</span><span class="tl">Monthly</span></div>
   <div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
 </div>
 
@@ -2804,7 +2805,7 @@ select option { background: #fffaf4; color: var(--text); }
       <div class="hero-copy">
         <div class="hero-kicker">Private homeowner estimate</div>
         <div class="big-logo">Should you keep or sell your property?</div>
-        <div class="intro-desc">See what selling, renting, or holding could mean for you, with taxes, costs, and long-term tradeoffs laid out in plain English.</div>
+        <div class="intro-desc">See whether selling or keeping your property makes more sense. If keeping wins, we'll also show whether living there or renting it out looks stronger.</div>
         <div class="hero-trust">
           <span><strong>Private, not shared</strong> in your browser</span>
           <span><strong>About 5 minutes</strong> to compare both paths</span>
@@ -2820,7 +2821,7 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="sp-caption">Private report preview</div>
           <div class="sp-card">
             <div class="sp-ai-hdr">
-              <strong>Recommendation: Sell</strong>
+              <strong>Recommendation: Keep</strong>
               <span class="sp-score">Best for cash now</span>
             </div>
             <div class="sp-rows">
@@ -2829,16 +2830,16 @@ select option { background: #fffaf4; color: var(--text); }
                 <span class="sp-val">$412k</span>
               </div>
               <div class="sp-row">
-                <span class="sp-lbl">Rent cash flow</span>
-                <span class="sp-val">-$180/mo</span>
+                <span class="sp-lbl">Best keep path</span>
+                <span class="sp-val">Rent it out</span>
               </div>
               <div class="sp-row">
-                <span class="sp-lbl">10-year hold</span>
+                <span class="sp-lbl">10-year keep value</span>
                 <span class="sp-val">$1.06m</span>
               </div>
             </div>
             <div class="sp-summary">
-              <div class="sp-summary-copy">Selling now could free up meaningful liquidity. Holding may win long term, but the rental path looks tighter on monthly cash flow.</div>
+              <div class="sp-summary-copy">Keeping may win overall, and if you keep it, renting looks stronger than continuing to live there full-time.</div>
               <span class="sp-pill">Plain-English take</span>
             </div>
           </div>
@@ -2846,9 +2847,8 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
       <div class="hero-bottom">
         <div class="path-row">
-          <div class="path-item sell"><div class="pn">Sell It</div><div class="pd">What you'd actually net after taxes and selling costs.</div></div>
-          <div class="path-item rent"><div class="pn">Rent It Out</div><div class="pd">Whether renting likely makes or loses money each month.</div></div>
-          <div class="path-item keep"><div class="pn">Stay Put</div><div class="pd">How the hold path looks over time relative to the alternatives.</div></div>
+          <div class="path-item sell"><div class="pn">Sell</div><div class="pd">What you'd actually net after taxes and selling costs.</div></div>
+          <div class="path-item keep"><div class="pn">Keep</div><div class="pd">Whether keeping it to live in or rent out makes more sense over time.</div></div>
         </div>
         <div class="quick-badges">
           <div class="qb">🇺🇸 US tax-aware estimate</div>
@@ -2873,25 +2873,25 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="proptype-grid">
       <div class="proptype-btn selected" id="pt-primary" onclick="onPropTypeChange('primary',this)">
         <span class="pt-icon">🏠</span>
-        <span class="pt-name">My Main Home</span>
-        <span class="pt-desc">I live here</span>
+        <span class="pt-name">I live here now</span>
+        <span class="pt-desc">Primary home</span>
       </div>
       <div class="proptype-btn" id="pt-investment" onclick="onPropTypeChange('investment',this)">
         <span class="pt-icon">🏢</span>
-        <span class="pt-name">Rental / Investment</span>
-        <span class="pt-desc">I rent it out</span>
+        <span class="pt-name">It's already a rental</span>
+        <span class="pt-desc">Income property</span>
       </div>
       <div class="proptype-btn" id="pt-vacation" onclick="onPropTypeChange('vacation',this)">
         <span class="pt-icon">🏖️</span>
-        <span class="pt-name">Vacation / Cottage</span>
-        <span class="pt-desc">Second home</span>
+        <span class="pt-name">Second home / vacation home</span>
+        <span class="pt-desc">Not my main home</span>
       </div>
     </div>
     <input type="hidden" id="propType" value="primary">
 
     <!-- ADDRESS AUTOCOMPLETE -->
     <div class="addr-card">
-      <label style="font-size:0.76rem;font-weight:600;color:var(--green);letter-spacing:0.3px;display:block;margin-bottom:0.6rem;">🔍 Your property address <span style="color:var(--text-muted);font-weight:400;">(optional — private, and used only to auto-fill fields below)</span></label>
+      <label style="font-size:0.76rem;font-weight:600;color:var(--green);letter-spacing:0.3px;display:block;margin-bottom:0.6rem;">🔍 Your property address <span style="color:var(--text-muted);font-weight:400;">(recommended — private, and used only to auto-fill fields below)</span></label>
       <div class="addr-wrap">
         <span class="addr-icon">📍</span>
         <input type="text" id="addrInput" placeholder="Type your address..." autocomplete="off">
@@ -2957,8 +2957,8 @@ select option { background: #fffaf4; color: var(--text); }
       <div class="card-title disclosure-toggle" onclick="toggleS121(this)">
         <span>🏠</span>
         <div class="disclosure-copy">
-          <div>Primary-home tax questions <span class="opt-badge">More accuracy</span></div>
-          <p>Optional now. Expand this only if you want us to estimate your sale tax more accurately.</p>
+          <div>Primary-home tax questions <span class="opt-badge">Add for more accuracy</span></div>
+          <p>Skip for now if you want a faster estimate. Expand this if you want us to sharpen the sell tax number.</p>
         </div>
         <span class="disclosure-arrow">▾</span>
       </div>
@@ -3057,7 +3057,7 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="card">
       <div class="card-title">🧾 What you pay each month to own it</div>
       <div class="grid g3">
-        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Why we ask: this is part of your true monthly cost to keep the home. Annual bill ÷ 12.</span></div>
+        <div class="field"><label>Property tax (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="propTax" class="has-pfx" placeholder="500"></div><span class="hint">Why we ask: this is part of your true monthly cost to keep the home. Enter the annual bill ÷ 12 for now.</span></div>
         <div class="field"><label>Home insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="homeIns" class="has-pfx" placeholder="180"></div></div>
         <div class="field"><label>Condo / strata fees</label><div class="wrap"><span class="pfx">$</span><input type="number" id="condoFee" class="has-pfx" placeholder="0"></div><span class="hint">$0 if not applicable</span></div>
       </div>
@@ -3069,11 +3069,11 @@ select option { background: #fffaf4; color: var(--text); }
   <!-- STEP 3: RENTAL -->
   <div class="step" id="step-3">
     <div class="eyebrow">Step 3 of 6</div>
-    <h2 class="heading">The rental picture 🔑</h2>
-    <p class="subtext">Fill this in even if renting isn't on your radar — it builds the full comparison. Estimates are totally fine.</p>
+    <h2 class="heading">If you keep it 🔑</h2>
+    <p class="subtext">Use this to see whether keeping the property works better as a home you stay in or a property you rent out. Rough estimates are fine.</p>
 
     <div class="card">
-      <div class="card-title">💵 What could you charge in rent?</div>
+      <div class="card-title">💵 If you rented it out</div>
       <div class="grid g2">
         <div class="field" id="f-monthRent">
           <label>Estimated monthly rent</label>
@@ -3090,17 +3090,17 @@ select option { background: #fffaf4; color: var(--text); }
     </div>
 
     <div class="card">
-      <div class="card-title">🔧 What it costs to be a landlord (monthly)</div>
+      <div class="card-title">🔧 Monthly costs if you keep it as a rental</div>
       <div class="grid g2">
         <div class="field"><label>Maintenance & small repairs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="maint" class="has-pfx" placeholder="300"></div><span class="hint" id="maintHint">Why we ask: rent profit can disappear if upkeep is ignored. We start with a rough estimate and you can adjust it.</span></div>
         <div class="field"><label>Property manager fee (if using one)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="mgmtFee" class="has-pfx" placeholder="0"></div><span class="hint">Why we ask: this affects whether renting feels worth it after real-world management costs.</span></div>
         <div class="field"><label>Landlord insurance (monthly)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="llIns" class="has-pfx" placeholder="150" value="150"></div><span class="hint">Why we ask: renting often changes your insurance cost. Rough estimate is fine.</span></div>
-        <div class="field"><label>Bookkeeping / legal (monthly avg)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="renAdmin" class="has-pfx" placeholder="75" value="75"></div><span class="hint">Estimated — tax filing, leases, occasional legal advice. Adjust as needed.</span></div>
+        <div class="field"><label>Would you be comfortable being a landlord?</label><select id="landlordRdy"><option value="yes">Yes — I'd consider it</option><option value="maybe" selected>Maybe — depends on the numbers</option><option value="no">No — not my thing</option></select><span class="hint">Why we ask: if keeping only works by becoming a landlord, your comfort with that matters.</span></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">🧮 Depreciation (Schedule E) — optional</div>
+      <div class="card-title">🧮 Depreciation (Schedule E) — only needed if relevant</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">US landlords can deduct the building's depreciation each year on <strong>IRS Schedule E</strong>. Residential buildings depreciate over 27.5 years — it reduces your taxable rental income on paper, but the IRS recaptures it at sale (see §1250).</p>
       <div class="grid g2">
         <div class="field">
@@ -3160,8 +3160,8 @@ select option { background: #fffaf4; color: var(--text); }
   <!-- STEP 5: SELL -->
   <div class="step" id="step-5">
     <div class="eyebrow">Step 5 of 6</div>
-    <h2 class="heading">The selling picture 🏷️</h2>
-    <p class="subtext">What it'd cost to sell and what tax you might owe. The “what would you do with the money?” questions come after results as an optional refinement.</p>
+    <h2 class="heading">If you sell 🏷️</h2>
+    <p class="subtext">What it would cost to sell and what you might owe in tax. We'll keep the one-time sell questions here and leave future planning for later if selling wins.</p>
 
     <div class="card">
       <div class="card-title">💸 Cost of selling</div>
@@ -3169,7 +3169,7 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field"><label>Agent commission</label><div class="wrap"><span class="sfx">%</span><input type="number" id="agentComm" class="has-sfx" placeholder="5.5" step="0.25" value="5.5"></div><span class="hint">Typically 5–6% in the US, split between buyer's and seller's agents. Can sometimes be negotiated.</span></div>
         <div class="field"><label>Closing costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="legalCosts" class="has-pfx" placeholder="2,500"></div><span class="hint">Typically $1,500–$3,500 for title insurance, escrow fees, and attorney fees.</span></div>
         <div class="field"><label>Staging & prep costs</label><div class="wrap"><span class="pfx">$</span><input type="number" id="staging" class="has-pfx" placeholder="4,000"></div><span class="hint">Photography, staging, cleaning, etc. $0 if selling as-is.</span></div>
-        <div class="field"><label>Repairs before listing</label><div class="wrap"><span class="pfx">$</span><input type="number" id="repairs" class="has-pfx" placeholder="0"></div></div>
+        <div class="field"><label>Repairs before listing</label><div class="wrap"><span class="pfx">$</span><input type="number" id="repairs" class="has-pfx" placeholder="0"></div><span class="hint">Only include one-time work you expect to do before selling.</span></div>
       </div>
     </div>
 
@@ -3197,12 +3197,21 @@ select option { background: #fffaf4; color: var(--text); }
   <!-- STEP 6: PERSONAL -->
   <div class="step" id="step-6">
     <div class="eyebrow">Step 6 of 6 — Last one!</div>
-    <h2 class="heading">A bit about you 💰</h2>
-    <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
+    <h2 class="heading">Your monthly picture 💰</h2>
+    <p class="subtext">These last questions make sure the keep-vs-sell decision reflects what feels realistic month to month, not just the spreadsheet.</p>
+
+    <div class="card">
+      <div class="card-title">🏦 Monthly affordability</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">We use these to judge whether keeping the property feels realistic, so they are part of the core decision.</p>
+      <div class="grid g2">
+        <div class="field" id="f-monthInc"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500" onblur="blurCheck('monthInc', v=>v>0)"></div><span class="hint">Why we ask: this shows whether keeping the home would feel comfortable month to month.</span><span class="err-msg">Enter household take-home income to continue</span></div>
+        <div class="field" id="f-otherDebt"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600" onblur="blurCheck('otherDebt', v=>v>=0&&!isNaN(v))"></div><span class="hint">Why we ask: this helps us judge how tight or flexible your monthly picture really is.</span><span class="err-msg">Enter your other monthly debt payments ($0 if none)</span></div>
+      </div>
+    </div>
 
     <div class="card optional">
       <div class="card-title">🎯 What matters most to you right now?</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Tap everything that applies — helps tailor the recommendation to you.</p>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Skip for now if you want the math first. These only lightly tailor the recommendation.</p>
       <div class="goal-grid">
         <div class="goal-card" id="gc_cash" onclick="toggleGoal('g_cash',this)">
           <input type="checkbox" id="g_cash" style="display:none">
@@ -3213,11 +3222,11 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="goal-card" id="gc_income" onclick="toggleGoal('g_income',this)">
           <input type="checkbox" id="g_income" style="display:none">
           <div class="gc-emoji">📬</div>
-          <div class="gc-title">Monthly income</div>
-          <div class="gc-desc">Want rent coming in every month</div>
+          <div class="gc-title">Income from the property</div>
+          <div class="gc-desc">If keeping works best, rental income matters</div>
         </div>
-        <div class="goal-card selected" id="gc_longterm" onclick="toggleGoal('g_longterm',this)">
-          <input type="checkbox" id="g_longterm" style="display:none" checked>
+        <div class="goal-card" id="gc_longterm" onclick="toggleGoal('g_longterm',this)">
+          <input type="checkbox" id="g_longterm" style="display:none">
           <div class="gc-emoji">📈</div>
           <div class="gc-title">Long-term wealth</div>
           <div class="gc-desc">Building equity over time is the priority</div>
@@ -3245,27 +3254,11 @@ select option { background: #fffaf4; color: var(--text); }
 
     <div class="card optional">
       <div class="card-title">🎛️ How do you feel about risk?</div>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Skip for now if you want. These are softer preference inputs.</p>
       <div class="grid g2">
         <div class="field"><label>Risk comfort level</label><select id="riskTol"><option value="low">Low — I'd rather play it safe</option><option value="medium" selected>Medium — balanced</option><option value="high">High — I'm comfortable with uncertainty</option></select></div>
         <div class="field"><label>Emergency savings situation</label><select id="emergFund"><option value="strong">Solid — 6+ months of expenses saved</option><option value="ok" selected>OK — roughly 3 months</option><option value="weak">Tight — less than 3 months</option><option value="none">None right now</option></select></div>
-        <div class="field"><label>Would you be comfortable being a landlord?</label><select id="landlordRdy"><option value="yes">Yes — I've done it or I'm up for it</option><option value="maybe">Maybe — I'm on the fence</option><option value="no">No — not my thing</option></select></div>
         <div class="field"><label>How soon do you need to decide?</label><select id="urgency"><option value="now">ASAP — decision is pressing</option><option value="months">Within a few months</option><option value="flexible" selected>No rush — just exploring</option></select></div>
-      </div>
-    </div>
-
-    <div class="card optional">
-      <div class="card-title snap-toggle" onclick="toggleSnap(this)">
-        🏦 Quick financial snapshot <span class="opt-badge">Optional</span>
-        <span class="snap-arrow">▾</span>
-      </div>
-      <div id="snapBody" class="snap-body">
-        <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:0.9rem;">Helps calibrate the debt-to-income ratio and landlord readiness score. Skip it if you prefer.</p>
-        <div class="grid g2">
-          <div class="field"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500"></div><span class="hint">Why we ask: this helps us judge whether keeping or renting would feel comfortable month to month.</span></div>
-          <div class="field"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600"></div><span class="hint">Why we ask: this helps us judge how tight or flexible your monthly picture really is.</span></div>
-          <div class="field"><label>Is this your only property?</label><select id="onlyProp"><option value="yes" selected>Yes</option><option value="no">No — I own others too</option></select></div>
-          <div class="field"><label>Buying another home if you sell?</label><select id="buyAfter"><option value="yes">Yes — right away</option><option value="maybe">Maybe later</option><option value="no" selected>No</option></select></div>
-        </div>
       </div>
     </div>
 
@@ -3285,14 +3278,14 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="pv-card">
       <div class="pv-title">💸 Monthly Picture</div>
       <div class="pv-row"><span class="pv-lbl">Ownership cost / mo</span><span class="pv-val neg" id="pvMonthCost">—</span></div>
-      <div class="pv-row"><span class="pv-lbl">Rental cash flow / mo</span><span class="pv-val" id="pvCashFlow">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Keep as rental / mo</span><span class="pv-val" id="pvCashFlow">—</span></div>
       <div class="pv-row"><span class="pv-lbl">DTI ratio (est.)</span><span class="pv-val" id="pvDTI">—</span></div>
     </div>
     <div class="pv-card">
       <div class="pv-title">🔭 10-yr Projections</div>
       <div class="pv-row"><span class="pv-lbl">Sell + reinvest</span><span class="pv-val blue" id="pvFutSell">—</span></div>
-      <div class="pv-row"><span class="pv-lbl">Rent out</span><span class="pv-val blue" id="pvFutRent">—</span></div>
-      <div class="pv-row"><span class="pv-lbl">Keep &amp; live here</span><span class="pv-val blue" id="pvFutKeep">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Keep: rent it out</span><span class="pv-val blue" id="pvFutRent">—</span></div>
+      <div class="pv-row"><span class="pv-lbl">Keep: live here</span><span class="pv-val blue" id="pvFutKeep">—</span></div>
     </div>
     <div class="pv-updated" id="pvUpdated">↑ updated live</div>
   </aside>
@@ -3303,7 +3296,7 @@ select option { background: #fffaf4; color: var(--text); }
   <div class="pp-bar-items">
     <div class="pp-bar-item"><span class="pp-bar-lbl">Equity</span><span class="pp-bar-val pos" id="pillEquity">—</span></div>
     <div class="pp-bar-item"><span class="pp-bar-lbl">Net proceeds</span><span class="pp-bar-val" id="pillNetProc">—</span></div>
-    <div class="pp-bar-item"><span class="pp-bar-lbl">Rent CF/mo</span><span class="pp-bar-val" id="pillCashFlow">—</span></div>
+    <div class="pp-bar-item"><span class="pp-bar-lbl">Keep-rent/mo</span><span class="pp-bar-val" id="pillCashFlow">—</span></div>
   </div>
   <span class="pp-open-icon">▲ Details</span>
 </div>
@@ -3315,7 +3308,7 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="ps-row"><span class="ps-lbl">Net proceeds (sell)</span><span class="ps-val" id="psNetProc">—</span></div>
     <div class="ps-row"><span class="ps-lbl">Capital gains tax (est.)</span><span class="ps-val" id="psCGTax">—</span></div>
     <div class="ps-row"><span class="ps-lbl">Ownership cost / mo</span><span class="ps-val neg" id="psMonthCost">—</span></div>
-    <div class="ps-row"><span class="ps-lbl">Rental cash flow / mo</span><span class="ps-val" id="psCashFlow">—</span></div>
+    <div class="ps-row"><span class="ps-lbl">Keep as rental / mo</span><span class="ps-val" id="psCashFlow">—</span></div>
     <div class="ps-row"><span class="ps-lbl">10-yr sell + reinvest</span><span class="ps-val" id="psFutSell">—</span></div>
   </div>
 </div>
@@ -3328,7 +3321,7 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="sc-grid" id="scGrid"></div>
     <div class="result-improve" id="resultImprove"></div>
     <div class="card post-sell-card" id="postSellCard">
-      <div class="card-title"><span>🌱 If you sell — what then?</span><span class="opt-badge">Optional refinement</span></div>
+      <div class="card-title"><span>🌱 If you sell — what then?</span><span class="opt-badge">Skip for now</span></div>
       <div class="post-sell-note">These questions help refine the long-term sell path after you have seen the first result. A rough planning number is fine.</div>
       <div class="grid g2">
         <div class="field">
@@ -3387,14 +3380,13 @@ select option { background: #fffaf4; color: var(--text); }
     <!-- AI Analysis — gated for free users -->
     <div class="gate-wrap">
       <div class="ai-box" id="aiBox">
-        <div class="ai-hdr"><span class="ao">📝</span><h3>Plain-English Read of Your Situation</h3><span class="al">PREMIUM</span></div>
+        <div class="ai-hdr"><span class="ao">📝</span><h3>Interpretation</h3><span class="al">PREMIUM</span></div>
         <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
       </div>
       <div class="gate-overlay compact" id="aiGate">
         <div class="gate-icon">📝</div>
         <div>
-          <div class="gate-title">Included in the full report</div>
-          <div class="gate-desc">Plain-English interpretation is part of the shared upgrade above.</div>
+          <div class="gate-title">Unlock to read</div>
         </div>
       </div>
     </div>
@@ -3404,8 +3396,7 @@ select option { background: #fffaf4; color: var(--text); }
       <div class="gate-overlay compact" id="taxGate">
         <div class="gate-icon">🇺🇸</div>
         <div>
-          <div class="gate-title">Included in the full report</div>
-          <div class="gate-desc">Full tax detail is part of the shared upgrade above.</div>
+          <div class="gate-title">Unlock to view</div>
         </div>
       </div>
     </div>
@@ -3717,11 +3708,11 @@ async function fetchPropertyData(address, geoData) {
       safeSet('curVal', Math.round(d.estimatedValue));
       // Closing costs: ~1% of home value capped at $3k
       safeSet('legalCosts', Math.round(Math.min(d.estimatedValue * 0.01, 3000)));
-      // Maintenance: 1% of value ÷ 12 (standard rule of thumb)
-      const maintEst = Math.round(d.estimatedValue * 0.01 / 12);
+      // Maintenance: conservative starter estimate
+      const maintEst = Math.max(100, Math.min(600, Math.round(d.estimatedValue * 0.005 / 12)));
       safeSet('maint', maintEst);
       const maintHint = document.getElementById('maintHint');
-      if (maintHint) maintHint.textContent = `Estimated at 1% of your property value ÷ 12 ($${maintEst.toLocaleString()}/mo) — adjust if you know better.`;
+      if (maintHint) maintHint.textContent = `We use a conservative starter estimate for upkeep ($${maintEst.toLocaleString()}/mo). Adjust it if you know your property runs higher or lower.`;
       // Auto-suggest building value (75% of property = typical structure/land split)
       const buildEst = Math.round(d.estimatedValue * 0.75);
       safeSet('dprBuildVal', buildEst);
@@ -3810,7 +3801,11 @@ function validateStep(n) {
       { id:'mortBal', test: v => v >= 0 && !isNaN(v), msg: '👆 Enter your mortgage balance — $0 if fully paid off' },
     ],
     3: [
-      { id:'monthRent', test: v => v > 0, msg: '👆 A rough rent estimate is needed to compare the rental path' },
+      { id:'monthRent', test: v => v > 0, msg: '👆 A rough rent estimate is needed to compare the keep path' },
+    ],
+    6: [
+      { id:'monthInc', test: v => v > 0, msg: '👆 Enter household take-home income so we can judge the keep path realistically' },
+      { id:'otherDebt', test: v => v >= 0 && !isNaN(v), msg: '👆 Enter other monthly debt payments — use $0 if none' },
     ],
   };
   const stepChecks = checks[n];
@@ -3875,7 +3870,7 @@ function goTo(n){
   // going forward: validate current step
   if(n > cur && !validateStep(cur)) return;
   // Step celebration toast
-  const stepDone={1:'✓ Property info saved!',2:'✓ Mortgage noted!',3:'✓ Rental picture set!',4:'✓ Market outlook saved!',5:'✓ Sale assumptions saved!'};
+  const stepDone={1:'✓ Property info saved!',2:'✓ Mortgage noted!',3:'✓ Keep path saved!',4:'✓ Market outlook saved!',5:'✓ Sell assumptions saved!'};
   if(n > cur && stepDone[cur]) showToast(stepDone[cur]);
   document.getElementById('step-'+cur)?.classList.remove('active');
   cur=n;
@@ -4114,18 +4109,16 @@ function buildMissingImportantInputs(ctx) {
         items.push({
           label: 'Annual income',
           reason: 'This can change the federal tax rate used in the sell estimate. A rough estimate is fine.',
-          step: 1,
+          step: 5,
           fieldId: 'annInc',
-          expandS121: true,
         });
       }
       if (!hasRawValue('acbAdd')) {
         items.push({
           label: 'Major improvements',
           reason: 'Big improvements can reduce your taxable gain and improve the sell estimate.',
-          step: 1,
+          step: 5,
           fieldId: 'acbAdd',
-          expandS121: true,
         });
       }
     }
@@ -4134,7 +4127,7 @@ function buildMissingImportantInputs(ctx) {
   if (!hasRawValue('vacRate') || !hasRawValue('maint') || !hasRawValue('mgmtFee') || !hasRawValue('llIns')) {
     items.push({
       label: 'Rental assumptions',
-      reason: 'Vacancy, maintenance, management, and insurance often change whether renting looks attractive or not.',
+      reason: 'Vacancy, maintenance, management, and insurance often change whether keeping the property as a rental looks attractive or not.',
       step: 3,
       fieldId: 'vacRate',
     });
@@ -4154,12 +4147,12 @@ function renderResultState(missingImportantInputs) {
       <div class="result-status-badge">Quick estimate</div>
       <div class="result-status-copy">
         <strong>Based on the essentials you entered.</strong>
-        <p>Add a few more details below to make this your most reliable result.</p>
+        <p>Add a few more details below to make this your most reliable keep-vs-sell result.</p>
       </div>`;
     improveEl.classList.add('show');
     improveEl.innerHTML = `
       <h3>Make this your best result</h3>
-      <p>A few unanswered details could materially change your tax estimate, net proceeds, or rental outlook.</p>
+      <p>A few unanswered details could materially change your tax estimate, net proceeds, or keep-path outlook.</p>
       <div class="improve-list">
         ${missingImportantInputs.map(item => `
           <div class="improve-item">
@@ -4176,9 +4169,9 @@ function renderResultState(missingImportantInputs) {
   statusEl.classList.add('show');
   statusEl.innerHTML = `
     <div class="result-status-badge">Most reliable result</div>
-    <div class="result-status-copy">
-      <strong>You provided the key inputs that most affect the estimate.</strong>
-      <p>This version includes the main details that drive your sell, rent, and hold comparison.</p>
+      <div class="result-status-copy">
+        <strong>You provided the key inputs that most affect the estimate.</strong>
+      <p>This version includes the main details that drive your keep-vs-sell comparison.</p>
     </div>`;
   improveEl.classList.remove('show');
   improveEl.innerHTML = '';
@@ -4202,7 +4195,7 @@ function calculate(){
   const propTax=gv('propTax',500), homeIns=gv('homeIns',180), condoFee=gv('condoFee',0);
   const breakPen=gv('breakPen',0);
   const monthRent=gv('monthRent',3200), vacRate=gv('vacRate',5)/100;
-  const maint=gv('maint',300), mgmtFee=gv('mgmtFee',0), llIns=gv('llIns',120), renAdmin=gv('renAdmin',50);
+  const maint=gv('maint',300), mgmtFee=gv('mgmtFee',0), llIns=gv('llIns',120);
   const ccaAnn=gv('ccaAnn',0);
   const agentComm=gv('agentComm',5.5)/100, legalCosts=gv('legalCosts',2500), staging=gv('staging',4000), repairs=gv('repairs',0);
   const annInc=gv('annInc',95000), acbAdd=gv('acbAdd',0);
@@ -4241,14 +4234,14 @@ function calculate(){
   const monthSell=netProc*reinvRet/12;
 
   const effRent=monthRent*(1-vacRate);
-  const totRentEx=monthMort+propTax+(llIns||homeIns)+condoFee+maint+mgmtFee+renAdmin;
+  const totRentEx=monthMort+propTax+(llIns||homeIns)+condoFee+maint+mgmtFee;
   const monthRentCF=effRent-totRentEx;
   const annNetRent=monthRentCF*12;
   const taxRentInc=Math.max(0,annNetRent-ccaAnn);
   const rentFedRate=fedOrdIncomeRate(filingStatus,annInc+Math.max(0,taxRentInc));
   const rentTax=taxRentInc>0?taxRentInc*(rentFedRate+stateRate):0;
   const annRentAT=annNetRent-rentTax;
-  const capRate=((effRent*12-(propTax+homeIns+condoFee+maint+mgmtFee+renAdmin)*12)/curVal)*100;
+  const capRate=((effRent*12-(propTax+homeIns+condoFee+maint+mgmtFee)*12)/curVal)*100;
   const coc=equity>0?(monthRentCF*12/equity*100):0;
   const futRent=curVal*Math.pow(1+apprec,hrz)-mortBal+annRentAT*hrz;
 
@@ -4267,18 +4260,60 @@ function calculate(){
     futKeep,
   });
 
-  let ss=50,rs=50,ks=50;
-  if(netProc>0)ss+=12;if(netProc>curVal*0.15)ss+=8;if(cgTax===0)ss+=8;
-  if(gCash)ss+=18;if(gSimp)ss+=10;if(urg==='now')ss+=10;if(gStab)ss-=15;
-  if(apprec>0.05)ss-=8;if(monthRentCF>300)ss-=5;if(emerg==='none'||emerg==='weak')ss+=8;
-  if(monthRentCF>0)rs+=18;if(monthRentCF>400)rs+=8;if(capRate>5)rs+=10;
-  if(gInc)rs+=20;if(gLong)rs+=10;if(landlord==='yes')rs+=12;if(landlord==='no')rs-=22;
-  if(gSimp)rs-=12;if(risk==='low')rs-=10;
-  if(gStab)ks+=20;if(apprec>0.05)ks+=15;if(dti<35)ks+=12;if(gLong)ks+=10;
-  if(risk==='low')ks+=8;if(gCash)ks-=15;if(urg==='now')ks-=12;if(emerg==='none')ks-=5;
-  ss=Math.min(100,Math.max(15,ss));rs=Math.min(100,Math.max(15,rs));ks=Math.min(100,Math.max(15,ks));
-  const mx=Math.max(ss,rs,ks);
-  const winnerName=ss===mx?'selling':rs===mx?'renting it out':'keeping and living in it';
+  let sellScore=50, keepLiveScore=50, keepRentScore=50;
+  if(netProc>0) sellScore+=12;
+  if(netProc>curVal*0.15) sellScore+=8;
+  if(cgTax===0) sellScore+=6;
+  if(dti>44) sellScore+=8;
+  if(emerg==='none'||emerg==='weak') sellScore+=6;
+  if(urg==='now') sellScore+=8;
+  if(gCash) sellScore+=6;
+  if(gSimp) sellScore+=5;
+  if(gTax) sellScore+=4;
+  if(gStab) sellScore-=8;
+  if(gLong) sellScore-=4;
+  if(apprec>0.05) sellScore-=7;
+  if(monthRentCF>250) sellScore-=4;
+
+  if(dti<35) keepLiveScore+=15;
+  else if(dti<44) keepLiveScore+=7;
+  else keepLiveScore-=10;
+  if(apprec>0.03) keepLiveScore+=10;
+  if(gStab) keepLiveScore+=6;
+  if(gLong) keepLiveScore+=5;
+  if(risk==='low') keepLiveScore+=3;
+  if(gCash) keepLiveScore-=4;
+  if(urg==='now') keepLiveScore-=5;
+  if(emerg==='none') keepLiveScore-=4;
+
+  if(monthRentCF>0) keepRentScore+=15;
+  else keepRentScore-=12;
+  if(monthRentCF>400) keepRentScore+=8;
+  if(capRate>5) keepRentScore+=8;
+  if(apprec>0.03) keepRentScore+=8;
+  if(landlord==='yes') keepRentScore+=6;
+  if(landlord==='no') keepRentScore-=10;
+  if(gInc) keepRentScore+=6;
+  if(gLong) keepRentScore+=4;
+  if(gSimp) keepRentScore-=6;
+  if(risk==='low') keepRentScore-=4;
+  if(dti>44) keepRentScore+=2;
+
+  sellScore=Math.min(100,Math.max(15,sellScore));
+  keepLiveScore=Math.min(100,Math.max(15,keepLiveScore));
+  keepRentScore=Math.min(100,Math.max(15,keepRentScore));
+
+  const keepMode = keepRentScore > keepLiveScore ? 'rent' : 'live';
+  const keepScore = Math.max(keepLiveScore, keepRentScore);
+  const winnerKey = sellScore > keepScore ? 'sell' : 'keep';
+  const winnerName = winnerKey === 'sell' ? 'selling' : (keepMode === 'rent' ? 'keeping it and renting it out' : 'keeping it and living there');
+  const keepModeLabel = keepMode === 'rent' ? 'Rent it out' : 'Live there';
+  const keepCompositeValue = keepMode === 'rent' ? futRent : futKeep;
+  const keepMonthlyView = keepMode === 'rent' ? monthRentCF : -totalMonthCost;
+  const keepMonthlyLabel = keepMode === 'rent' ? 'Monthly cash flow' : 'Monthly ownership cost';
+  const keepMonthlyValueText = keepMode === 'rent'
+    ? `${fmt(keepMonthlyView)}/mo`
+    : `${fmt(-totalMonthCost)}/mo`;
 
   setTimeout(() => {
   hideCalcOverlay();
@@ -4288,58 +4323,57 @@ function calculate(){
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   renderResultState(missingImportantInputs);
+  const postSellCard = document.getElementById('postSellCard');
+  if (postSellCard) postSellCard.style.display = winnerKey === 'sell' ? '' : 'none';
 
-  const scenarios=[
-    {key:'sell',icon:'🏷️',name:'Sell It',score:ss,rows:[
-      {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
-      {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
-      {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
-      {l:'Equity unlocked today',v:fmt(equity),c:''},
-    ]},
-    {key:'rent',icon:'🔑',name:'Rent It Out',score:rs,rows:[
-      {l:'Monthly cash flow (pre-tax)',v:fmt(monthRentCF),c:monthRentCF>=0?'pos':'neg'},
-      {l:'Cap rate',v:capRate.toFixed(1)+'%',c:capRate>=5?'pos':capRate>=3?'warn-c':'neg'},
-      {l:'Cash-on-cash return',v:coc.toFixed(1)+'%',c:coc>=6?'pos':''},
-      {l:`${hrz}-yr projected equity`,v:fmtK(futRent),c:'pos'},
-    ]},
-    {key:'keep',icon:'🏠',name:'Keep Living Here',score:ks,rows:[
-      {l:'Monthly ownership cost',v:fmt(totalMonthCost),c:'neg'},
-      {l:'Debt-to-income ratio',v:dti.toFixed(0)+'%',c:dti<35?'pos':dti<44?'warn-c':'neg'},
-      {l:`${hrz}-yr projected equity`,v:fmtK(futKeep),c:'pos'},
-      {l:'Annual appreciation gain',v:fmtK(curVal*apprec),c:'pos'},
-    ]},
-  ];
-
-  const sorted=[...scenarios].sort((a,b)=>b.score-a.score);
-  const winner=sorted[0], others=sorted.slice(1);
   const rowsHtml=rows=>rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('');
 
   document.getElementById('scGrid').innerHTML=`
-    <div class="verdict-card ${winner.key}">
+    <div class="verdict-card ${winnerKey}">
       <div class="verdict-eyebrow">⭐ Our Recommendation</div>
       <div class="verdict-top">
-        <div class="verdict-icon">${winner.icon}</div>
+        <div class="verdict-icon">${winnerKey === 'sell' ? '🏷️' : '🏠'}</div>
         <div class="verdict-title-wrap">
-          <div class="verdict-name">${winner.name}</div>
+          <div class="verdict-name">${winnerKey === 'sell' ? 'Sell' : 'Keep'}</div>
+          <div class="verdict-sub">${winnerKey === 'sell' ? 'Best fit if freeing up cash now matters most.' : `Best keep path: ${keepModeLabel}`}</div>
         </div>
-        <div class="verdict-score-pill">${winner.score}/100</div>
+        <div class="verdict-score-pill">${winnerKey === 'sell' ? sellScore : keepScore}/100</div>
       </div>
-      <div class="verdict-bar"><div class="verdict-fill" style="width:${winner.score}%"></div></div>
-      <div class="verdict-rows">${rowsHtml(winner.rows)}</div>
+      <div class="verdict-bar"><div class="verdict-fill" style="width:${winnerKey === 'sell' ? sellScore : keepScore}%"></div></div>
+      <div class="verdict-rows">${rowsHtml(winnerKey === 'sell' ? [
+        {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
+        {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
+        {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
+        {l:'Equity unlocked today',v:fmt(equity),c:''},
+      ] : [
+        {l:'Best keep path',v:keepModeLabel,c:'pos'},
+        {l:keepMonthlyLabel,v:keepMonthlyValueText,c:keepMode==='rent'?(keepMonthlyView>=0?'pos':'neg'):'neg'},
+        {l:`${hrz}-yr projected keep value`,v:fmtK(keepCompositeValue),c:'pos'},
+        {l:'Debt-to-income ratio',v:dti.toFixed(0)+'%',c:dti<35?'pos':dti<44?'warn-c':'neg'},
+      ])}</div>
     </div>
     <div class="why-not-wrap">
-      ${others.map((sc,i)=>`
-        <div class="why-not-item">
-          <div class="why-not-toggle" onclick="toggleWhyNot(this)">
-            <span class="why-not-label">${sc.icon} Why not ${sc.name.toLowerCase()}?</span>
-            <span class="why-score">${sc.score}/100</span>
-            <span class="wn-arrow">▾</span>
-          </div>
-          <div class="why-not-body">
-            <div class="sc-bar ${sc.key}"><div class="sc-fill ${sc.key}" style="width:${sc.score}%"></div></div>
-            ${rowsHtml(sc.rows)}
-          </div>
-        </div>`).join('')}
+      <div class="why-not-item">
+        <div class="why-not-toggle" onclick="toggleWhyNot(this)">
+          <span class="why-not-label">${winnerKey === 'sell' ? '🏠 Why not keep?' : '🏷️ Why not sell?'}</span>
+          <span class="why-score">${winnerKey === 'sell' ? keepScore : sellScore}/100</span>
+          <span class="wn-arrow">▾</span>
+        </div>
+        <div class="why-not-body">
+          <div class="sc-bar ${winnerKey === 'sell' ? 'keep' : 'sell'}"><div class="sc-fill ${winnerKey === 'sell' ? 'keep' : 'sell'}" style="width:${winnerKey === 'sell' ? keepScore : sellScore}%"></div></div>
+          ${rowsHtml(winnerKey === 'sell' ? [
+            {l:'Best keep path',v:keepModeLabel,c:'pos'},
+            {l:'Keep-path monthly view',v:keepMonthlyValueText,c:keepMode==='rent'?(keepMonthlyView>=0?'pos':'neg'):'neg'},
+            {l:`${hrz}-yr keep value`,v:fmtK(keepCompositeValue),c:'pos'},
+            {l:'Landlord fit',v:landlord==='yes'?'Comfortable':landlord==='no'?'Not a fit':'Maybe',c:landlord==='yes'?'pos':landlord==='no'?'neg':''},
+          ] : [
+            {l:'Net proceeds (after all costs)',v:fmt(netProc),c:netProc>=0?'pos':'neg'},
+            {l:`${hrz}-yr reinvested value`,v:fmtK(futSell),c:'pos'},
+            {l:'Capital gains tax (est.)',v:fmt(cgTax),c:cgTax>0?'neg':'pos'},
+            {l:'Liquidity unlocked today',v:fmt(equity),c:''},
+          ])}
+        </div>
+      </div>
     </div>`;
 
   document.getElementById('taxBlock').innerHTML=`
@@ -4362,12 +4396,13 @@ function calculate(){
   if(cgTax===0)ins.push({i:'🎉',t:'Zero capital gains tax',b:`The §121 exclusion covers your full gain and your state has no capital gains tax — you'd owe $0 on this sale. That's a significant tax-free advantage.`});
   else if(section121Excluded>0)ins.push({i:'🏠',t:'§121 exclusion reduces your tax bill',b:`The exclusion shelters ${fmt(section121Excluded)} of your ${fmt(rawGain)} gain. The remaining ${fmt(taxableGain)} is taxable at a ${(federalRate*100).toFixed(0)}% federal rate — estimated total tax ${fmt(cgTax)}.`});
   else ins.push({i:'⚠️',t:'No §121 exclusion applies',b:`You haven't lived there 2+ years as a primary residence, so the full ${fmt(rawGain)} gain is taxable. Estimated total tax: ${fmt(cgTax)}. Living there another ${2-preYrs} year(s) could unlock a ${fmt(exclusionLimit)} exclusion.`});
-  if(monthRentCF>300)ins.push({i:'📬',t:'Solid rental cash flow',b:`At ${fmt(monthRentCF)}/mo pre-tax, the rental path is cash-flow positive with a ${capRate.toFixed(1)}% cap rate.`});
-  else if(monthRentCF<0)ins.push({i:'⚠️',t:'Rental cash flow is negative',b:`Renting costs ~${fmt(Math.abs(monthRentCF))}/mo out-of-pocket. You'd be counting on appreciation to make up the difference.`});
-  if(apprec>0.05)ins.push({i:'📈',t:'Your market forecast favors holding',b:`At ${(apprec*100).toFixed(1)}%/yr, the property could be worth ${fmtK(curVal*Math.pow(1+apprec,hrz))} in ${hrz} years.`});
+  if(keepMode==='rent' && monthRentCF>300)ins.push({i:'📬',t:'The best keep path is renting it out',b:`At ${fmt(monthRentCF)}/mo pre-tax, renting looks like the stronger way to keep the property, with a ${capRate.toFixed(1)}% cap rate.`});
+  else if(keepMode==='rent' && monthRentCF<0)ins.push({i:'⚠️',t:'Keeping only works if you can absorb negative rent cash flow',b:`Renting costs about ${fmt(Math.abs(monthRentCF))}/mo out of pocket. That means the keep case relies more heavily on appreciation.`});
+  else ins.push({i:'🏡',t:'The best keep path is continuing to live there',b:`Keeping wins more on stability and long-term upside than on income. If you keep it, staying put currently looks cleaner than converting it to a rental.`});
+  if(apprec>0.05)ins.push({i:'📈',t:'Your market outlook supports keeping',b:`At ${(apprec*100).toFixed(1)}%/yr, the property could be worth ${fmtK(curVal*Math.pow(1+apprec,hrz))} in ${hrz} years.`});
   if(dti>44)ins.push({i:'🚨',t:'High debt-to-income ratio',b:`Property + other debt uses ${dti.toFixed(0)}% of your income. Lenders typically stress-test at 43–45%. This may affect future borrowing ability.`});
-  if(landlord==='no')ins.push({i:'🧘',t:'Being a landlord isn\'t for everyone',b:`You flagged this isn't your thing — worth factoring in honestly. Tenant disputes, evictions, and maintenance calls are real costs beyond the spreadsheet.`});
-  while(ins.length<4)ins.push({i:'🔍',t:'The long-term picture',b:`Over ${hrz} years: sell path → ${fmtK(futSell)}, rent path → ${fmtK(futRent)}, keep path → ${fmtK(futKeep)} in projected equity.`});
+  if(landlord==='no')ins.push({i:'🧘',t:'Landlord fit matters',b:`You said being a landlord is not your thing. That makes a keep-by-renting strategy meaningfully less attractive, even if the spreadsheet is close.`});
+  while(ins.length<4)ins.push({i:'🔍',t:'The long-term picture',b:`Over ${hrz} years: sell path → ${fmtK(futSell)}, keep by renting → ${fmtK(futRent)}, keep by living there → ${fmtK(futKeep)}.`});
 
   document.getElementById('insGrid').innerHTML=ins.slice(0,4).map(i=>`
     <div class="ins-card"><div class="ii">${i.i}</div><div><div class="it">${i.t}</div><div class="ib">${i.b}</div></div></div>`).join('');
@@ -4376,27 +4411,25 @@ function calculate(){
     const yrs=Array.from({length:hrz+1},(_,i)=>i);
     new Chart(document.getElementById('chart1'),{type:'line',data:{labels:yrs.map(y=>y===0?'Now':`Yr ${y}`),datasets:[
       {label:'Sell & Reinvest',data:yrs.map(y=>Math.max(0,netProc)*Math.pow(1+reinvRet,y)),borderColor:'#E8735A',backgroundColor:'rgba(232,115,90,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
-      {label:'Rent It Out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
-      {label:'Keep & Live',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#5B8DB8',backgroundColor:'rgba(91,141,184,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Keep: Rent it out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
+      {label:'Keep: Live there',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#5B8DB8',backgroundColor:'rgba(91,141,184,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
     ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'Plus Jakarta Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:10}},grid:{display:false}}}}});
-    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(invested return)','Rent Out\n(cash flow)','Keep\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(251,191,36,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#fbbf24','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:9}},grid:{display:false}}}}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(monthly equivalent)','Keep: Rent\n(cash flow)','Keep: Live\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(251,191,36,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#fbbf24','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:9}},grid:{display:false}}}}});
   },80);
 
   const rows=[
-    {l:'Net proceeds / equity unlocked',s:fmt(netProc),r:'$0 (hold)',k:'$0 (hold)'},
-    {l:'Monthly cash position',s:'+'+fmt(monthSell)+'/mo',r:(monthRentCF>=0?'+':'')+fmt(monthRentCF)+'/mo',k:'-'+fmt(totalMonthCost)+'/mo'},
-    {l:`Projected value (${hrz} yrs)`,s:fmtK(futSell),r:fmtK(futRent),k:fmtK(futKeep)},
-    {l:'Capital gains tax (est.)',s:fmt(cgTax),r:'Deferred',k:'Deferred'},
-    {l:'§121 Exclusion',s:section121Excluded>0?'✅ '+fmt(section121Excluded)+' sheltered':'❌ None',r:'⏳ Future decision',k:'⏳ Future decision'},
-    {l:'Liquidity / cash access',s:'✅ High',r:'⚠️ Low',k:'⚠️ Low'},
-    {l:'Monthly passive income',s:'❌ No',r:'✅ Yes',k:'❌ No'},
-    {l:'Benefits from future appreciation',s:'❌ No',r:'✅ Yes',k:'✅ Yes'},
-    {l:'Landlord responsibilities',s:'✅ None',r:'⚠️ Yes',k:'✅ None'},
-    {l:'Housing stability',s:'❌ Must move',r:'❌ Must move',k:'✅ Stay put'},
-    {l:'Depreciation (Schedule E)',s:'N/A',r:ccaAnn>0?'✅ '+fmt(ccaAnn)+'/yr':'—',k:'N/A'},
-    {l:'Match score',s:ss+'/100',r:rs+'/100',k:ks+'/100'},
+    {l:'Net proceeds / equity unlocked',s:fmt(netProc),k:'$0 today'},
+    {l:'Preferred keep path',s:'—',k:keepModeLabel},
+    {l:'Monthly picture',s:'+'+fmt(monthSell)+'/mo',k:keepMode==='rent'?(monthRentCF>=0?'+':'')+fmt(monthRentCF)+'/mo':fmt(-totalMonthCost)+'/mo'},
+    {l:`Projected value (${hrz} yrs)`,s:fmtK(futSell),k:fmtK(keepCompositeValue)},
+    {l:'Capital gains tax (est.)',s:fmt(cgTax),k:'Deferred'},
+    {l:'Immediate liquidity',s:'✅ High',k:'⚠️ Low'},
+    {l:'Future appreciation exposure',s:'❌ No',k:'✅ Yes'},
+    {l:'Housing stability',s:'❌ Must move',k:keepMode==='live'?'✅ Stay put':'❌ Must move'},
+    {l:'Landlord responsibilities',s:'✅ None',k:keepMode==='rent'?'⚠️ Yes':'✅ None'},
+    {l:'Match score',s:sellScore+'/100',k:keepScore+'/100'},
   ];
-  document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tr">🔑 Rent</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.r}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
+  document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
 
   const prompt=`You are a helpful, warm US real estate and financial advisor. A homeowner used a property decision tool. Write a warm, plain-English 3-paragraph analysis. Be specific to their numbers — interpret what they actually mean, don't just list them. Be honest about tradeoffs. Reference US tax context (§121 exclusion, federal capital gains rate, NIIT, IRS rules, state taxes) where relevant. Do NOT give definitive tax or legal advice. End with one balanced, genuine closing thought.
 
@@ -4409,12 +4442,12 @@ Data:
 - Monthly costs (own): ${fmt(totalMonthCost)}/mo
 - Rental: ${fmt(monthRent)}/mo → ${fmt(monthRentCF)}/mo cash flow pre-tax, cap rate ${capRate.toFixed(1)}%
 - Net sale proceeds: ${fmt(netProc)} | Reinvested ${hrz} yrs at ${(reinvRet*100).toFixed(1)}%: ${fmtK(futSell)}
-- ${hrz}-yr projected equity: sell ${fmtK(futSell)}, rent ${fmtK(futRent)}, keep ${fmtK(futKeep)}
+- ${hrz}-yr projected value: sell ${fmtK(futSell)}, keep by renting ${fmtK(futRent)}, keep by living there ${fmtK(futKeep)}
 - Appreciation forecast: ${(apprec*100).toFixed(1)}%/yr
 - Post-sale plan: tax-advantaged room=${gs('taxShelter')||'partial'}, buying another home=${gs('buyAnother')||'no'}
 - Goals: cash=${gCash}, income=${gInc}, long-term=${gLong}, simplify=${gSimp}, stability=${gStab}, tax=${gTax}
 - Risk: ${risk}, emergency fund: ${emerg}, landlord: ${landlord}, urgency: ${urg}
-- DTI: ${dti.toFixed(0)}%, Scores: Sell ${ss}, Rent ${rs}, Keep ${ks}, top: ${winnerName}
+- DTI: ${dti.toFixed(0)}%, Scores: Sell ${sellScore}, Keep-live ${keepLiveScore}, Keep-rent ${keepRentScore}, top: ${winnerName}
 
 Write exactly 3 paragraphs separated by blank lines. Conversational, warm, and genuinely useful.`;
 
