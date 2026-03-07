@@ -1164,16 +1164,26 @@ select option { background: #1a2035; color: var(--text); }
   color: var(--text-muted); font-size: 1rem; cursor: pointer; line-height: 1;
 }
 .prefill-banner button:hover { color: var(--text); }
-.prefill-spinner {
-  width: 0.9rem;
-  height: 0.9rem;
-  border: 2px solid rgba(91,141,184,0.22);
-  border-top-color: #5b8db8;
-  border-radius: 50%;
-  animation: prefill-spin 0.8s linear infinite;
+.prefill-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
   flex-shrink: 0;
 }
-@keyframes prefill-spin { to { transform: rotate(360deg); } }
+.prefill-dots span {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: #5b8db8;
+  opacity: 0.35;
+  animation: prefill-dot 1s ease-in-out infinite;
+}
+.prefill-dots span:nth-child(2) { animation-delay: 0.16s; }
+.prefill-dots span:nth-child(3) { animation-delay: 0.32s; }
+@keyframes prefill-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.28; }
+  40% { transform: translateY(-2px); opacity: 1; }
+}
 .field.autofill-pending input,
 .field.autofill-pending select {
   background-image: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(91,141,184,0.12), rgba(255,255,255,0.02));
@@ -3388,7 +3398,8 @@ function setPrefillBanner(message, loading = false) {
   if (!banner) return;
   banner.classList.add('show');
   banner.classList.toggle('loading', loading);
-  banner.innerHTML = `${loading ? '<span class="prefill-spinner"></span>' : '✓'} <span>${message}</span><button onclick="dismissBanner()" title="Dismiss">×</button>`;
+  const lead = loading ? '<span class="prefill-dots" aria-hidden="true"><span></span><span></span><span></span></span>' : '✓';
+  banner.innerHTML = `${lead}<span>${message}</span><button onclick="dismissBanner()" title="Dismiss">×</button>`;
 }
 
 function clearPrefillHighlights() {
@@ -3404,7 +3415,7 @@ function startPrefillLoading() {
     const field = document.getElementById(id)?.closest('.field');
     if (field) field.classList.add('autofill-pending');
   });
-  setPrefillBanner('Looking up public records and market data for this address…', true);
+  setPrefillBanner('', true);
 }
 
 function markPrefillHit(id) {
