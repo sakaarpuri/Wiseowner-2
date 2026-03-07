@@ -3688,13 +3688,20 @@ function initAutocomplete() {
   ac.addListener('place_changed', () => {
     const place = ac.getPlace();
     if (!place || !place.formatted_address) return;
-    startPrefillLoading();
 
     // Extract state/city/zip directly from Places result — no geocode round-trip needed
     function getComp(types, useShort) {
       const c = (place.address_components || []).find(a => types.some(t => a.types.includes(t)));
       return c ? (useShort ? c.short_name : c.long_name) : null;
     }
+    const streetNumber = getComp(['street_number'], false);
+    if (!streetNumber) {
+      clearPrefillHighlights();
+      setPrefillBanner('Please choose a full street address with a house number.', false);
+      return;
+    }
+
+    startPrefillLoading();
     const geoData = {
       state:  getComp(['administrative_area_level_1'], true),  // "TX"
       city:   getComp(['locality', 'sublocality', 'postal_town'], false),
