@@ -310,6 +310,27 @@ select option { background: #1a2035; color: var(--text); }
   border-radius: 10px;
 }
 .fc-sentence strong { color: var(--text); font-weight: 700; }
+.fc-suggestion {
+  margin: 0.1rem 0 0.95rem;
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  text-align: center;
+}
+.fc-suggestion strong { color: var(--text); }
+
+.post-sell-card {
+  margin-bottom: 1.5rem;
+}
+.post-sell-card .card-title {
+  justify-content: space-between;
+  align-items: center;
+}
+.post-sell-note {
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
 
 /* ── FORECAST TILES (legacy — kept for CSS completeness) ── */
 .forecast-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-top: 0.6rem; }
@@ -2610,8 +2631,9 @@ select option { background: #fffaf4; color: var(--text); }
   <div class="tab" data-s="1"><span class="ti">📍</span><span class="tl">Property</span></div>
   <div class="tab" data-s="2"><span class="ti">💳</span><span class="tl">Mortgage</span></div>
   <div class="tab" data-s="3"><span class="ti">🔑</span><span class="tl">Rental</span></div>
-  <div class="tab" data-s="4"><span class="ti">🏷️</span><span class="tl">Sale</span></div>
-  <div class="tab" data-s="5"><span class="ti">💰</span><span class="tl">You</span></div>
+  <div class="tab" data-s="4"><span class="ti">📈</span><span class="tl">Outlook</span></div>
+  <div class="tab" data-s="5"><span class="ti">🏷️</span><span class="tl">Sale</span></div>
+  <div class="tab" data-s="6"><span class="ti">💰</span><span class="tl">You</span></div>
   <div class="prog-wrap"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
 </div>
 
@@ -2684,7 +2706,7 @@ select option { background: #fffaf4; color: var(--text); }
 
   <!-- STEP 1: PROPERTY -->
   <div class="step" id="step-1">
-    <div class="eyebrow">Step 1 of 5</div>
+    <div class="eyebrow">Step 1 of 6</div>
     <h2 class="heading">Start with the property</h2>
     <p class="subtext">We’ll use this to tailor the estimate and focus on the comparisons and tax rules that actually apply to your situation.</p>
     <div class="trust-strip">🔒 Private estimate only. Your numbers stay in your browser.</div>
@@ -2769,22 +2791,6 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Where do you think values go from here?</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;line-height:1.55;">Set a rough annual appreciation rate for your market. This only affects the long-term comparison.</p>
-      <div class="fc-wrap">
-        <div class="fc-badge" id="fcBadge">📈 +4.0% / yr</div>
-      </div>
-      <input type="range" id="apprec" min="-2" max="10" step="0.5" value="4" oninput="syncForecast(this.value)">
-      <div class="fc-track">
-        <span>📉 −2%</span>
-        <span>🔥 10%</span>
-      </div>
-      <div class="fc-sentence" id="fcSentence">
-        That puts this property at <strong id="fcProjVal">—</strong> in <span id="fcHrz">10</span> years.
-      </div>
-    </div>
-
     <div id="invNote" class="inv-note">📋 <strong>Rental / Investment property:</strong> Primary-home tax breaks usually do not apply here. We’ll account for prior rental use and any extra tax details automatically in the final estimate.</div>
     <div id="vacNote" class="inv-note">🏖️ <strong>Vacation / Cottage:</strong> Second homes usually do not get the same primary-home tax break. We’ll estimate the sale assuming no main-home exclusion.</div>
 
@@ -2851,7 +2857,7 @@ select option { background: #fffaf4; color: var(--text); }
 
   <!-- STEP 2: MORTGAGE -->
   <div class="step" id="step-2">
-    <div class="eyebrow">Step 2 of 5</div>
+    <div class="eyebrow">Step 2 of 6</div>
     <h2 class="heading">Your mortgage 💳</h2>
     <p class="subtext">Check your latest mortgage statement — most of this is right on it.</p>
 
@@ -2903,7 +2909,7 @@ select option { background: #fffaf4; color: var(--text); }
 
   <!-- STEP 3: RENTAL -->
   <div class="step" id="step-3">
-    <div class="eyebrow">Step 3 of 5</div>
+    <div class="eyebrow">Step 3 of 6</div>
     <h2 class="heading">The rental picture 🔑</h2>
     <p class="subtext">Fill this in even if renting isn't on your radar — it builds the full comparison. Estimates are totally fine.</p>
 
@@ -2964,14 +2970,39 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div class="btn-row"><button class="btn-back" onclick="goTo(2)">← Back</button><button class="btn-next" onclick="goTo(4)">Next: Sale →</button></div>
+    <div class="btn-row"><button class="btn-back" onclick="goTo(2)">← Back</button><button class="btn-next" onclick="goTo(4)">Next: Outlook →</button></div>
   </div>
 
-  <!-- STEP 4: SELL -->
+  <!-- STEP 4: OUTLOOK -->
   <div class="step" id="step-4">
-    <div class="eyebrow">Step 4 of 5</div>
+    <div class="eyebrow">Step 4 of 6</div>
+    <h2 class="heading">Where do values go from here? 📈</h2>
+    <p class="subtext">Set a rough annual appreciation rate for your market. This only affects the long-term comparison, and you can adjust it later.</p>
+
+    <div class="card">
+      <div class="card-title">Market outlook</div>
+      <div class="fc-wrap">
+        <div class="fc-badge" id="fcBadge">📈 +4.0% / yr</div>
+      </div>
+      <div class="fc-suggestion" id="fcSuggestion">Suggested starting point: <strong>+4.0% / yr</strong></div>
+      <input type="range" id="apprec" min="-2" max="10" step="0.5" value="4" oninput="syncForecast(this.value)">
+      <div class="fc-track">
+        <span>📉 −2%</span>
+        <span>🔥 10%</span>
+      </div>
+      <div class="fc-sentence" id="fcSentence">
+        That puts this property at <strong id="fcProjVal">—</strong> in <span id="fcHrz">10</span> years.
+      </div>
+    </div>
+
+    <div class="btn-row"><button class="btn-back" onclick="goTo(3)">← Back</button><button class="btn-next" onclick="goTo(5)">Next: Sale →</button></div>
+  </div>
+
+  <!-- STEP 5: SELL -->
+  <div class="step" id="step-5">
+    <div class="eyebrow">Step 5 of 6</div>
     <h2 class="heading">The selling picture 🏷️</h2>
-    <p class="subtext">What it'd cost to sell, what tax you might owe, and what you'd do with the money.</p>
+    <p class="subtext">What it'd cost to sell and what tax you might owe. The “what would you do with the money?” questions come after results as an optional refinement.</p>
 
     <div class="card">
       <div class="card-title">💸 Cost of selling</div>
@@ -3001,36 +3032,12 @@ select option { background: #fffaf4; color: var(--text); }
       <div class="callout forest"><span class="ci">🧮</span><div>We calculate your gain automatically, then apply the relevant home-sale tax break, federal rate, any higher-income surtax, and your state rate. The line-by-line breakdown appears in results.</div></div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🌱 If you sell — what then?</div>
-      <div class="grid g2">
-        <div class="field">
-          <label>If you invest the proceeds, what return do you expect?</label>
-          <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
-          <span class="hint">Why we ask: if you sell, this estimates what the freed-up cash might do elsewhere. A rough planning number is fine.</span>
-        </div>
-        <div class="field">
-          <label>How many years ahead are you comparing?</label>
-          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
-          <span class="hint">Why we ask: this sets how far out to compare the long-term paths. Use 5 if the decision is near-term, 10 if unsure.</span>
-        </div>
-        <div class="field">
-          <label>Tax-advantaged account room (401k, IRA, etc.)?</label>
-          <select id="taxShelter"><option value="full">Yes — plenty of 401(k)/IRA room</option><option value="partial" selected>Some room available</option><option value="no">No — mostly used up</option></select>
-        </div>
-        <div class="field">
-          <label>Buying another home with the money?</label>
-          <select id="buyAnother"><option value="yes">Yes — buying another property</option><option value="maybe">Maybe, in a few years</option><option value="no" selected>No — investing or renting</option></select>
-        </div>
-      </div>
-    </div>
-
-    <div class="btn-row"><button class="btn-back" onclick="goTo(3)">← Back</button><button class="btn-next" onclick="goTo(5)">Almost there →</button></div>
+    <div class="btn-row"><button class="btn-back" onclick="goTo(4)">← Back</button><button class="btn-next" onclick="goTo(6)">Almost there →</button></div>
   </div>
 
-  <!-- STEP 5: PERSONAL -->
-  <div class="step" id="step-5">
-    <div class="eyebrow">Step 5 of 5 — Last one!</div>
+  <!-- STEP 6: PERSONAL -->
+  <div class="step" id="step-6">
+    <div class="eyebrow">Step 6 of 6 — Last one!</div>
     <h2 class="heading">A bit about you 💰</h2>
     <p class="subtext">These last few questions help us match the numbers to your real life — not just the spreadsheet.</p>
 
@@ -3103,7 +3110,7 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div class="btn-row"><button class="btn-back" onclick="goTo(4)">← Back</button><button class="btn-cta" onclick="calculate()">🏠 Show My Results</button></div>
+    <div class="btn-row"><button class="btn-back" onclick="goTo(5)">← Back</button><button class="btn-cta" onclick="calculate()">🏠 Show My Results</button></div>
   </div>
 
 </div><!-- end .main -->
@@ -3161,6 +3168,33 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="result-status" id="resultStatus"></div>
     <div class="sc-grid" id="scGrid"></div>
     <div class="result-improve" id="resultImprove"></div>
+    <div class="card post-sell-card" id="postSellCard">
+      <div class="card-title"><span>🌱 If you sell — what then?</span><span class="opt-badge">Optional refinement</span></div>
+      <div class="post-sell-note">These questions help refine the long-term sell path after you have seen the first result. A rough planning number is fine.</div>
+      <div class="grid g2">
+        <div class="field">
+          <label>If you invest the proceeds, what return do you expect?</label>
+          <div class="wrap"><span class="sfx">%</span><input type="number" id="reinvRet" class="has-sfx" placeholder="7" step="0.5"></div>
+          <span class="hint">Why we ask: this estimates what the freed-up cash might do elsewhere if you sell.</span>
+        </div>
+        <div class="field">
+          <label>How many years ahead are you comparing?</label>
+          <div class="wrap"><span class="sfx">yrs</span><input type="number" id="horizon" class="has-sfx" placeholder="10" min="1" max="30"></div>
+          <span class="hint">Why we ask: this sets how far out to compare the long-term paths. Use 5 if the decision is near-term, 10 if unsure.</span>
+        </div>
+        <div class="field">
+          <label>Tax-advantaged account room (401k, IRA, etc.)?</label>
+          <select id="taxShelter"><option value="full">Yes — plenty of 401(k)/IRA room</option><option value="partial" selected>Some room available</option><option value="no">No — mostly used up</option></select>
+        </div>
+        <div class="field">
+          <label>Buying another home with the money?</label>
+          <select id="buyAnother"><option value="yes">Yes — buying another property</option><option value="maybe">Maybe, in a few years</option><option value="no" selected>No — investing or renting</option></select>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="btn-secondary" onclick="calculate()">Update this comparison</button>
+      </div>
+    </div>
     <div class="upgrade-banner" id="upgradeBanner">🎉 Welcome to Pro! Your full report is now unlocked.</div>
     <div class="premium-gate" id="premiumGate">
       <div class="premium-gate-head">
@@ -3381,8 +3415,15 @@ function fedOrdIncomeRate(filingStatus,income){
 
 // ===== ADDRESS AUTOCOMPLETE =====
 const CURRENT_YEAR = new Date().getFullYear();
+const LAST_STEP = 6;
+const MARKET_APPREC = {
+  CA: 3.0, OR: 3.0, WA: 3.0, NY: 2.5, NJ: 2.5, CT: 2.5, MA: 2.5, RI: 2.5,
+  FL: 4.0, TX: 4.0, NC: 4.0, SC: 4.0, GA: 4.0, TN: 4.0, AZ: 4.0, NV: 4.0, UT: 4.0,
+  CO: 3.5, VA: 3.5, MD: 3.5, PA: 3.5, IL: 3.0, MN: 3.0, MI: 3.0, OH: 3.0,
+};
 const purYearInput = document.getElementById('purYear');
 if (purYearInput) purYearInput.max = String(CURRENT_YEAR);
+let _apprecTouched = false;
 
 // Track which fields the user has manually touched so we never overwrite them
 const _dirtyFields = new Set();
@@ -3391,6 +3432,7 @@ const _dirtyFields = new Set();
   if (el) el.addEventListener('input', () => _dirtyFields.add(id));
   if (el) el.addEventListener('change', () => _dirtyFields.add(id));
 });
+document.getElementById('apprec')?.addEventListener('input', () => { _apprecTouched = true; });
 const PREFILL_FIELD_IDS = ['curVal', 'purPrice', 'purYear', 'stateField', 'propCat', 'monthRent', 'maint', 'legalCosts', 'dprBuildVal'];
 
 function setPrefillBanner(message, loading = false) {
@@ -3440,6 +3482,24 @@ function dismissBanner() {
   document.getElementById('prefillBanner').classList.remove('loading');
 }
 
+function getOutlookSuggestion(state) {
+  return MARKET_APPREC[state] ?? 3.5;
+}
+
+function updateOutlookSuggestion(state = gs('stateField') || 'TX') {
+  const suggestion = getOutlookSuggestion(state);
+  const stateLabel = document.getElementById('stateField')?.selectedOptions?.[0]?.textContent || 'your area';
+  const suggestionEl = document.getElementById('fcSuggestion');
+  const apprecEl = document.getElementById('apprec');
+  if (suggestionEl) {
+    suggestionEl.innerHTML = `Suggested starting point for <strong>${stateLabel}</strong>: <strong>${suggestion > 0 ? '+' : ''}${suggestion.toFixed(1)}% / yr</strong>`;
+  }
+  if (apprecEl && !_apprecTouched) {
+    apprecEl.value = String(suggestion);
+    syncForecast(suggestion);
+  }
+}
+
 function initAutocomplete() {
   const input = document.getElementById('addrInput');
   if (!input || !window.google) return;
@@ -3465,6 +3525,7 @@ function initAutocomplete() {
     };
 
     if (geoData.state) safeSet('stateField', geoData.state);
+    updateOutlookSuggestion(geoData.state || gs('stateField') || 'TX');
 
     const streetAddress = place.formatted_address.split(',')[0]?.trim() || place.formatted_address;
     fetchPropertyData(streetAddress, geoData);
@@ -3655,12 +3716,12 @@ function goTo(n){
   // going forward: validate current step
   if(n > cur && !validateStep(cur)) return;
   // Step celebration toast
-  const stepDone={1:'✓ Property info saved!',2:'✓ Mortgage noted!',3:'✓ Rental picture set!',4:'✓ Sale costs captured!'};
+  const stepDone={1:'✓ Property info saved!',2:'✓ Mortgage noted!',3:'✓ Rental picture set!',4:'✓ Market outlook saved!',5:'✓ Sale assumptions saved!'};
   if(n > cur && stepDone[cur]) showToast(stepDone[cur]);
   document.getElementById('step-'+cur)?.classList.remove('active');
   cur=n;
   document.getElementById('step-'+cur)?.classList.add('active');
-  document.getElementById('pbar').style.width=(n/5*100)+'%';
+  document.getElementById('pbar').style.width=(n/LAST_STEP*100)+'%';
   document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
   // Hide preview panel on homepage (step 0), show from step 1 onwards
   const onHome = n === 0;
@@ -3920,15 +3981,6 @@ function buildMissingImportantInputs(ctx) {
     });
   }
 
-  if (!hasRawValue('reinvRet') || !hasRawValue('horizon')) {
-    items.push({
-      label: 'Long-term planning inputs',
-      reason: 'Your time horizon and reinvestment return can change how the sell path compares over time.',
-      step: 4,
-      fieldId: !hasRawValue('reinvRet') ? 'reinvRet' : 'horizon',
-    });
-  }
-
   return items;
 }
 
@@ -3978,9 +4030,10 @@ document.querySelectorAll('#formMain input[type="number"],#formMain input[type="
   el.addEventListener('input',updatePreview);
   el.addEventListener('change',updatePreview);
 });
+document.getElementById('stateField')?.addEventListener('change', () => updateOutlookSuggestion());
 
 function calculate(){
-  if(!validateStep(5)) return; // final check — shouldn't be needed but safety net
+  if(!validateStep(LAST_STEP)) return; // final check — shouldn't be needed but safety net
   showCalcOverlay();
   const curVal=gv('curVal',750000), purPrice=gv('purPrice',500000);
   const apprec=gv('apprec',4)/100;
@@ -4199,6 +4252,7 @@ Data:
 - Net sale proceeds: ${fmt(netProc)} | Reinvested ${hrz} yrs at ${(reinvRet*100).toFixed(1)}%: ${fmtK(futSell)}
 - ${hrz}-yr projected equity: sell ${fmtK(futSell)}, rent ${fmtK(futRent)}, keep ${fmtK(futKeep)}
 - Appreciation forecast: ${(apprec*100).toFixed(1)}%/yr
+- Post-sale plan: tax-advantaged room=${gs('taxShelter')||'partial'}, buying another home=${gs('buyAnother')||'no'}
 - Goals: cash=${gCash}, income=${gInc}, long-term=${gLong}, simplify=${gSimp}, stability=${gStab}, tax=${gTax}
 - Risk: ${risk}, emergency fund: ${emerg}, landlord: ${landlord}, urgency: ${urg}
 - DTI: ${dti.toFixed(0)}%, Scores: Sell ${ss}, Rent ${rs}, Keep ${ks}, top: ${winnerName}
@@ -4681,6 +4735,7 @@ window.calculate = function() {
 };
 
 // Start auth
+updateOutlookSuggestion();
 initAuth();
 </script>
 
