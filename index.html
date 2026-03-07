@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keep or Sell — Your Home, Your Numbers</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
@@ -1842,38 +1842,38 @@ select option { background: #1a2035; color: var(--text); }
    PREMIUM-LIGHT OVERRIDES
    ═══════════════════════════════════════ */
 :root {
-  --green: #305847;
-  --green-d: #244739;
-  --green-dim: rgba(48,88,71,0.10);
-  --coral: #b56d59;
-  --coral-d: #9f5c49;
-  --coral-dim: rgba(181,109,89,0.12);
-  --blue: #4c728d;
-  --blue-d: #35586f;
+  --green: #b55e47;
+  --green-d: #9f523f;
+  --green-dim: rgba(181,94,71,0.10);
+  --coral: #c7775f;
+  --coral-d: #aa5e48;
+  --coral-dim: rgba(199,119,95,0.12);
+  --blue: #5f7480;
+  --blue-d: #455a66;
   --blue-dim: rgba(76,114,141,0.11);
-  --gold: #b58d4f;
-  --gold-dim: rgba(181,141,79,0.12);
-  --purple: #8a7ca8;
+  --gold: #a88455;
+  --gold-dim: rgba(168,132,85,0.12);
+  --purple: #8c7c8f;
   --purple-dim: rgba(138,124,168,0.10);
-  --bg: #f4eee5;
+  --bg: #f6eee7;
   --surface: rgba(255,252,247,0.92);
   --surface-hover: rgba(255,250,244,0.98);
   --surface-active: rgba(247,241,233,0.98);
   --glass: rgba(255,252,247,0.82);
   --glass-border: rgba(110,101,88,0.14);
   --glass-border-hover: rgba(72,64,56,0.26);
-  --text: #20312a;
-  --text-mid: rgba(32,49,42,0.76);
-  --text-muted: rgba(32,49,42,0.56);
+  --text: #2f312b;
+  --text-mid: rgba(47,49,43,0.76);
+  --text-muted: rgba(47,49,43,0.56);
   --shadow-soft: 0 18px 45px rgba(64, 48, 33, 0.08);
   --shadow-card: 0 10px 24px rgba(64, 48, 33, 0.06);
 }
 
 body {
   background:
-    radial-gradient(circle at top right, rgba(221,232,223,0.8), transparent 26%),
-    radial-gradient(circle at top left, rgba(232,215,196,0.8), transparent 22%),
-    linear-gradient(180deg, #faf6ef 0%, var(--bg) 18%, #f5efe6 100%);
+    radial-gradient(circle at top right, rgba(228,216,205,0.82), transparent 26%),
+    radial-gradient(circle at top left, rgba(240,226,212,0.86), transparent 22%),
+    linear-gradient(180deg, #fbf6f1 0%, var(--bg) 18%, #f6eee7 100%);
   color: var(--text);
   background-size: auto;
 }
@@ -1882,10 +1882,10 @@ body::before, body::after {
   opacity: 0.55;
 }
 body::before {
-  background: radial-gradient(circle, rgba(210, 224, 212, 0.7), transparent 70%);
+  background: radial-gradient(circle, rgba(234, 214, 202, 0.74), transparent 70%);
 }
 body::after {
-  background: radial-gradient(circle, rgba(233, 220, 204, 0.65), transparent 72%);
+  background: radial-gradient(circle, rgba(227, 206, 194, 0.7), transparent 72%);
 }
 
 header,
@@ -1946,7 +1946,7 @@ header,
 .dir-hero h1,
 .verdict-title-wrap,
 .gate-title {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Libre Baskerville', Georgia, "Times New Roman", serif;
   letter-spacing: -0.02em;
 }
 .heading,
@@ -1975,7 +1975,7 @@ header,
 .pv-title,
 .ps-title,
 .dir-section-title {
-  color: #8b6b49;
+  color: #9d6a42;
 }
 .eyebrow,
 .trust-strip,
@@ -2064,9 +2064,9 @@ select option { background: #fffaf4; color: var(--text); }
 .auth-submit,
 .btn-analyze,
 .btn-unlock {
-  background: linear-gradient(135deg, #355847, var(--green));
+  background: linear-gradient(135deg, #c57058, var(--green));
   color: #fffdf9;
-  box-shadow: 0 10px 26px rgba(48,88,71,0.18);
+  box-shadow: 0 10px 26px rgba(181,94,71,0.18);
 }
 .btn-cta::before { display: none; }
 .btn-cta:hover,
@@ -2075,7 +2075,7 @@ select option { background: #fffaf4; color: var(--text); }
 .btn-analyze:hover,
 .btn-unlock:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(48,88,71,0.22);
+  box-shadow: 0 14px 28px rgba(181,94,71,0.24);
 }
 .btn-back,
 .cs-close {
@@ -2139,17 +2139,17 @@ select option { background: #fffaf4; color: var(--text); }
   min-width: 11rem;
 }
 .btn-row.hero-actions .btn-cta {
-  background: linear-gradient(135deg, #48715b 0%, #2f5d49 55%, #234739 100%);
+  background: linear-gradient(135deg, #cf7b61 0%, #b55e47 55%, #964a38 100%);
   box-shadow:
-    0 16px 34px rgba(48,88,71,0.24),
-    0 0 0 4px rgba(102,150,124,0.14);
+    0 16px 34px rgba(181,94,71,0.24),
+    0 0 0 4px rgba(213,150,130,0.16);
   border: 1px solid rgba(255,255,255,0.28);
 }
 .btn-row.hero-actions .btn-cta:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 20px 40px rgba(48,88,71,0.28),
-    0 0 0 5px rgba(102,150,124,0.18);
+    0 20px 40px rgba(181,94,71,0.28),
+    0 0 0 5px rgba(213,150,130,0.18);
 }
 .path-item,
 .goal-card,
@@ -2262,7 +2262,7 @@ select option { background: #fffaf4; color: var(--text); }
 }
 .ai-intro-card strong {
   color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Libre Baskerville', Georgia, "Times New Roman", serif;
   font-size: 1.12rem;
   margin-bottom: 0.35rem;
   line-height: 1.2;
