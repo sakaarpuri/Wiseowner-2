@@ -823,13 +823,13 @@ select option { background: #1a2035; color: var(--text); }
 .result-status.show { display: flex; }
 .result-status-copy strong {
   display: block;
-  font-size: 0.98rem;
+  font-size: 1.04rem;
   color: var(--text);
   margin-bottom: 0.2rem;
 }
 .result-status-copy p {
-  font-size: 0.82rem;
-  line-height: 1.55;
+  font-size: 0.9rem;
+  line-height: 1.65;
   color: var(--text-mid);
 }
 .result-status-badge {
@@ -859,8 +859,8 @@ select option { background: #1a2035; color: var(--text); }
   color: var(--text);
 }
 .result-improve p {
-  font-size: 0.82rem;
-  line-height: 1.55;
+  font-size: 0.88rem;
+  line-height: 1.6;
   color: var(--text-mid);
   margin-bottom: 0.9rem;
 }
@@ -923,12 +923,6 @@ select option { background: #1a2035; color: var(--text); }
 .ai-hdr { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.3rem; }
 .ai-hdr .ao { font-size: 2rem; line-height: 1; }
 .ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--green); }
-.ai-hdr .al {
-  margin-left: auto; background: rgba(74,222,128,0.18);
-  color: var(--green); font-size: 0.62rem; font-weight: 800; letter-spacing: 1.8px;
-  padding: 0.28rem 0.85rem; border-radius: 20px; border: 1px solid rgba(74,222,128,0.4);
-  text-transform: uppercase; white-space: nowrap;
-}
 .ai-body { font-size: 0.93rem; color: var(--text-mid); line-height: 1.85; }
 .ai-body p { margin-bottom: 0.9rem; }
 .ai-body p:last-child { margin-bottom: 0; }
@@ -977,6 +971,12 @@ select option { background: #1a2035; color: var(--text); }
   backdrop-filter: blur(16px);
 }
 .chart-card h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); margin-bottom: 1rem; }
+.chart-note {
+  margin-top: 0.85rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
 
 /* TABLE */
 .tbl {
@@ -1026,6 +1026,32 @@ select option { background: #1a2035; color: var(--text); }
   display: block; text-align: center; margin: 1.5rem auto;
   background: none; border: none; font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.83rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;
+}
+.next-steps {
+  background: rgba(255,252,247,0.92);
+  border: 1px solid rgba(121,103,84,0.14);
+  border-radius: 20px;
+  padding: 1.4rem 1.4rem 1.2rem;
+  margin: 1.2rem 0 1rem;
+}
+.next-steps h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+  color: var(--text);
+}
+.next-steps p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+  margin-bottom: 0.95rem;
+}
+.next-steps ul {
+  padding-left: 1.15rem;
+  color: var(--text);
+}
+.next-steps li {
+  margin-bottom: 0.7rem;
+  line-height: 1.6;
 }
 
 /* VALIDATION */
@@ -3319,7 +3345,6 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="res-header"><h1>🏠 Your zamindaro Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="result-status" id="resultStatus"></div>
     <div class="sc-grid" id="scGrid"></div>
-    <div class="result-improve" id="resultImprove"></div>
     <div class="card post-sell-card" id="postSellCard">
       <div class="card-title"><span>🌱 If you sell — what then?</span><span class="opt-badge">Skip for now</span></div>
       <div class="post-sell-note">These questions help refine the long-term sell path after you have seen the first result. A rough planning number is fine.</div>
@@ -3380,7 +3405,7 @@ select option { background: #fffaf4; color: var(--text); }
     <!-- AI Analysis — gated for free users -->
     <div class="gate-wrap">
       <div class="ai-box" id="aiBox">
-        <div class="ai-hdr"><span class="ao">📝</span><h3>Interpretation</h3><span class="al">PREMIUM</span></div>
+        <div class="ai-hdr"><span class="ao">📝</span><h3>Interpretation</h3></div>
         <div class="ai-body" id="aiBody"><div class="ai-loading"><span>Analyzing your equity, tax exposure, and cash position…</span><div class="dots"><span></span><span></span><span></span></div></div></div>
       </div>
       <div class="gate-overlay compact" id="aiGate">
@@ -3404,11 +3429,12 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="ins-grid" id="insGrid"></div>
     <div class="sec">📊 Visual Comparison</div>
     <div class="charts">
-      <div class="chart-card"><h4>Projected Net Value Over Time</h4><canvas id="chart1" height="210"></canvas></div>
-      <div class="chart-card"><h4>Monthly Cash Position</h4><canvas id="chart2" height="210"></canvas></div>
+      <div class="chart-card"><h4>Projected Net Value Over Time</h4><canvas id="chart1" height="210"></canvas><div class="chart-note" id="chart1Note"></div></div>
+      <div class="chart-card"><h4>Monthly Cash Position</h4><canvas id="chart2" height="210"></canvas><div class="chart-note" id="chart2Note"></div></div>
     </div>
     <div class="sec">📋 Side-by-Side</div>
     <table class="tbl" id="cmpTable"></table>
+    <div class="result-improve" id="resultImprove"></div>
     <div class="share-bar">
       <button class="share-btn" onclick="copyLink()">🔗 Copy link to share</button>
       <button class="share-btn print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
@@ -3422,6 +3448,7 @@ select option { background: #fffaf4; color: var(--text); }
         ⚠️ These are estimates. Consult a CPA or financial advisor before major property decisions. IRS links: <a href="https://www.irs.gov/taxtopics/tc701" target="_blank" style="color:var(--green)">§121 exclusion</a> · <a href="https://www.irs.gov/taxtopics/tc409" target="_blank" style="color:var(--green)">capital gains</a> · <a href="https://www.irs.gov/taxtopics/tc414" target="_blank" style="color:var(--green)">rental income</a>.
       </div>
     </div>
+    <div class="next-steps" id="nextSteps"></div>
     <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
   </div>
 </div>
@@ -3835,6 +3862,7 @@ function copyLink() {
 }
 
 let cur=0;
+let lastResultSummary = null;
 function gv(id,fb=0){const e=document.getElementById(id);if(!e)return fb;const n=parseFloat(e.value);return isNaN(n)?fb:n;}
 function gs(id){const e=document.getElementById(id);return e?e.value:'';}
 function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
@@ -4144,10 +4172,10 @@ function renderResultState(missingImportantInputs) {
   if (missingImportantInputs.length) {
     statusEl.classList.add('show');
     statusEl.innerHTML = `
-      <div class="result-status-badge">Quick estimate</div>
+      <div class="result-status-badge">Your result is ready</div>
       <div class="result-status-copy">
-        <strong>Based on the essentials you entered.</strong>
-        <p>Add a few more details below to make this your most reliable keep-vs-sell result.</p>
+        <strong>You now have a solid keep-vs-sell result.</strong>
+        <p>If you want even more precision, you can refine a few assumptions further down the page.</p>
       </div>`;
     improveEl.classList.add('show');
     improveEl.innerHTML = `
@@ -4168,10 +4196,10 @@ function renderResultState(missingImportantInputs) {
 
   statusEl.classList.add('show');
   statusEl.innerHTML = `
-    <div class="result-status-badge">Most reliable result</div>
+    <div class="result-status-badge">Your result is ready</div>
       <div class="result-status-copy">
-        <strong>You provided the key inputs that most affect the estimate.</strong>
-      <p>This version includes the main details that drive your keep-vs-sell comparison.</p>
+        <strong>This is your most reliable keep-vs-sell result.</strong>
+      <p>You provided the key details that drive the recommendation and the numbers below.</p>
     </div>`;
   improveEl.classList.remove('show');
   improveEl.innerHTML = '';
@@ -4314,6 +4342,20 @@ function calculate(){
   const keepMonthlyValueText = keepMode === 'rent'
     ? `${fmt(keepMonthlyView)}/mo`
     : `${fmt(-totalMonthCost)}/mo`;
+  lastResultSummary = {
+    winnerKey,
+    keepMode,
+    keepModeLabel,
+    netProc,
+    cgTax,
+    monthRentCF,
+    dti,
+    apprec,
+    hrz,
+    futSell,
+    futRent,
+    futKeep,
+  };
 
   setTimeout(() => {
   hideCalcOverlay();
@@ -4357,9 +4399,9 @@ function calculate(){
         <div class="why-not-toggle" onclick="toggleWhyNot(this)">
           <span class="why-not-label">${winnerKey === 'sell' ? '🏠 Why not keep?' : '🏷️ Why not sell?'}</span>
           <span class="why-score">${winnerKey === 'sell' ? keepScore : sellScore}/100</span>
-          <span class="wn-arrow">▾</span>
+          <span class="wn-arrow open">▾</span>
         </div>
-        <div class="why-not-body">
+        <div class="why-not-body open">
           <div class="sc-bar ${winnerKey === 'sell' ? 'keep' : 'sell'}"><div class="sc-fill ${winnerKey === 'sell' ? 'keep' : 'sell'}" style="width:${winnerKey === 'sell' ? keepScore : sellScore}%"></div></div>
           ${rowsHtml(winnerKey === 'sell' ? [
             {l:'Best keep path',v:keepModeLabel,c:'pos'},
@@ -4379,6 +4421,7 @@ function calculate(){
   document.getElementById('taxBlock').innerHTML=`
     <div class="tax-box">
       <h4>🇺🇸 US Capital Gains Breakdown (Sell Scenario)</h4>
+      <p style="font-size:0.9rem;color:var(--text-mid);line-height:1.6;margin:0 0 1rem;">Here's exactly how we calculated what you'd owe the IRS if you sold today.</p>
       <div class="t-row"><span class="tl">Sale Price</span><span class="tv">${fmt(curVal)}</span></div>
       <div class="t-row"><span class="tl">Less: Cost Basis + Improvements</span><span class="tv">− ${fmt(purPrice+acbAdd)}</span></div>
       <div class="t-row"><span class="tl">= Gross Capital Gain</span><span class="tv">${fmt(rawGain)}</span></div>
@@ -4408,13 +4451,36 @@ function calculate(){
     <div class="ins-card"><div class="ii">${i.i}</div><div><div class="it">${i.t}</div><div class="ib">${i.b}</div></div></div>`).join('');
 
   setTimeout(()=>{
+    const barValuePlugin = {
+      id:'barValuePlugin',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.font = '700 11px "Plus Jakarta Sans"';
+        ctx.fillStyle = '#24392f';
+        ctx.textAlign = 'center';
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          meta.data.forEach((bar, index) => {
+            const val = dataset.data[index];
+            const labelY = val >= 0 ? bar.y - 10 : bar.y + 16;
+            ctx.fillText(fmt(val), bar.x, labelY);
+          });
+        });
+        ctx.restore();
+      }
+    };
     const yrs=Array.from({length:hrz+1},(_,i)=>i);
     new Chart(document.getElementById('chart1'),{type:'line',data:{labels:yrs.map(y=>y===0?'Now':`Yr ${y}`),datasets:[
       {label:'Sell & Reinvest',data:yrs.map(y=>Math.max(0,netProc)*Math.pow(1+reinvRet,y)),borderColor:'#E8735A',backgroundColor:'rgba(232,115,90,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
       {label:'Keep: Rent it out',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal+annRentAT*y),borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
       {label:'Keep: Live there',data:yrs.map(y=>curVal*Math.pow(1+apprec,y)-mortBal),borderColor:'#5B8DB8',backgroundColor:'rgba(91,141,184,0.07)',tension:0.4,borderWidth:2.5,pointRadius:0},
     ]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{family:'Plus Jakarta Sans',size:11},boxWidth:10}}},scales:{y:{ticks:{callback:v=>fmtK(v),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:10}},grid:{display:false}}}}});
-    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(monthly equivalent)','Keep: Rent\n(cash flow)','Keep: Live\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(251,191,36,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#fbbf24','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:9}},grid:{display:false}}}}});
+    new Chart(document.getElementById('chart2'),{type:'bar',data:{labels:['Sell\n(monthly equivalent)','Keep: Rent\n(cash flow)','Keep: Live\n(monthly cost)'],datasets:[{data:[monthSell,monthRentCF,-totalMonthCost],backgroundColor:['rgba(232,115,90,0.75)','rgba(251,191,36,0.75)','rgba(91,141,184,0.75)'],borderColor:['#E8735A','#fbbf24','#5B8DB8'],borderWidth:1.5,borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString('en-US'),font:{family:'Plus Jakarta Sans',size:10}},grid:{color:'#eee'}},x:{ticks:{font:{family:'Plus Jakarta Sans',size:9}},grid:{display:false}}}},plugins:[barValuePlugin]});
+    const chart1Note = document.getElementById('chart1Note');
+    if (chart1Note) chart1Note.textContent = `Over ${hrz} years, selling grows to ${fmtK(futSell)}. Keeping reaches ${fmtK(futKeep)} if you stay, or ${fmtK(futRent)} if you rent it out.`;
+    const chart2Note = document.getElementById('chart2Note');
+    if (chart2Note) chart2Note.textContent = `Month to month, selling equates to about ${fmt(monthSell)} from reinvesting the proceeds. Keeping as a rental is ${fmt(monthRentCF)}/mo, while continuing to live there costs about ${fmt(-totalMonthCost)}/mo.`;
   },80);
 
   const rows=[
@@ -4430,6 +4496,24 @@ function calculate(){
     {l:'Match score',s:sellScore+'/100',k:keepScore+'/100'},
   ];
   document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
+  const nextSteps = document.getElementById('nextSteps');
+  if (nextSteps) {
+    nextSteps.innerHTML = winnerKey === 'sell'
+      ? `<h3>What to do next</h3>
+         <p>Your result leans toward selling. These are the next three actions that would tighten the decision quickly.</p>
+         <ul>
+           <li>Talk to a CPA or tax advisor about the capital gains estimate and whether any home-sale exclusion or rental-history issue changes the number.</li>
+           <li>Ask a local agent for a realistic net sheet so you can confirm commission, closing costs, and expected prep work.</li>
+           <li>Pressure-test what you would do with the proceeds next, especially whether you would reinvest, buy another home, or hold cash for flexibility.</li>
+         </ul>`
+      : `<h3>What to do next</h3>
+         <p>Your result leans toward keeping the property. These are the next three actions most likely to clarify that path.</p>
+         <ul>
+           <li>Pressure-test the monthly picture with your real mortgage, tax, insurance, and debt numbers so you know the keep path is comfortable.</li>
+           <li>If the best keep path is renting it out, verify the market rent with a local property manager or 2-3 recent rental comps.</li>
+           <li>Review the tax implications of selling now versus later with a CPA, especially if primary-home exclusion or prior rental use is in play.</li>
+         </ul>`;
+  }
 
   const prompt=`You are a helpful, warm US real estate and financial advisor. A homeowner used a property decision tool. Write a warm, plain-English 3-paragraph analysis. Be specific to their numbers — interpret what they actually mean, don't just list them. Be honest about tradeoffs. Reference US tax context (§121 exclusion, federal capital gains rate, NIIT, IRS rules, state taxes) where relevant. Do NOT give definitive tax or legal advice. End with one balanced, genuine closing thought.
 
@@ -4472,7 +4556,24 @@ async function callClaude(prompt){
 }
 
 function fallback(){
-  document.getElementById('aiBody').innerHTML=`<p>The AI interpretation isn't available right now — it needs a live connection to Claude. But don't worry, everything below still gives you a complete picture: your match scores, the full capital gains breakdown, key insights, charts, and the side-by-side comparison. Dig in — the numbers are all there.</p>`;
+  const body = document.getElementById('aiBody');
+  if (!body) return;
+  if (!lastResultSummary) {
+    body.innerHTML = `<p>Your result is still fully usable without the AI layer. Read the recommendation, the tax breakdown, the key insights, and the comparison table below for the complete picture.</p>`;
+    return;
+  }
+  const s = lastResultSummary;
+  if (s.winnerKey === 'sell') {
+    body.innerHTML = `
+      <p>Selling looks stronger because it unlocks cash now and avoids carrying the property longer while still facing ownership costs. The estimate suggests the sell path is cleaner than the keep path once taxes, costs, and affordability are weighed together.</p>
+      <p>The main tradeoff is upside you would give up by no longer owning the property. If you are seriously considering selling, the next thing to validate is the net proceeds number and tax estimate with real closing-cost and CPA input.</p>
+      <p>The keep case is still visible below, but right now it appears weaker than taking the equity out and putting it to work elsewhere.</p>`;
+  } else {
+    body.innerHTML = `
+      <p>Keeping looks stronger overall than selling right now. The main reason is that the property still has enough long-term value or utility to justify holding it rather than cashing out today.</p>
+      <p>If you keep it, the better path currently looks like <strong>${s.keepModeLabel.toLowerCase()}</strong>. That means the practical question is no longer just “keep or sell,” but what form of keeping gives you the best outcome.</p>
+      <p>The number to pressure-test next is the monthly picture. If the real monthly burden or rental cash flow changes meaningfully, the recommendation can move with it.</p>`;
+  }
 }
 
 function restart(){
