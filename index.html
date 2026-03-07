@@ -4785,13 +4785,12 @@ function updateAuthUI() {
 
 // ── Apply / remove paywall overlays ───────────────
 function applyPaywall() {
-  const isPaid = userPlan !== 'free';
   const premiumGate = document.getElementById('premiumGate');
   const aiGate = document.getElementById('aiGate');
   const taxGate = document.getElementById('taxGate');
-  if (premiumGate) premiumGate.classList.toggle('visible', !isPaid);
-  if (aiGate) aiGate.classList.toggle('visible', !isPaid);
-  if (taxGate) taxGate.classList.toggle('visible', !isPaid);
+  if (premiumGate) premiumGate.classList.remove('visible');
+  if (aiGate) aiGate.classList.remove('visible');
+  if (taxGate) taxGate.classList.remove('visible');
 }
 
 // ── Auth modal ─────────────────────────────────────
