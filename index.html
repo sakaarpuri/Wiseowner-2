@@ -146,7 +146,7 @@ header {
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.5); }
 
 /* ── LAYOUT ── */
-.main { max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem 6rem; position: relative; z-index: 1; }
+.main { max-width: 1280px; margin: 0 auto; padding: 2.5rem 2.85rem 6rem; position: relative; z-index: 1; }
 .step { display: none; }
 .step.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
@@ -1153,11 +1153,43 @@ select option { background: #1a2035; color: var(--text); }
   font-size: 0.8rem; color: var(--green); font-weight: 600;
 }
 .prefill-banner.show { display: flex; }
+.prefill-banner.loading {
+  display: flex;
+  background: rgba(91,141,184,0.10);
+  border-color: rgba(91,141,184,0.24);
+  color: #5b8db8;
+}
 .prefill-banner button {
   margin-left: auto; background: none; border: none;
   color: var(--text-muted); font-size: 1rem; cursor: pointer; line-height: 1;
 }
 .prefill-banner button:hover { color: var(--text); }
+.prefill-spinner {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 2px solid rgba(91,141,184,0.22);
+  border-top-color: #5b8db8;
+  border-radius: 50%;
+  animation: prefill-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes prefill-spin { to { transform: rotate(360deg); } }
+.field.autofill-pending input,
+.field.autofill-pending select {
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(91,141,184,0.12), rgba(255,255,255,0.02));
+  background-size: 220% 100%;
+  animation: autofill-pulse 1.2s ease-in-out infinite;
+  border-color: rgba(91,141,184,0.28);
+}
+.field.autofill-hit input,
+.field.autofill-hit select {
+  border-color: rgba(48,88,71,0.32);
+  box-shadow: 0 0 0 3px rgba(48,88,71,0.08);
+}
+@keyframes autofill-pulse {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
 /* Google Places dropdown styling */
 .pac-container {
   background: rgba(255,252,247,0.98); border: 1px solid rgba(121,103,84,0.18);
@@ -1179,7 +1211,7 @@ select option { background: #1a2035; color: var(--text); }
   gap: 2.5rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 2rem;
   align-items: flex-start;
   position: relative;
   z-index: 1;
@@ -1190,7 +1222,7 @@ select option { background: #1a2035; color: var(--text); }
   max-width: 1240px;
   margin: 0;
 }
-.step { max-width: 760px; }
+.step { max-width: 720px; }
 #step-0,
 #results,
 #directory { max-width: none; }
@@ -2693,11 +2725,11 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="wrap"><span class="pfx">$</span><input type="number" id="purPrice" class="has-pfx" placeholder="500,000" onblur="blurCheck('purPrice', v=>v>0)"></div>
           <span class="err-msg">Please enter your original purchase price</span>
         </div>
-        <div class="field">
+        <div class="field" id="f-purYear">
           <label>Year you bought it</label>
           <input type="number" id="purYear" placeholder="2015" min="1950" max="2026">
         </div>
-        <div class="field">
+        <div class="field" id="f-stateField">
           <label>State</label>
           <select id="stateField">
             <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option>
@@ -3349,16 +3381,52 @@ const _dirtyFields = new Set();
   if (el) el.addEventListener('input', () => _dirtyFields.add(id));
   if (el) el.addEventListener('change', () => _dirtyFields.add(id));
 });
+const PREFILL_FIELD_IDS = ['curVal', 'purPrice', 'purYear', 'stateField', 'propCat', 'monthRent', 'maint', 'legalCosts', 'dprBuildVal'];
+
+function setPrefillBanner(message, loading = false) {
+  const banner = document.getElementById('prefillBanner');
+  if (!banner) return;
+  banner.classList.add('show');
+  banner.classList.toggle('loading', loading);
+  banner.innerHTML = `${loading ? '<span class="prefill-spinner"></span>' : '✓'} <span>${message}</span><button onclick="dismissBanner()" title="Dismiss">×</button>`;
+}
+
+function clearPrefillHighlights() {
+  PREFILL_FIELD_IDS.forEach(id => {
+    const field = document.getElementById(id)?.closest('.field');
+    if (field) field.classList.remove('autofill-pending', 'autofill-hit');
+  });
+}
+
+function startPrefillLoading() {
+  clearPrefillHighlights();
+  PREFILL_FIELD_IDS.forEach(id => {
+    const field = document.getElementById(id)?.closest('.field');
+    if (field) field.classList.add('autofill-pending');
+  });
+  setPrefillBanner('Looking up public records and market data for this address…', true);
+}
+
+function markPrefillHit(id) {
+  const field = document.getElementById(id)?.closest('.field');
+  if (!field) return;
+  field.classList.remove('autofill-pending');
+  field.classList.add('autofill-hit');
+  clearTimeout(field._prefillTimer);
+  field._prefillTimer = setTimeout(() => field.classList.remove('autofill-hit'), 2200);
+}
 
 function safeSet(id, value) {
   if (_dirtyFields.has(id) || value == null) return;
   const el = document.getElementById(id);
   if (!el) return;
   el.value = value;
+  markPrefillHit(id);
 }
 
 function dismissBanner() {
   document.getElementById('prefillBanner').classList.remove('show');
+  document.getElementById('prefillBanner').classList.remove('loading');
 }
 
 function initAutocomplete() {
@@ -3372,6 +3440,7 @@ function initAutocomplete() {
   ac.addListener('place_changed', () => {
     const place = ac.getPlace();
     if (!place || !place.formatted_address) return;
+    startPrefillLoading();
 
     // Extract state/city/zip directly from Places result — no geocode round-trip needed
     function getComp(types, useShort) {
@@ -3404,10 +3473,15 @@ async function fetchPropertyData(address, geoData) {
       }),
     });
     const json = await res.json();
-    if (!json.success || !json.data) return; // no data — stay silent
+    if (!json.success || !json.data) {
+      setPrefillBanner('We found the address, but could not pull public-record details. You can keep typing manually.', false);
+      clearPrefillHighlights();
+      return;
+    }
     const d = json.data;
 
     let prefilled = false;
+    const prefilledBits = [];
     if (d.estimatedValue) {
       safeSet('curVal', Math.round(d.estimatedValue));
       // Closing costs: ~1% of home value capped at $3k
@@ -3422,11 +3496,12 @@ async function fetchPropertyData(address, geoData) {
       safeSet('dprBuildVal', buildEst);
       syncBuildingVal('dprBuildVal', buildEst);
       prefilled = true;
+      prefilledBits.push('estimated value');
     }
-    if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; }
+    if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; prefilledBits.push('price paid'); }
     if (d.lastSaleDate) {
       const yr = new Date(d.lastSaleDate).getFullYear();
-      if (yr > 1900) { safeSet('purYear', yr); prefilled = true; }
+      if (yr > 1900) { safeSet('purYear', yr); prefilled = true; prefilledBits.push('purchase year'); }
     }
     if (d.propertyType) {
       const typeMap = {
@@ -3434,11 +3509,12 @@ async function fetchPropertyData(address, geoData) {
         'Multi Family': 'multi', 'Apartment': 'condo',
       };
       const mapped = typeMap[d.propertyType];
-      if (mapped) { safeSet('propCat', mapped); prefilled = true; }
+      if (mapped) { safeSet('propCat', mapped); prefilled = true; prefilledBits.push('property type'); }
     }
     if (d.estimatedRent) {
       safeSet('monthRent', Math.round(d.estimatedRent));
       prefilled = true;
+      prefilledBits.push('rent estimate');
       // Update hint to show Rentcast range
       const hint = document.getElementById('rentHint');
       if (hint) {
@@ -3450,11 +3526,19 @@ async function fetchPropertyData(address, geoData) {
     }
 
     if (prefilled) {
-      document.getElementById('prefillBanner').classList.add('show');
+      const uniqueBits = [...new Set(prefilledBits)];
+      setPrefillBanner(`Filled ${uniqueBits.join(', ')} from public records and market data — adjust anything that looks off.`, false);
+    } else {
+      setPrefillBanner('We found the address, but there was not enough public-record detail to pre-fill these fields.', false);
     }
   } catch (err) {
     console.warn('Property data fetch failed:', err);
-    // Silent failure — form stays blank, no error shown to user
+    setPrefillBanner('We could not pull public-record details right now. You can keep entering the numbers manually.', false);
+  } finally {
+    PREFILL_FIELD_IDS.forEach(id => {
+      const field = document.getElementById(id)?.closest('.field');
+      if (field) field.classList.remove('autofill-pending');
+    });
   }
 }
 
