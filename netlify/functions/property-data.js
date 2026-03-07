@@ -36,6 +36,55 @@ exports.handler = async function (event) {
 
   const fullAddress = [address, city, state, zip].filter(Boolean).join(", ");
 
+  function pickSaleInfo(property) {
+    if (!property) return { lastSalePrice: null, lastSaleDate: null };
+
+    const directPrice =
+      property.lastSalePrice ??
+      property.salePrice ??
+      property.lastSale?.price ??
+      property.lastSaleAmount ??
+      null;
+    const directDate =
+      property.lastSaleDate ??
+      property.saleDate ??
+      property.lastSale?.date ??
+      null;
+
+    if (directPrice || directDate) {
+      return { lastSalePrice: directPrice ?? null, lastSaleDate: directDate ?? null };
+    }
+
+    const history =
+      property.saleHistory ??
+      property.salesHistory ??
+      property.transactionHistory ??
+      property.transactions ??
+      [];
+
+    if (Array.isArray(history) && history.length) {
+      const sorted = [...history]
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.date || b.saleDate || b.recordingDate || 0) - new Date(a.date || a.saleDate || a.recordingDate || 0));
+      const latest = sorted[0];
+      return {
+        lastSalePrice:
+          latest?.price ??
+          latest?.salePrice ??
+          latest?.amount ??
+          latest?.value ??
+          null,
+        lastSaleDate:
+          latest?.date ??
+          latest?.saleDate ??
+          latest?.recordingDate ??
+          null,
+      };
+    }
+
+    return { lastSalePrice: null, lastSaleDate: null };
+  }
+
   try {
     // ── 1. Fetch property details (bedrooms, bathrooms, sqft, year built, last sale) ──
     const propRes = await fetch(
@@ -51,6 +100,8 @@ exports.handler = async function (event) {
     } else if (propRes.status !== 404) {
       console.warn("Rentcast properties endpoint:", propRes.status);
     }
+
+    const saleInfo = pickSaleInfo(property);
 
     // ── 2. Fetch AVM value + rent estimate (parallel for speed) ──
     const avmParams = new URLSearchParams({
@@ -104,8 +155,8 @@ exports.handler = async function (event) {
       estimatedRent:   estimatedRent                          ?? null,
       rentRangeLow:    rentRangeLow                           ?? null,
       rentRangeHigh:   rentRangeHigh                         ?? null,
-      lastSalePrice:   property?.lastSalePrice                ?? null,
-      lastSaleDate:    property?.lastSaleDate                 ?? null,
+      lastSalePrice:   saleInfo.lastSalePrice                 ?? null,
+      lastSaleDate:    saleInfo.lastSaleDate                  ?? null,
       propertyType:    property?.propertyType                 ?? null,
       bedrooms:        property?.bedrooms                     ?? null,
       bathrooms:       property?.bathrooms                    ?? null,
