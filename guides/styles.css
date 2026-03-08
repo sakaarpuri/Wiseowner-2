@@ -1,0 +1,312 @@
+:root {
+  --bg: #f6f1ea;
+  --bg-soft: #fffaf4;
+  --paper: rgba(255, 250, 244, 0.94);
+  --border: rgba(135, 96, 74, 0.14);
+  --text: #24392f;
+  --text-mid: #55645a;
+  --terracotta: #c9785e;
+  --terracotta-dark: #9b6a55;
+  --shadow: 0 20px 48px rgba(83, 58, 35, 0.08);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(214, 191, 168, 0.22), transparent 35%),
+    radial-gradient(circle at top right, rgba(198, 213, 206, 0.24), transparent 28%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+a { color: var(--terracotta-dark); }
+a:hover { color: var(--terracotta); }
+
+.guide-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+
+.guide-topbar {
+  padding: 1.4rem 0 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.guide-brand {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.guide-back {
+  text-decoration: none;
+  color: var(--text-mid);
+  font-weight: 600;
+}
+
+.guide-back:hover { color: var(--text); }
+
+.guide-hero,
+.guide-card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.guide-hero {
+  padding: 2.1rem 2rem;
+  margin-bottom: 1.6rem;
+}
+
+.guide-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--terracotta-dark);
+  margin-bottom: 0.55rem;
+}
+
+.guide-hero h1,
+.article-body h1,
+.legal-body h1 {
+  margin: 0;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: clamp(2.3rem, 4.2vw, 4rem);
+  line-height: 1.05;
+  color: var(--text);
+}
+
+.guide-deck {
+  margin-top: 0.95rem;
+  max-width: 760px;
+  font-size: 1.05rem;
+  color: var(--text-mid);
+}
+
+.guides-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.guide-tile {
+  display: block;
+  text-decoration: none;
+  padding: 1.3rem 1.25rem;
+}
+
+.guide-tile-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.guide-tile-copy {
+  color: var(--text-mid);
+  font-size: 0.96rem;
+  margin-bottom: 0.7rem;
+}
+
+.guide-tile-cta {
+  color: var(--terracotta-dark);
+  font-weight: 700;
+}
+
+.article-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.article-body,
+.legal-body {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 2.2rem 2rem;
+}
+
+.breadcrumbs {
+  margin-bottom: 1rem;
+  color: var(--text-mid);
+  font-size: 0.92rem;
+}
+
+.breadcrumbs a {
+  color: var(--text-mid);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover { color: var(--text); }
+
+.article-intro {
+  margin-top: 1rem;
+  color: var(--text-mid);
+  font-size: 1.02rem;
+}
+
+.article-body h2,
+.legal-body h2 {
+  margin: 2rem 0 0.8rem;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1.2;
+}
+
+.article-body h3 {
+  margin: 1.35rem 0 0.55rem;
+  font-size: 1.08rem;
+}
+
+.article-body p,
+.legal-body p,
+.article-body li,
+.legal-body li {
+  color: var(--text-mid);
+  font-size: 1rem;
+}
+
+.article-body strong,
+.legal-body strong { color: var(--text); }
+
+.article-body ul,
+.article-body ol,
+.legal-body ul { padding-left: 1.2rem; }
+
+.article-body blockquote {
+  margin: 1.2rem 0;
+  padding: 1rem 1rem 1rem 1.1rem;
+  border-left: 3px solid rgba(201, 120, 94, 0.55);
+  background: rgba(255, 248, 239, 0.86);
+  border-radius: 14px;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.2rem;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.article-body th,
+.article-body td {
+  padding: 0.85rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-body th {
+  background: rgba(243, 236, 227, 0.88);
+  color: var(--text);
+}
+
+.article-cta {
+  margin-top: 2rem;
+  padding: 1.2rem 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 248, 239, 0.9);
+  border: 1px solid var(--border);
+}
+
+.cta-button {
+  display: inline-flex;
+  margin-top: 0.8rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #d4866b, #b85f48);
+  color: #fffaf4;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.guide-note {
+  margin-top: 1.25rem;
+  font-size: 0.92rem;
+  color: var(--text-mid);
+}
+
+.site-footer {
+  margin-top: 3rem;
+  padding: 2rem 0 2.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(180px,1.1fr) repeat(3,minmax(160px,1fr));
+  gap: 1.6rem;
+}
+
+.footer-brand {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 2rem;
+}
+
+.footer-col-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+  margin-bottom: 0.8rem;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.56rem;
+}
+
+.footer-links a {
+  color: var(--text-mid);
+  text-decoration: none;
+}
+
+.footer-links a:hover { color: var(--text); }
+
+.footer-bottom {
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.footer-tagline {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.footer-subline {
+  color: var(--text-mid);
+  font-size: 0.94rem;
+}
+
+@media (max-width: 760px) {
+  .guide-shell { padding: 0 1rem 2.5rem; }
+  .guides-grid { grid-template-columns: 1fr; }
+  .guide-hero,
+  .article-body,
+  .legal-body { padding: 1.45rem 1.15rem; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { display: block; }
+  .footer-subline { margin-top: 0.3rem; }
+}

@@ -332,6 +332,108 @@ select option { background: #1a2035; color: var(--text); }
   margin-bottom: 1rem;
 }
 
+.result-guide {
+  margin: 1.5rem 0 1.25rem;
+  background: rgba(255,250,244,0.92);
+  border: 1px solid rgba(135,96,74,0.14);
+  border-radius: 24px;
+  padding: 1.2rem 1.3rem;
+  box-shadow: 0 18px 40px rgba(83,58,35,0.06);
+}
+.result-guide-kicker {
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+  font-weight: 800;
+  margin-bottom: 0.35rem;
+}
+.result-guide-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.result-guide-copy {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+  margin-bottom: 0.7rem;
+}
+.result-guide-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--terracotta-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+.result-guide-link:hover { color: var(--terracotta-cta); }
+
+.site-footer {
+  margin-top: 4rem;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid rgba(135,96,74,0.12);
+  background: linear-gradient(180deg, rgba(247,242,234,0.6), rgba(255,250,244,0.94));
+}
+.footer-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(180px,1.1fr) repeat(3,minmax(160px,1fr));
+  gap: 1.75rem;
+  align-items: start;
+}
+.footer-brand {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--text);
+}
+.footer-col-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terracotta-dark);
+  margin-bottom: 0.85rem;
+}
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.58rem;
+}
+.footer-links a {
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-bottom {
+  margin-top: 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(135,96,74,0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  justify-content: space-between;
+  color: var(--text-mid);
+}
+.footer-tagline {
+  font-weight: 700;
+  color: var(--text);
+}
+.footer-subline {
+  font-size: 0.94rem;
+}
+
 /* ── FORECAST TILES (legacy — kept for CSS completeness) ── */
 .forecast-tiles { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.7rem; margin-top: 0.6rem; }
 .ftile {
@@ -1209,6 +1311,11 @@ select option { background: #1a2035; color: var(--text); }
   .btn-row .btn-cta:only-child { width: 100%; }
   .sp-rows { grid-template-columns: 1fr 1fr; }
   .sp-ai-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .footer-top { grid-template-columns: 1fr; gap: 1.25rem; }
+  .footer-shell { padding: 0 1rem; }
+  .footer-brand { font-size: 1.7rem; }
+  .footer-bottom { display: block; }
+  .footer-subline { margin-top: 0.3rem; }
 }
 
 /* ── SCAN LINE ON AI BOX ── */
@@ -3015,7 +3122,7 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
       <div class="hero-preview">
         <img class="hero-photo" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80" alt="Modern home exterior">
-        <div class="sp-wrap">
+        <div class="sp-wrap" id="sampleReport">
           <div class="sp-caption">Private report preview</div>
           <div class="sp-card">
             <div class="sp-ai-hdr">
@@ -3580,6 +3687,7 @@ select option { background: #fffaf4; color: var(--text); }
     </div>
     <div class="sec">📋 Side-by-Side</div>
     <table class="tbl" id="cmpTable"></table>
+    <div class="result-guide" id="resultGuide" style="display:none"></div>
     <div class="result-improve" id="resultImprove"></div>
     <div class="share-bar">
       <button class="share-btn" onclick="copyLink()">🔗 Copy link to share</button>
@@ -3598,6 +3706,45 @@ select option { background: #fffaf4; color: var(--text); }
     <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-shell">
+    <div class="footer-top">
+      <div class="footer-brand">zamindaro</div>
+      <div>
+        <div class="footer-col-title">Know Your Numbers</div>
+        <ul class="footer-links">
+          <li><a href="/guides/capital-gains-tax/">Capital Gains Tax</a></li>
+          <li><a href="/guides/section-121-exclusion/">§121 Exclusion</a></li>
+          <li><a href="/guides/renting-vs-selling/">Rent vs Sell</a></li>
+          <li><a href="/guides/depreciation-recapture/">Depreciation Recapture</a></li>
+          <li><a href="/guides/home-equity/">Home Equity</a></li>
+          <li><a href="/guides/is-now-a-good-time-to-sell/">Is Now a Good Time?</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="/" onclick="restart()">Start estimate</a></li>
+          <li><a href="#sampleReport" onclick="document.getElementById('sampleReport')?.scrollIntoView({behavior:'smooth',block:'start'}); return false;">Sample report</a></li>
+          <li><a href="#premiumGate" onclick="document.getElementById('premiumGate')?.scrollIntoView({behavior:'smooth',block:'start'}); return false;">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="/methodology/">Methodology</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/terms/">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-tagline">Your Home, Your Numbers</div>
+      <div class="footer-subline">US homeowner property decision tool</div>
+    </div>
+  </div>
+</footer>
 
 <!-- MOTIVATED SELLER DIRECTORY -->
 <div id="directory" style="display:none">
@@ -4021,10 +4168,66 @@ function gs(id){const e=document.getElementById(id);return e?e.value:'';}
 function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
 function fmt(n){if(!isFinite(n))return'$0';return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString('en-US');}
 function fmtK(n){if(!isFinite(n))return'$0';const sg=n<0?'-':'';const a=Math.abs(n);if(a>=1e6)return sg+'$'+(a/1e6).toFixed(2)+'M';if(a>=1000)return sg+'$'+(a/1000).toFixed(0)+'K';return fmt(n);}
+const GUIDE_LIBRARY = {
+  capitalGains: {
+    href: '/guides/capital-gains-tax/',
+    title: 'How capital gains tax works when you sell',
+    copy: 'Understand what part of your profit is actually taxable and how the tax bill changes after exclusions, basis, and selling costs.'
+  },
+  section121: {
+    href: '/guides/section-121-exclusion/',
+    title: 'Learn how the Section 121 exclusion might reduce this tax bill',
+    copy: 'If this was your main home, this is the rule most likely to reduce or eliminate capital gains tax when you sell.'
+  },
+  rentVsSell: {
+    href: '/guides/renting-vs-selling/',
+    title: 'See the real math behind rent vs sell',
+    copy: 'Use this when the keep path depends on renting the property out, or when the keep and sell outcomes are close.'
+  },
+  depreciation: {
+    href: '/guides/depreciation-recapture/',
+    title: 'Learn how depreciation recapture affects what you keep',
+    copy: 'If the property was rented before, this explains why the tax bill can be higher than homeowners expect.'
+  },
+  equity: {
+    href: '/guides/home-equity/',
+    title: 'Understand what your home equity actually means',
+    copy: 'Useful when your equity looks large on paper but your actual proceeds after selling costs are much smaller.'
+  },
+  timing: {
+    href: '/guides/is-now-a-good-time-to-sell/',
+    title: 'Use this framework to decide whether now is a good time to sell',
+    copy: 'A practical guide for timing, tradeoffs, and whether waiting actually improves the outcome.'
+  }
+};
 function hasRawValue(id){
   const el=document.getElementById(id);
   if(!el) return false;
   return (el.value||'').toString().trim()!=='';
+}
+
+function getRelevantGuide(context) {
+  const {
+    winnerKey,
+    keepMode,
+    sellScore,
+    keepScore,
+    netProc,
+    equity,
+    cgTax,
+    depRec,
+    section121Excluded,
+    rawGain,
+    taxableGain,
+    propType
+  } = context;
+
+  if (depRec > 0) return GUIDE_LIBRARY.depreciation;
+  if (cgTax > 0 && propType === 'primary' && (section121Excluded < rawGain || taxableGain > 0)) return GUIDE_LIBRARY.section121;
+  if (keepMode === 'rent' || Math.abs(sellScore - keepScore) <= 8) return GUIDE_LIBRARY.rentVsSell;
+  if (equity > 0 && netProc > 0 && (equity - netProc) > Math.max(20000, equity * 0.08)) return GUIDE_LIBRARY.equity;
+  if (winnerKey === 'sell') return GUIDE_LIBRARY.timing;
+  return GUIDE_LIBRARY.capitalGains;
 }
 
 // Forecast slider
@@ -4507,6 +4710,20 @@ function calculate(){
   const keepMonthlyValueText = keepMode === 'rent'
     ? `${fmt(keepMonthlyView)}/mo`
     : `${fmt(-totalMonthCost)}/mo`;
+  const relevantGuide = getRelevantGuide({
+    winnerKey,
+    keepMode,
+    sellScore,
+    keepScore,
+    netProc,
+    equity,
+    cgTax,
+    depRec,
+    section121Excluded,
+    rawGain,
+    taxableGain,
+    propType: gs('propType') || 'primary',
+  });
   lastResultSummary = {
     winnerKey,
     keepMode,
@@ -4699,6 +4916,15 @@ function calculate(){
     {l:'Match score',s:sellScore+'/100',k:keepScore+'/100'},
   ];
   document.getElementById('cmpTable').innerHTML=`<thead><tr><th></th><th class="ts">🏷️ Sell</th><th class="tk">🏠 Keep</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.l}</td><td>${r.s}</td><td>${r.k}</td></tr>`).join('')}</tbody>`;
+  const resultGuide = document.getElementById('resultGuide');
+  if (resultGuide && relevantGuide) {
+    resultGuide.style.display = 'block';
+    resultGuide.innerHTML = `
+      <div class="result-guide-kicker">Homeowner guides</div>
+      <div class="result-guide-title">${relevantGuide.title}</div>
+      <div class="result-guide-copy">${relevantGuide.copy}</div>
+      <a class="result-guide-link" href="${relevantGuide.href}">Read this guide <span>→</span></a>`;
+  }
   const nextSteps = document.getElementById('nextSteps');
   if (nextSteps) {
     nextSteps.innerHTML = winnerKey === 'sell'
