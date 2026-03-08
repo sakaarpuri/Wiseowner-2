@@ -3117,7 +3117,7 @@ select option { background: #fffaf4; color: var(--text); }
         </div>
         <div class="btn-row hero-actions" style="margin-top:0.5rem;">
           <button class="btn-cta" onclick="goTo(1)">Start estimate</button>
-          <button class="btn-secondary" onclick="document.querySelector('.sp-wrap')?.scrollIntoView({behavior:'smooth',block:'center'})">See sample report</button>
+          <button class="btn-secondary" onclick="window.location.href='/sample-report/'">See sample report</button>
         </div>
       </div>
       <div class="hero-preview">
@@ -3726,7 +3726,7 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="footer-col-title">Product</div>
         <ul class="footer-links">
           <li><a href="/" onclick="restart()">Start estimate</a></li>
-          <li><a href="#sampleReport" onclick="document.getElementById('sampleReport')?.scrollIntoView({behavior:'smooth',block:'start'}); return false;">Sample report</a></li>
+          <li><a href="/sample-report/">Sample report</a></li>
           <li><a href="#premiumGate" onclick="document.getElementById('premiumGate')?.scrollIntoView({behavior:'smooth',block:'start'}); return false;">Pricing</a></li>
         </ul>
       </div>
