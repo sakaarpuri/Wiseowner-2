@@ -1708,6 +1708,22 @@ select option { background: #1a2035; color: var(--text); }
 }
 .auth-submit:hover { opacity: 0.88; }
 .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.auth-alt {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 0.8rem; font-size: 0.9rem; color: var(--text);
+  font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-top: 0.75rem; transition: border-color 0.18s, background 0.18s;
+}
+.auth-alt:hover { border-color: var(--glass-border-hover); background: rgba(255,255,255,0.07); }
+.auth-help {
+  display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+.auth-link {
+  background: none; border: none; padding: 0; color: var(--green);
+  font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.auth-link:hover { text-decoration: underline; }
 .auth-err { font-size: 0.78rem; color: var(--coral); margin-top: 0.7rem; min-height: 1rem; text-align: center; }
 .auth-switch { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 1.1rem; }
 .auth-switch span { color: var(--green); cursor: pointer; font-weight: 600; }
@@ -4858,11 +4874,14 @@ async function initAuth() {
 
     // Listen for auth changes
     _sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN') {
+      if (event === 'PASSWORD_RECOVERY') {
+        showAuthModal('recovery');
+      } else if (event === 'SIGNED_IN') {
         currentUser = session.user;
         await fetchUserPlan();
         updateAuthUI();
         applyPaywall();
+        hideAuthModal();
       } else if (event === 'SIGNED_OUT') {
         currentUser = null;
         userPlan = 'free';
@@ -4947,22 +4966,51 @@ function showAuthModal(mode = 'signin') {
   if (!el) return;
   el.classList.add('show');
   switchAuthTab(mode);
-  setTimeout(() => document.getElementById('authEmail')?.focus(), 100);
+  setTimeout(() => document.getElementById(mode === 'recovery' ? 'authPassword' : 'authEmail')?.focus(), 100);
 }
 
 function hideAuthModal() {
   document.getElementById('authOverlay')?.classList.remove('show');
-  document.getElementById('authErr').textContent = '';
+  clearAuthMessage();
+}
+
+function setAuthMessage(text = '', tone = 'error') {
+  const err = document.getElementById('authErr');
+  if (!err) return;
+  err.style.color = tone === 'success' ? 'var(--green)' : 'var(--coral)';
+  err.textContent = text;
+}
+
+function clearAuthMessage() {
+  setAuthMessage('', 'error');
+}
+
+function isStrongPassword(password) {
+  return password.length >= 6 && /[\d\W_]/.test(password);
 }
 
 function switchAuthTab(mode) {
+  const isSignup = mode === 'signup';
+  const isRecovery = mode === 'recovery';
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.m === mode));
-  document.getElementById('authConfirmWrap').style.display = mode === 'signup' ? '' : 'none';
-  document.getElementById('authSubmitBtn').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  document.getElementById('authTabs').style.display = isRecovery ? 'none' : '';
+  document.getElementById('authEmailWrap').style.display = isRecovery ? 'none' : '';
+  document.getElementById('authConfirmWrap').style.display = (isSignup || isRecovery) ? '' : 'none';
+  document.getElementById('authHelpRow').style.display = mode === 'signin' ? 'flex' : 'none';
+  document.getElementById('authMagicBtn').style.display = mode === 'signin' ? '' : 'none';
+  document.getElementById('authSub').textContent = isRecovery
+    ? 'Choose a new password for your account'
+    : isSignup
+      ? 'Create your account to save your report'
+      : 'Sign in to unlock your full report';
+  document.getElementById('authPasswordLabel').textContent = isRecovery ? 'New password' : 'Password';
+  document.getElementById('authConfirmLabel').textContent = isRecovery ? 'Confirm new password' : 'Confirm password';
+  document.getElementById('authSubmitBtn').textContent = isSignup ? 'Create account' : isRecovery ? 'Save new password' : 'Sign in';
+  document.getElementById('authSwitchText').style.display = isRecovery ? 'none' : '';
   document.getElementById('authSwitchText').innerHTML = mode === 'signin'
     ? `New here? <span onclick="switchAuthTab('signup')">Create account</span>`
     : `Already have an account? <span onclick="switchAuthTab('signin')">Sign in</span>`;
-  document.getElementById('authErr').textContent = '';
+  clearAuthMessage();
   document.getElementById('authOverlay').dataset.mode = mode;
 }
 
@@ -4973,20 +5021,24 @@ async function submitAuth() {
   const password = document.getElementById('authPassword').value;
   const confirm = document.getElementById('authConfirm').value;
   const btn = document.getElementById('authSubmitBtn');
-  const err = document.getElementById('authErr');
-
-  if (!email || !password) { err.textContent = 'Email and password are required.'; return; }
-  if (mode === 'signup' && password !== confirm) { err.textContent = 'Passwords do not match.'; return; }
-  if (mode === 'signup' && password.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+  if (mode !== 'recovery' && (!email || !password)) { setAuthMessage('Email and password are required.'); return; }
+  if (mode === 'recovery' && !password) { setAuthMessage('Enter your new password.'); return; }
+  if ((mode === 'signup' || mode === 'recovery') && password !== confirm) { setAuthMessage('Passwords do not match.'); return; }
+  if ((mode === 'signup' || mode === 'recovery') && !isStrongPassword(password)) {
+    setAuthMessage('Password must be at least 6 characters and include a number or symbol.');
+    return;
+  }
 
   btn.disabled = true;
-  btn.textContent = mode === 'signup' ? 'Creating account…' : 'Signing in…';
-  err.textContent = '';
+  btn.textContent = mode === 'signup' ? 'Creating account…' : mode === 'recovery' ? 'Saving password…' : 'Signing in…';
+  clearAuthMessage();
 
   try {
     let result;
     if (mode === 'signup') {
-      result = await _sb.auth.signUp({ email, password });
+      result = await _sb.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
+    } else if (mode === 'recovery') {
+      result = await _sb.auth.updateUser({ password });
     } else {
       result = await _sb.auth.signInWithPassword({ email, password });
     }
@@ -4994,19 +5046,78 @@ async function submitAuth() {
     if (result.error) throw result.error;
 
     if (mode === 'signup' && !result.data.session) {
-      err.style.color = 'var(--green)';
-      err.textContent = '✓ Check your email to confirm your account.';
+      setAuthMessage('Check your email to confirm your account.', 'success');
       btn.disabled = false;
       btn.textContent = 'Create account';
+      return;
+    }
+    if (mode === 'recovery') {
+      document.getElementById('authPassword').value = '';
+      document.getElementById('authConfirm').value = '';
+      btn.disabled = false;
+      switchAuthTab('signin');
+      setAuthMessage('Your password has been updated. You can sign in now.', 'success');
       return;
     }
 
     hideAuthModal();
   } catch (e) {
-    err.style.color = 'var(--coral)';
-    err.textContent = e.message || 'Something went wrong. Please try again.';
+    setAuthMessage(e.message || 'Something went wrong. Please try again.');
     btn.disabled = false;
-    btn.textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+    btn.textContent = mode === 'signup' ? 'Create account' : mode === 'recovery' ? 'Save new password' : 'Sign in';
+  }
+}
+
+async function sendPasswordReset() {
+  if (!_sb) { showAuthModal('signin'); return; }
+  const email = document.getElementById('authEmail').value.trim();
+  const btn = document.getElementById('authSubmitBtn');
+  const originalText = btn.textContent;
+  if (!email) {
+    setAuthMessage('Enter your email first so we know where to send the reset link.');
+    document.getElementById('authEmail')?.focus();
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Sending reset link…';
+  clearAuthMessage();
+  try {
+    const { error } = await _sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+    if (error) throw error;
+    setAuthMessage('Check your email for a password reset link.', 'success');
+  } catch (e) {
+    setAuthMessage(e.message || 'Could not send reset email. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+async function sendMagicLink() {
+  if (!_sb) { showAuthModal('signin'); return; }
+  const email = document.getElementById('authEmail').value.trim();
+  const btn = document.getElementById('authMagicBtn');
+  const originalText = btn.textContent;
+  if (!email) {
+    setAuthMessage('Enter your email first so we know where to send the sign-in link.');
+    document.getElementById('authEmail')?.focus();
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Sending sign-in link…';
+  clearAuthMessage();
+  try {
+    const { error } = await _sb.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin }
+    });
+    if (error) throw error;
+    setAuthMessage('Check your email for a sign-in link.', 'success');
+  } catch (e) {
+    setAuthMessage(e.message || 'Could not send sign-in link. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
   }
 }
 
@@ -5083,24 +5194,29 @@ initAuth();
   <div class="auth-modal">
     <button class="auth-close" onclick="hideAuthModal()">×</button>
     <div class="auth-logo">🏠 zamindaro</div>
-    <div class="auth-sub">Sign in to unlock your full report</div>
-    <div class="auth-tabs">
+    <div class="auth-sub" id="authSub">Sign in to unlock your full report</div>
+    <div class="auth-tabs" id="authTabs">
       <div class="auth-tab active" data-m="signin" onclick="switchAuthTab('signin')">Sign in</div>
       <div class="auth-tab" data-m="signup" onclick="switchAuthTab('signup')">Create account</div>
     </div>
-    <div class="auth-field">
+    <div class="auth-field" id="authEmailWrap">
       <label>Email</label>
       <input type="email" id="authEmail" placeholder="you@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')submitAuth()">
     </div>
     <div class="auth-field">
-      <label>Password</label>
+      <label id="authPasswordLabel">Password</label>
       <input type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAuth()">
     </div>
     <div class="auth-field" id="authConfirmWrap" style="display:none">
-      <label>Confirm password</label>
+      <label id="authConfirmLabel">Confirm password</label>
       <input type="password" id="authConfirm" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitAuth()">
     </div>
     <button class="auth-submit" id="authSubmitBtn" onclick="submitAuth()">Sign in</button>
+    <button class="auth-alt" id="authMagicBtn" onclick="sendMagicLink()">Email me a sign-in link</button>
+    <div class="auth-help" id="authHelpRow">
+      <button class="auth-link" onclick="sendPasswordReset()">Forgot password?</button>
+      <span style="font-size:0.74rem;color:var(--text-muted);">Password sign-in stays available.</span>
+    </div>
     <div class="auth-err" id="authErr"></div>
     <div class="auth-switch" id="authSwitchText">New here? <span onclick="switchAuthTab('signup')">Create account</span></div>
   </div>
