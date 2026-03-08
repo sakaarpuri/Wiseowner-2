@@ -3750,7 +3750,7 @@ async function fetchPropertyData(address, geoData) {
         const lo = d.rentRangeLow  ? '$' + Math.round(d.rentRangeLow).toLocaleString()  : null;
         const hi = d.rentRangeHigh ? '$' + Math.round(d.rentRangeHigh).toLocaleString() : null;
         const range = (lo && hi) ? ` (market range: ${lo}–${hi})` : '';
-        hint.textContent = `Estimated by Rentcast based on similar properties nearby${range}. Adjust if you know your market.`;
+        hint.textContent = `Estimated from local market data and similar nearby properties${range}. Adjust if you know your market.`;
       }
     }
 
