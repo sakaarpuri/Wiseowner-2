@@ -2631,6 +2631,21 @@ select option { background: #fffaf4; color: var(--text); }
   body {
     overflow-x: hidden;
   }
+  .form-wrap,
+  #formMain,
+  #step-0,
+  .hero-copy,
+  .hero-preview,
+  .sp-wrap,
+  .sp-card,
+  .hero-trust,
+  .btn-row.hero-actions,
+  .path-row,
+  .path-item {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
   header {
     height: auto !important;
     min-height: 0;
@@ -2758,6 +2773,49 @@ select option { background: #fffaf4; color: var(--text); }
   }
   .sp-card {
     padding: 1.15rem;
+  }
+  .sp-caption {
+    width: 100%;
+    min-width: 0;
+  }
+  .sp-ai-hdr {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    min-width: 0;
+  }
+  .sp-ai-hdr strong,
+  .sp-score,
+  .sp-summary-copy,
+  .sp-row,
+  .sp-val,
+  .sp-lbl {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .sp-ai-hdr strong {
+    width: 100%;
+    font-size: 0.98rem;
+    line-height: 1.2;
+  }
+  .sp-score {
+    display: inline-block;
+    font-size: 0.64rem;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .sp-row {
+    overflow: hidden;
+  }
+  .sp-val {
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+  }
+  .sp-summary-copy {
+    max-width: none;
+    font-size: 0.76rem;
   }
   .sp-verdict-top,
   .sp-summary {
