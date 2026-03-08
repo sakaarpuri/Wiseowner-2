@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-aGtPkDYOhaLipg22GJRR01daNEKt4eA&libraries=places&callback=initAutocomplete" async defer></script>
 <style>
 /* ═══════════════════════════════════════════════
    KEEP OR SELL — PREMIUM-LIGHT EDITORIAL UI
@@ -3727,7 +3726,7 @@ select option { background: #fffaf4; color: var(--text); }
         <ul class="footer-links">
           <li><a href="/" onclick="restart()">Start estimate</a></li>
           <li><a href="/sample-report/">Sample report</a></li>
-          <li><a href="#premiumGate" onclick="document.getElementById('premiumGate')?.scrollIntoView({behavior:'smooth',block:'start'}); return false;">Pricing</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
         </ul>
       </div>
       <div>
@@ -5220,11 +5219,33 @@ updateDirLabel();
 let _sb = null;           // Supabase client
 let currentUser = null;   // Supabase user object
 let userPlan = 'free';    // 'free' | 'monthly' | 'yearly'
+let _publicCfg = null;
+let _mapsScriptRequested = false;
+
+function loadGoogleMaps(apiKey) {
+  if (!apiKey || _mapsScriptRequested || window.google?.maps?.places) {
+    if (window.google?.maps?.places) initAutocomplete();
+    return;
+  }
+  _mapsScriptRequested = true;
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=places&callback=initAutocomplete`;
+  script.async = true;
+  script.defer = true;
+  script.onerror = () => {
+    console.warn('Google Maps script failed to load');
+    const input = document.getElementById('addrInput');
+    if (input) input.placeholder = 'Address lookup unavailable right now';
+  };
+  document.head.appendChild(script);
+}
 
 // ── Init Supabase ──────────────────────────────────
 async function initAuth() {
   try {
     const cfg = await fetch('/.netlify/functions/get-config').then(r => r.json());
+    _publicCfg = cfg;
+    loadGoogleMaps(cfg.googleMapsApiKey);
     if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
 
     _sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);

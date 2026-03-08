@@ -8,6 +8,7 @@ exports.handler = async function (event) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
   const stripePk = process.env.STRIPE_PUBLIC_KEY;
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
     return {
@@ -19,6 +20,11 @@ exports.handler = async function (event) {
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ supabaseUrl, supabaseAnonKey, stripePk: stripePk || '' }),
+    body: JSON.stringify({
+      supabaseUrl,
+      supabaseAnonKey,
+      stripePk: stripePk || '',
+      googleMapsApiKey: googleMapsApiKey || '',
+    }),
   };
 };
