@@ -49,7 +49,7 @@ CREATE POLICY "Users read own subscriber data"
 
 **Product 1 — Monthly**
 - Name: `Keep or Sell Pro`
-- Price: `$7.00 / month` (recurring)
+- Price: `$7.99 / month` (recurring)
 - Copy the **Price ID** (starts with `price_...`)
 
 **Product 2 — Annual**
