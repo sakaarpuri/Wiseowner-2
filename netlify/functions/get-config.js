@@ -10,19 +10,12 @@ exports.handler = async function (event) {
   const stripePk = process.env.STRIPE_PUBLIC_KEY;
   const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Supabase not configured' }),
-    };
-  }
-
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      supabaseUrl,
-      supabaseAnonKey,
+      supabaseUrl: supabaseUrl || '',
+      supabaseAnonKey: supabaseAnonKey || '',
       stripePk: stripePk || '',
       googleMapsApiKey: googleMapsApiKey || '',
     }),
