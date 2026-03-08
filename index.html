@@ -3442,9 +3442,9 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="gp-price">$7</div><div class="gp-period">/ month</div>
           <div class="gp-label">Monthly</div>
         </div>
-        <div class="gate-plan" onclick="startCheckout('lifetime')">
-          <div class="gp-price">$49</div><div class="gp-period">one-time</div>
-          <div class="gp-label">Lifetime ✨</div>
+        <div class="gate-plan" onclick="startCheckout('yearly')">
+          <div class="gp-price">$49</div><div class="gp-period">/ year</div>
+          <div class="gp-label">Annual</div>
         </div>
       </div>
       <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
@@ -4854,7 +4854,7 @@ updateDirLabel();
 
 let _sb = null;           // Supabase client
 let currentUser = null;   // Supabase user object
-let userPlan = 'free';    // 'free' | 'monthly' | 'lifetime'
+let userPlan = 'free';    // 'free' | 'monthly' | 'yearly'
 
 // ── Init Supabase ──────────────────────────────────
 async function initAuth() {
@@ -4941,7 +4941,7 @@ function updateAuthUI() {
     if (ucEmail) ucEmail.textContent = email;
     if (ucPlan) {
       const isPaid = userPlan !== 'free';
-      ucPlan.textContent = userPlan === 'lifetime' ? '✨ Lifetime' : userPlan === 'monthly' ? '⚡ Pro' : 'Free';
+      ucPlan.textContent = userPlan === 'yearly' ? '📅 Annual' : userPlan === 'monthly' ? '⚡ Pro' : 'Free';
       ucPlan.className = 'uc-plan' + (isPaid ? '' : ' free');
     }
   } else {
@@ -4955,9 +4955,10 @@ function applyPaywall() {
   const premiumGate = document.getElementById('premiumGate');
   const aiGate = document.getElementById('aiGate');
   const taxGate = document.getElementById('taxGate');
-  if (premiumGate) premiumGate.classList.remove('visible');
-  if (aiGate) aiGate.classList.remove('visible');
-  if (taxGate) taxGate.classList.remove('visible');
+  const isPaid = !!currentUser && userPlan !== 'free';
+  if (premiumGate) premiumGate.classList.toggle('visible', !isPaid);
+  if (aiGate) aiGate.classList.toggle('visible', !isPaid);
+  if (taxGate) taxGate.classList.toggle('visible', !isPaid);
 }
 
 // ── Auth modal ─────────────────────────────────────

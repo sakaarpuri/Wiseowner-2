@@ -20,7 +20,7 @@ CREATE TABLE subscribers (
   email TEXT,
   stripe_customer_id TEXT UNIQUE,
   stripe_subscription_id TEXT,
-  plan TEXT DEFAULT 'free',        -- 'free' | 'monthly' | 'lifetime'
+  plan TEXT DEFAULT 'free',        -- 'free' | 'monthly' | 'yearly'
   status TEXT DEFAULT 'active',    -- 'active' | 'canceled' | 'past_due'
   period_end TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -52,9 +52,9 @@ CREATE POLICY "Users read own subscriber data"
 - Price: `$7.00 / month` (recurring)
 - Copy the **Price ID** (starts with `price_...`)
 
-**Product 2 — Lifetime**
-- Name: `Keep or Sell Lifetime`
-- Price: `$49.00` (one-time)
+**Product 2 — Annual**
+- Name: `zamindaro Annual`
+- Price: `$49.00 / year` (recurring)
 - Copy the **Price ID**
 
 ### Stripe Webhook:
@@ -80,7 +80,7 @@ Add all of these in **Netlify → Site settings → Environment variables**:
 | `STRIPE_SECRET_KEY` | Stripe secret key (`sk_live_...`) |
 | `STRIPE_PUBLIC_KEY` | Stripe publishable key (`pk_live_...`) |
 | `STRIPE_MONTHLY_PRICE_ID` | Monthly price ID (`price_...`) |
-| `STRIPE_LIFETIME_PRICE_ID` | Lifetime price ID (`price_...`) |
+| `STRIPE_YEARLY_PRICE_ID` | Yearly price ID (`price_...`) |
 | `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_...`) |
 
 > ⚠️ Use `sk_test_` / `pk_test_` keys while testing, switch to live keys when ready to charge.

@@ -1,4 +1,4 @@
-// Creates a Stripe Checkout session for monthly or lifetime plans.
+// Creates a Stripe Checkout session for monthly or yearly plans.
 // Uses raw fetch — no stripe npm package needed.
 
 const stripeApi = async (endpoint, method = 'GET', params = null) => {
@@ -44,9 +44,9 @@ exports.handler = async function (event) {
 
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   const monthlyPriceId = process.env.STRIPE_MONTHLY_PRICE_ID;
-  const lifetimePriceId = process.env.STRIPE_LIFETIME_PRICE_ID;
+  const yearlyPriceId = process.env.STRIPE_YEARLY_PRICE_ID;
 
-  if (!stripeKey || !monthlyPriceId || !lifetimePriceId) {
+  if (!stripeKey || !monthlyPriceId || !yearlyPriceId) {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Stripe not fully configured' }),
@@ -61,7 +61,7 @@ exports.handler = async function (event) {
   }
 
   const { email, userId, plan, origin } = body;
-  if (!email || !userId || !['monthly', 'lifetime'].includes(plan)) {
+  if (!email || !userId || !['monthly', 'yearly'].includes(plan)) {
     return { statusCode: 400, body: JSON.stringify({ error: 'email, userId, and plan required' }) };
   }
 
@@ -83,15 +83,14 @@ exports.handler = async function (event) {
     }
 
     // Build session params based on plan
-    const isLifetime = plan === 'lifetime';
     const sessionParams = {
       customer: customer.id,
       success_url: successUrl,
       cancel_url: cancelUrl,
-      mode: isLifetime ? 'payment' : 'subscription',
+      mode: 'subscription',
       line_items: [
         {
-          price: isLifetime ? lifetimePriceId : monthlyPriceId,
+          price: plan === 'yearly' ? yearlyPriceId : monthlyPriceId,
           quantity: 1,
         },
       ],
@@ -102,11 +101,9 @@ exports.handler = async function (event) {
       allow_promotion_codes: 'true',
     };
 
-    if (!isLifetime) {
-      sessionParams.subscription_data = {
-        metadata: { supabase_user_id: userId, plan },
-      };
-    }
+    sessionParams.subscription_data = {
+      metadata: { supabase_user_id: userId, plan },
+    };
 
     const session = await stripeApi('checkout/sessions', 'POST', sessionParams);
 

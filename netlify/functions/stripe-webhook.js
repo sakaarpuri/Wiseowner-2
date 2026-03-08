@@ -115,24 +115,13 @@ exports.handler = async function (event) {
       }
 
       if (obj.mode === 'subscription') {
-        // Monthly plan
+        const plan = meta.plan === 'yearly' ? 'yearly' : 'monthly';
         await upsertSubscriber({
           user_id: userId,
           email,
           stripe_customer_id: customerId,
           stripe_subscription_id: obj.subscription,
-          plan: 'monthly',
-          status: 'active',
-          updated_at: new Date().toISOString(),
-        });
-      } else if (obj.mode === 'payment') {
-        // Lifetime plan (one-time payment)
-        await upsertSubscriber({
-          user_id: userId,
-          email,
-          stripe_customer_id: customerId,
-          stripe_subscription_id: null,
-          plan: 'lifetime',
+          plan,
           status: 'active',
           updated_at: new Date().toISOString(),
         });
@@ -143,13 +132,14 @@ exports.handler = async function (event) {
       const status = obj.status; // active, past_due, canceled, etc.
       const customerId = obj.customer;
       const userId = obj.metadata?.supabase_user_id;
+      const plan = obj.metadata?.plan === 'yearly' ? 'yearly' : 'monthly';
 
       if (userId) {
         await upsertSubscriber({
           user_id: userId,
           stripe_customer_id: customerId,
           stripe_subscription_id: obj.id,
-          plan: 'monthly',
+          plan,
           status: ['active', 'trialing'].includes(status) ? 'active' : status,
           period_end: new Date(obj.current_period_end * 1000).toISOString(),
           updated_at: new Date().toISOString(),
@@ -159,12 +149,13 @@ exports.handler = async function (event) {
 
     if (type === 'customer.subscription.deleted') {
       const userId = obj.metadata?.supabase_user_id;
+      const plan = obj.metadata?.plan === 'yearly' ? 'yearly' : 'monthly';
       if (userId) {
         await upsertSubscriber({
           user_id: userId,
           stripe_customer_id: obj.customer,
           stripe_subscription_id: obj.id,
-          plan: 'monthly',
+          plan,
           status: 'canceled',
           updated_at: new Date().toISOString(),
         });
