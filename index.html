@@ -752,16 +752,9 @@ select option { background: #1a2035; color: var(--text); }
 }
 .report-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  gap: 1.3rem;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
   align-items: start;
-}
-.report-hero-photo {
-  width: 100%;
-  height: 15.5rem;
-  object-fit: cover;
-  border-radius: 1.6rem;
-  display: block;
 }
 .report-hero-copy {
   display: flex;
@@ -817,9 +810,6 @@ select option { background: #1a2035; color: var(--text); }
   .report-hero-grid {
     grid-template-columns: 1fr;
   }
-  .report-hero-photo {
-    height: 12rem;
-  }
 }
 @media (max-width: 600px) {
   .big-logo {
@@ -828,10 +818,6 @@ select option { background: #1a2035; color: var(--text); }
   .report-hero {
     padding: 1rem;
     border-radius: 1.5rem;
-  }
-  .report-hero-photo {
-    height: 10.8rem;
-    border-radius: 1.3rem;
   }
   .report-hero-card {
     padding: 1rem;
@@ -4757,7 +4743,6 @@ function calculate(){
     reportHero.style.display = '';
     reportHero.innerHTML = `
       <div class="report-hero-grid">
-        <img class="report-hero-photo" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80" alt="Modern home exterior">
         <div class="report-hero-copy">
           <div class="sp-caption">Your result summary</div>
           <div class="report-hero-card">
@@ -4781,7 +4766,6 @@ function calculate(){
             </div>
             <div class="sp-summary">
               <div class="sp-summary-copy">${reportHeroSummary}</div>
-              <span class="sp-pill">Plain-English take</span>
             </div>
           </div>
           <div class="report-hero-note">This card is the short version. The full report below shows the alternative path, tax math, charts, and next steps.</div>
