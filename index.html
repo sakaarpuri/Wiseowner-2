@@ -3156,8 +3156,7 @@ select option { background: #fffaf4; color: var(--text); }
     </div>
   </div>
 </header>
-<div class="tabs" id="tabs">
-  <div class="tab active" data-s="0"><span class="ti">🏠</span><span class="tl">Start</span></div>
+<div class="tabs" id="tabs" style="display:none">
   <div class="tab" data-s="1"><span class="ti">📍</span><span class="tl">Property</span></div>
   <div class="tab" data-s="2"><span class="ti">💳</span><span class="tl">Mortgage</span></div>
   <div class="tab" data-s="3"><span class="ti">🔑</span><span class="tl">Keep</span></div>
@@ -3487,7 +3486,7 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="depCard" style="display:none">
       <div class="card-title">🧮 Depreciation (Schedule E) — only needed if relevant</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">US landlords can deduct the building's depreciation each year on <strong>IRS Schedule E</strong>. Residential buildings depreciate over 27.5 years — it reduces your taxable rental income on paper, but the IRS recaptures it at sale (see §1250).</p>
       <div class="grid g2">
@@ -3561,7 +3560,7 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
 
-    <div class="card technical">
+    <div class="card technical" id="capGainsCard" style="display:none">
       <div class="card-title">🇺🇸 Estimated US Capital Gains Tax</div>
       <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">When you sell for a profit, taxes can take a meaningful bite out of what you keep. Your income, whether this was your main home, and any rental history all affect that number. We calculate those details automatically and show the full breakdown in results.</p>
       <div class="grid g2">
@@ -3972,9 +3971,30 @@ const MARKET_APPREC = {
   FL: 4.0, TX: 4.0, NC: 4.0, SC: 4.0, GA: 4.0, TN: 4.0, AZ: 4.0, NV: 4.0, UT: 4.0,
   CO: 3.5, VA: 3.5, MD: 3.5, PA: 3.5, IL: 3.0, MN: 3.0, MI: 3.0, OH: 3.0,
 };
+const CITY_APPREC = {
+  'austin,tx': 4.5,
+  'dallas,tx': 4.0,
+  'houston,tx': 3.8,
+  'miami,fl': 4.7,
+  'orlando,fl': 4.4,
+  'phoenix,az': 4.2,
+  'denver,co': 3.9,
+  'atlanta,ga': 4.1,
+  'charlotte,nc': 4.0,
+  'nashville,tn': 4.3,
+  'seattle,wa': 3.6,
+  'san francisco,ca': 3.1,
+  'los angeles,ca': 3.3,
+  'san diego,ca': 3.5,
+  'new york,ny': 2.9,
+  'boston,ma': 3.0,
+  'chicago,il': 3.0,
+};
 const purYearInput = document.getElementById('purYear');
 if (purYearInput) purYearInput.max = String(CURRENT_YEAR);
 let _apprecTouched = false;
+let _locationContext = { state: gs('stateField') || 'TX', city: '' };
+let _apprecAnimFrame = null;
 
 // Track which fields the user has manually touched so we never overwrite them
 const _dirtyFields = new Set();
@@ -4034,22 +4054,57 @@ function dismissBanner() {
   document.getElementById('prefillBanner').classList.remove('loading');
 }
 
-function getOutlookSuggestion(state) {
-  return MARKET_APPREC[state] ?? 3.5;
+function getOutlookSuggestion(state, city = '') {
+  const cityKey = city ? `${city}`.trim().toLowerCase() + ',' + `${state}`.trim().toLowerCase() : '';
+  return CITY_APPREC[cityKey] ?? MARKET_APPREC[state] ?? 3.5;
 }
 
-function updateOutlookSuggestion(state = gs('stateField') || 'TX') {
-  const suggestion = getOutlookSuggestion(state);
+function animateApprecTo(target) {
+  const apprecEl = document.getElementById('apprec');
+  if (!apprecEl) return;
+  if (_apprecAnimFrame) cancelAnimationFrame(_apprecAnimFrame);
+  const start = parseFloat(apprecEl.value || '4');
+  const delta = target - start;
+  if (Math.abs(delta) < 0.05) {
+    apprecEl.value = String(target);
+    syncForecast(target);
+    return;
+  }
+  const startTime = performance.now();
+  const duration = 450;
+  const tick = now => {
+    const p = Math.min(1, (now - startTime) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    const next = start + delta * eased;
+    apprecEl.value = next.toFixed(1);
+    syncForecast(next);
+    if (p < 1) _apprecAnimFrame = requestAnimationFrame(tick);
+  };
+  _apprecAnimFrame = requestAnimationFrame(tick);
+}
+
+function updateOutlookSuggestion(state = gs('stateField') || 'TX', city = _locationContext.city || '') {
+  _locationContext = { state, city: city || '' };
+  const suggestion = getOutlookSuggestion(state, city);
   const stateLabel = document.getElementById('stateField')?.selectedOptions?.[0]?.textContent || 'your area';
+  const areaLabel = city ? `${city}, ${state}` : stateLabel;
   const suggestionEl = document.getElementById('fcSuggestion');
   const apprecEl = document.getElementById('apprec');
   if (suggestionEl) {
-    suggestionEl.innerHTML = `Suggested starting point for <strong>${stateLabel}</strong>: <strong>${suggestion > 0 ? '+' : ''}${suggestion.toFixed(1)}% / yr</strong>`;
+    suggestionEl.innerHTML = `Suggested starting point for <strong>${areaLabel}</strong>: <strong>${suggestion > 0 ? '+' : ''}${suggestion.toFixed(1)}% / yr</strong>`;
   }
   if (apprecEl && !_apprecTouched) {
-    apprecEl.value = String(suggestion);
-    syncForecast(suggestion);
+    animateApprecTo(suggestion);
   }
+}
+
+function updateProgressiveSections() {
+  const depCard = document.getElementById('depCard');
+  const capGainsCard = document.getElementById('capGainsCard');
+  const rentalBasicsFilled = hasRawValue('monthRent');
+  const sellBasicsFilled = hasRawValue('legalCosts') || hasRawValue('staging') || hasRawValue('repairs') || _dirtyFields.has('agentComm');
+  if (depCard) depCard.style.display = rentalBasicsFilled ? '' : 'none';
+  if (capGainsCard) capGainsCard.style.display = sellBasicsFilled ? '' : 'none';
 }
 
 function initAutocomplete() {
@@ -4084,7 +4139,7 @@ function initAutocomplete() {
     };
 
     if (geoData.state) safeSet('stateField', geoData.state);
-    updateOutlookSuggestion(geoData.state || gs('stateField') || 'TX');
+    updateOutlookSuggestion(geoData.state || gs('stateField') || 'TX', geoData.city || '');
 
     const streetAddress = place.formatted_address.split(',')[0]?.trim() || place.formatted_address;
     fetchPropertyData(streetAddress, geoData);
@@ -4170,6 +4225,7 @@ async function fetchPropertyData(address, geoData) {
       const field = document.getElementById(id)?.closest('.field');
       if (field) field.classList.remove('autofill-pending');
     });
+    updateProgressiveSections();
   }
 }
 
@@ -4338,13 +4394,20 @@ function goTo(n){
   document.getElementById('step-'+cur)?.classList.remove('active');
   cur=n;
   document.getElementById('step-'+cur)?.classList.add('active');
-  document.getElementById('pbar').style.width=(n/LAST_STEP*100)+'%';
-  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.remove('active','done');if(i===n)t.classList.add('active');else if(i<n)t.classList.add('done');});
+  document.getElementById('pbar').style.width=(cur === 0 ? 0 : ((cur - 1) / (LAST_STEP - 1) * 100))+'%';
+  document.querySelectorAll('.tab').forEach(t=>{
+    const step = parseInt(t.dataset.s, 10);
+    t.classList.remove('active','done');
+    if(step===n)t.classList.add('active');
+    else if(step<n)t.classList.add('done');
+  });
   // Hide preview panel on homepage (step 0), show from step 1 onwards
   const onHome = n === 0;
+  document.getElementById('tabs').style.display = onHome ? 'none' : 'flex';
   document.getElementById('previewPanel').style.display = onHome ? 'none' : '';
   document.getElementById('previewPill').style.display   = onHome ? 'none' : '';
   window.scrollTo({top:0,behavior:'smooth'});
+  updateProgressiveSections();
   updatePreview();
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goTo(parseInt(t.dataset.s))));
@@ -4811,10 +4874,12 @@ async function loadSavedReport(reportId) {
 document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
   el.addEventListener('input',updatePreview);
   el.addEventListener('change',updatePreview);
+  el.addEventListener('input',updateProgressiveSections);
+  el.addEventListener('change',updateProgressiveSections);
   el.addEventListener('input',()=>el.classList.remove('prefilled-value'));
   el.addEventListener('change',()=>el.classList.remove('prefilled-value'));
 });
-document.getElementById('stateField')?.addEventListener('change', () => updateOutlookSuggestion());
+document.getElementById('stateField')?.addEventListener('change', () => updateOutlookSuggestion(gs('stateField') || 'TX', ''));
 
 function calculate(){
   if(!validateStep(LAST_STEP)) return; // final check — shouldn't be needed but safety net
@@ -6348,6 +6413,7 @@ window.calculate = function() {
 
 // Start auth
 updateOutlookSuggestion();
+updateProgressiveSections();
 initAuth();
 </script>
 
