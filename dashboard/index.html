@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Dashboard | zamindaro</title>
+  <meta name="description" content="Report history and credits for zamindaro realtor accounts.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/guides/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 1.2rem;
+    }
+    .dash-card {
+      background: rgba(255,250,244,0.94);
+      border: 1px solid rgba(115,100,80,0.14);
+      border-radius: 26px;
+      box-shadow: 0 14px 36px rgba(92,73,48,0.10);
+      padding: 1.3rem;
+    }
+    .dash-title {
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 1.5rem;
+      margin: 0 0 0.85rem;
+      color: #24392f;
+    }
+    .dash-kpi {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .dash-kpi-item {
+      background: rgba(247,240,229,0.9);
+      border: 1px solid rgba(115,100,80,0.12);
+      border-radius: 18px;
+      padding: 0.9rem 0.95rem;
+    }
+    .dash-kpi-item label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8e7b66;
+      margin-bottom: 0.28rem;
+    }
+    .dash-kpi-item strong {
+      font-size: 1.2rem;
+      color: #24392f;
+    }
+    .dash-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .dash-table th,
+    .dash-table td {
+      text-align: left;
+      padding: 0.85rem 0.4rem;
+      border-bottom: 1px solid rgba(115,100,80,0.12);
+      color: #43564b;
+      vertical-align: top;
+    }
+    .dash-table th {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #8e7b66;
+      font-weight: 800;
+    }
+    .dash-empty {
+      color: #617069;
+      line-height: 1.75;
+      margin: 0;
+    }
+    .dash-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .dash-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .dash-btn.primary {
+      background: #c9785e;
+      color: #fffaf4;
+    }
+    .dash-btn.secondary {
+      background: rgba(255,252,247,0.94);
+      color: #24392f;
+      border: 1px solid rgba(115,100,80,0.15);
+    }
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="guide-shell">
+    <div class="guide-topbar">
+      <a class="guide-brand" href="/">zamindaro</a>
+      <a class="guide-back" href="/">Back to estimate</a>
+    </div>
+
+    <section class="guide-hero">
+      <div class="guide-kicker">Dashboard</div>
+      <h1>Agent report history and credits.</h1>
+      <p class="guide-deck">This dashboard is for realtor accounts. It shows your current entitlement state and the reports tied to your account.</p>
+    </section>
+
+    <section class="sample-section">
+      <div class="dashboard-grid">
+        <aside class="dash-card">
+          <h2 class="dash-title">Account snapshot</h2>
+          <div class="dash-kpi">
+            <div class="dash-kpi-item"><label>Name</label><strong id="dashName">—</strong></div>
+            <div class="dash-kpi-item"><label>Brokerage</label><strong id="dashBrokerage">—</strong></div>
+            <div class="dash-kpi-item"><label>Tier</label><strong id="dashTier">Free</strong></div>
+            <div class="dash-kpi-item"><label>Credits</label><strong id="dashCredits">0</strong></div>
+          </div>
+          <div class="dash-actions">
+            <a class="dash-btn primary" href="/pricing/">Buy credits</a>
+            <a class="dash-btn secondary" href="/">New estimate</a>
+          </div>
+        </aside>
+
+        <div class="dash-card">
+          <h2 class="dash-title">Past reports</h2>
+          <p class="dash-empty" id="dashStatus">Checking your account…</p>
+          <table class="dash-table" id="dashTable" style="display:none">
+            <thead>
+              <tr>
+                <th>Address</th>
+                <th>Date</th>
+                <th>Recommendation</th>
+                <th>Match</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="dashRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-top">
+        <div class="footer-brand">zamindaro</div>
+        <div>
+          <div class="footer-col-title">Know Your Numbers</div>
+          <ul class="footer-links">
+            <li><a href="/guides/capital-gains-tax/">Capital Gains Tax</a></li>
+            <li><a href="/guides/section-121-exclusion/">§121 Exclusion</a></li>
+            <li><a href="/guides/renting-vs-selling/">Rent vs Sell</a></li>
+            <li><a href="/guides/depreciation-recapture/">Depreciation Recapture</a></li>
+            <li><a href="/guides/home-equity/">Home Equity</a></li>
+            <li><a href="/guides/is-now-a-good-time-to-sell/">Is Now a Good Time?</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-links">
+            <li><a href="/">Start estimate</a></li>
+            <li><a href="/sample-report/">Sample report</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <ul class="footer-links">
+            <li><a href="/methodology/">Methodology</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-tagline">Your Home, Your Numbers</div>
+        <div class="footer-subline">US homeowner property decision tool</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    async function initDashboard() {
+      const cfg = await fetch('/.netlify/functions/get-config').then((r) => r.json());
+      if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) {
+        document.getElementById('dashStatus').textContent = 'Supabase is not configured yet.';
+        return;
+      }
+
+      const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session?.user) {
+        document.getElementById('dashStatus').innerHTML = 'Sign in with a realtor account to view your dashboard. <a href="/?auth=signin">Go to sign in</a>.';
+        return;
+      }
+
+      const user = session.user;
+      let profile = null;
+      let billing = null;
+      let reports = [];
+
+      try {
+        const [{ data: profileRow }, { data: billingRow }, { data: reportRows }] = await Promise.all([
+          sb.from('profiles').select('*').eq('user_id', user.id).maybeSingle(),
+          sb.from('billing_accounts').select('*').eq('user_id', user.id).maybeSingle(),
+          sb.from('reports').select('id,address,created_at,winner_key,match_score').eq('owner_user_id', user.id).order('created_at', { ascending: false }).limit(30),
+        ]);
+        profile = profileRow || null;
+        billing = billingRow || null;
+        reports = reportRows || [];
+      } catch (err) {
+        document.getElementById('dashStatus').textContent = 'Your dashboard tables are not set up yet. Apply the latest Supabase schema first.';
+        return;
+      }
+
+      document.getElementById('dashName').textContent = profile?.full_name || user.email || '—';
+      document.getElementById('dashBrokerage').textContent = profile?.brokerage_name || '—';
+      document.getElementById('dashTier').textContent = billing?.tier || 'free';
+      document.getElementById('dashCredits').textContent = String(billing?.credits_balance || 0);
+
+      if (!reports.length) {
+        document.getElementById('dashStatus').textContent = 'No saved reports yet. Run an estimate to create your first client-ready report.';
+        return;
+      }
+
+      document.getElementById('dashStatus').style.display = 'none';
+      document.getElementById('dashTable').style.display = '';
+      document.getElementById('dashRows').innerHTML = reports.map((report) => `
+        <tr>
+          <td>${report.address || 'Untitled report'}</td>
+          <td>${new Date(report.created_at).toLocaleDateString()}</td>
+          <td>${report.winner_key === 'sell' ? 'Sell' : 'Keep'}</td>
+          <td>${report.match_score ? `${report.match_score}/100` : '—'}</td>
+          <td><a href="/?report=${report.id}">Reopen</a></td>
+        </tr>`).join('');
+    }
+
+    initDashboard().catch(() => {
+      document.getElementById('dashStatus').textContent = 'Could not load the dashboard right now.';
+    });
+  </script>
+</body>
+</html>

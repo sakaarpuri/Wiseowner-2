@@ -1,108 +1,214 @@
-# Auth + Subscription Setup Guide
+# zamindaro Auth + Pricing V2 Setup
 
-Follow these steps **once** before deploying. Takes ~20 minutes.
+Apply this once before turning on live billing and realtor accounts.
 
----
+## 1. Supabase project
 
-## 1. Supabase Project
+Use a dedicated Supabase project for `zamindaro`, preferably in a US region.
 
-1. Go to https://supabase.com → New project
-2. Note your **Project URL** and **anon (public) key** (Settings → API)
-3. Also copy the **service_role** key (keep secret — server only)
+Required project settings:
+- `Authentication -> URL Configuration`
+  - `Site URL`: `https://www.zamindaro.com`
+  - Redirect URLs:
+    - `https://www.zamindaro.com/**`
+    - `https://zamindaro.com/**`
+    - `http://localhost:8000/**`
 
-### Run this SQL in the Supabase SQL Editor:
+## 2. Supabase schema
+
+Run this in the SQL editor.
 
 ```sql
--- Subscriber table
-CREATE TABLE subscribers (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  email TEXT,
-  stripe_customer_id TEXT UNIQUE,
-  stripe_subscription_id TEXT,
-  plan TEXT DEFAULT 'free',        -- 'free' | 'monthly' | 'yearly'
-  status TEXT DEFAULT 'active',    -- 'active' | 'canceled' | 'past_due'
-  period_end TIMESTAMPTZ,
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+create extension if not exists "pgcrypto";
+
+create table if not exists profiles (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid unique references auth.users(id) on delete cascade,
+  account_type text not null default 'homeowner' check (account_type in ('homeowner', 'realtor')),
+  full_name text,
+  brokerage_name text,
+  phone text,
+  photo_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
--- Row-level security (users can only read their own row)
-ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
+create table if not exists billing_accounts (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid unique references auth.users(id) on delete cascade,
+  email text unique,
+  stripe_customer_id text unique,
+  subscription_id text,
+  tier text not null default 'free',
+  status text not null default 'inactive',
+  period_end timestamptz,
+  credits_balance integer not null default 0,
+  report_unlock_until timestamptz,
+  homeowner_reruns_remaining integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 
-CREATE POLICY "Users read own subscriber data"
-  ON subscribers FOR SELECT
-  USING (auth.uid() = user_id);
+create table if not exists reports (
+  id uuid default gen_random_uuid() primary key,
+  owner_user_id uuid references auth.users(id) on delete set null,
+  account_type text not null default 'homeowner' check (account_type in ('homeowner', 'realtor')),
+  address text,
+  state text,
+  winner_key text,
+  keep_mode text,
+  match_score integer,
+  inputs_json jsonb not null default '{}'::jsonb,
+  outputs_json jsonb not null default '{}'::jsonb,
+  pdf_url text,
+  created_at timestamptz not null default now()
+);
 
--- Service role bypasses RLS automatically (used by webhook function)
+alter table profiles enable row level security;
+alter table billing_accounts enable row level security;
+alter table reports enable row level security;
+
+create policy "profiles read own"
+  on profiles for select
+  using (auth.uid() = user_id);
+
+create policy "profiles update own"
+  on profiles for update
+  using (auth.uid() = user_id);
+
+create policy "profiles insert own"
+  on profiles for insert
+  with check (auth.uid() = user_id);
+
+create policy "billing read own"
+  on billing_accounts for select
+  using (auth.uid() = user_id);
+
+create policy "billing update own"
+  on billing_accounts for update
+  using (auth.uid() = user_id);
+
+create policy "reports read own"
+  on reports for select
+  using (auth.uid() = owner_user_id);
+
+create policy "reports insert own"
+  on reports for insert
+  with check (auth.uid() = owner_user_id);
+
+create policy "reports update own"
+  on reports for update
+  using (auth.uid() = owner_user_id);
 ```
 
-### Supabase Auth settings:
-- Authentication → Settings → Site URL: `https://boisterous-brioche-7a63c3.netlify.app`
-- Add same URL to Redirect URLs
+### Storage
 
----
+Create a public bucket:
+- `realtor-assets`
 
-## 2. Stripe Products
+Use it for:
+- realtor profile photos
+- saved PDF assets if you later persist PDFs server-side
 
-1. Go to https://dashboard.stripe.com → Products → Add product
+## 3. Stripe catalog
 
-**Product 1 — Monthly**
-- Name: `Keep or Sell Pro`
-- Price: `$7.99 / month` (recurring)
-- Copy the **Price ID** (starts with `price_...`)
+Create these Stripe prices and keep the resulting `price_...` IDs.
 
-**Product 2 — Annual**
-- Name: `zamindaro Annual`
-- Price: `$49.00 / year` (recurring)
-- Copy the **Price ID**
+### Homeowner
+- `Homeowner Report`
+  - one-time
+  - `$9`
+- `Homeowner Yearly`
+  - recurring yearly
+  - `$49 / year`
 
-### Stripe Webhook:
-1. Developers → Webhooks → Add endpoint
-2. URL: `https://boisterous-brioche-7a63c3.netlify.app/.netlify/functions/stripe-webhook`
-3. Events to listen for:
-   - `checkout.session.completed`
-   - `customer.subscription.updated`
-   - `customer.subscription.deleted`
-4. Copy the **Webhook signing secret** (starts with `whsec_...`)
+### Realtor
+- `Realtor Single Credit`
+  - one-time
+  - `$6`
+- `Realtor Credit Bundle`
+  - one-time
+  - `$55`
+- `Realtor Unlimited`
+  - recurring monthly
+  - `$39 / month`
 
----
+## 4. Stripe webhook
 
-## 3. Netlify Environment Variables
+Create one webhook endpoint:
 
-Add all of these in **Netlify → Site settings → Environment variables**:
+- test/staging:
+  - `https://boisterous-brioche-7a63c3.netlify.app/.netlify/functions/stripe-webhook`
+- production:
+  - `https://www.zamindaro.com/.netlify/functions/stripe-webhook`
 
-| Variable | Value |
+Listen for:
+- `checkout.session.completed`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+
+Copy the webhook signing secret:
+- `whsec_...`
+
+## 5. Netlify environment variables
+
+Set these in Netlify:
+
+| Variable | Purpose |
 |---|---|
-| `SUPABASE_URL` | Your Supabase project URL |
-| `SUPABASE_ANON_KEY` | Supabase anon/public key |
-| `SUPABASE_SERVICE_KEY` | Supabase service_role key (**secret**) |
-| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_live_...`) |
-| `STRIPE_PUBLIC_KEY` | Stripe publishable key (`pk_live_...`) |
-| `STRIPE_MONTHLY_PRICE_ID` | Monthly price ID (`price_...`) |
-| `STRIPE_YEARLY_PRICE_ID` | Yearly price ID (`price_...`) |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_...`) |
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_ANON_KEY` | public anon key |
+| `SUPABASE_SERVICE_KEY` | service role key |
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `STRIPE_PUBLIC_KEY` | Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+| `STRIPE_PRICE_HOMEOWNER_REPORT` | one-time $9 report price |
+| `STRIPE_PRICE_HOMEOWNER_YEARLY` | recurring $49/year homeowner price |
+| `STRIPE_PRICE_REALTOR_CREDIT_SINGLE` | one-time $6 single-credit price |
+| `STRIPE_PRICE_REALTOR_CREDIT_BUNDLE` | one-time $55 bundle price |
+| `STRIPE_PRICE_REALTOR_UNLIMITED` | recurring $39/month realtor price |
+| `GOOGLE_MAPS_API_KEY` | Google Maps Places key |
+| `ANTHROPIC_API_KEY` | AI interpretation |
+| `RENTCAST_KEY` | property data lookup |
+| `PROPSTREAM_KEY` | optional directory data |
 
-> ⚠️ Use `sk_test_` / `pk_test_` keys while testing, switch to live keys when ready to charge.
+## 6. Frontend purchase identifiers
 
----
+The app now uses these exact purchase identifiers end to end:
 
-## 4. Test Checklist
+- `homeowner_report`
+- `homeowner_yearly`
+- `realtor_credit_single`
+- `realtor_credit_bundle`
+- `realtor_unlimited`
 
-- [ ] Click "Sign in" → modal appears
-- [ ] Create a test account → confirmation email arrives
-- [ ] Sign in → header shows email chip
-- [ ] Run analysis → AI box and tax breakdown show locked overlays
-- [ ] Click a plan → redirects to Stripe checkout
-- [ ] Complete test payment (use card `4242 4242 4242 4242`) → redirected back
-- [ ] After redirect, AI + tax unlock within ~3 seconds
-- [ ] Sign out → header resets
+Do not reuse the old `monthly | yearly` identifiers.
 
----
+## 7. Expected behavior
 
-## 5. Stripe Customer Portal (optional — for self-serve cancellations)
+### Homeowner
+- free estimate works without account
+- `$9 report` unlocks:
+  - interpretation
+  - full tax breakdown
+  - PDF export
+  - one rerun within 30 days
+- `$49 yearly` keeps premium homeowner access active while the subscription is active
 
-When ready, add a `create-portal.js` serverless function that calls:
-`POST https://api.stripe.com/v1/billing_portal/sessions`
+### Realtor
+- realtor account stores profile metadata
+- single credit adds 1 credit
+- bundle adds 10 credits
+- unlimited subscription removes per-report gating
+- dashboard reads from `reports`
 
-This lets users manage/cancel their own subscription without contacting you.
+## 8. Test checklist
+
+- [ ] Sign up as homeowner
+- [ ] Sign up as realtor and save profile
+- [ ] Pricing page shows the two-column final structure
+- [ ] Homeowner `$9 report` opens Stripe checkout
+- [ ] Homeowner `$49 yearly` opens recurring Stripe checkout
+- [ ] Realtor single credit / bundle / unlimited options open the correct checkout mode
+- [ ] Webhook updates `billing_accounts`
+- [ ] Realtor dashboard loads once schema is applied

@@ -3,11 +3,11 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const apiKey = process.env.GOOGLE_PLACES_KEY;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: "GOOGLE_PLACES_KEY not configured" }),
+      body: JSON.stringify({ success: false, error: "GOOGLE_MAPS_API_KEY not configured" }),
     };
   }
 

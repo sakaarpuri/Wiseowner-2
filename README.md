@@ -1,8 +1,8 @@
-# 🏠 WiseOwner — Keep/Sell US
+# zamindaro
 
-A US property decision tool that helps homeowners decide whether to **keep, sell, or rent out** their property. Calculates capital gains tax (§121, NIIT, depreciation recapture), compares all three financial paths, delivers an AI-written plain-English interpretation, and includes a motivated seller directory.
+A US homeowner property decision tool that helps people decide whether to **keep or sell** a property, with renting treated as one keep path. It includes free estimates, homeowner report unlocks, and realtor-specific credit or unlimited plans.
 
-**Stack:** Single HTML file · Vanilla JS/CSS · Netlify serverless functions · Chart.js · Claude AI
+**Stack:** Single HTML file · Vanilla JS/CSS · Netlify serverless functions · Chart.js · Anthropic AI · Supabase · Stripe
 
 ---
 
@@ -49,7 +49,7 @@ Add these to your `.env` file for local dev, and to **Netlify → Site Settings 
 | Variable | Required | Where to get it | Cost |
 |---|---|---|---|
 | `ANTHROPIC_API_KEY` | ✅ Yes | [console.anthropic.com](https://console.anthropic.com) → API Keys | Pay per use (~$0.01/analysis) |
-| `GOOGLE_PLACES_KEY` | Optional | Google Cloud Console (see below) | Free tier — generous limits |
+| `GOOGLE_MAPS_API_KEY` | Optional | Google Cloud Console (see below) | Free tier — generous limits |
 | `RENTCAST_KEY` | Optional | [Rentcast.io](https://rentcast.io) → API Keys (see below) | ~$45/mo (Starter) |
 | `PROPSTREAM_KEY` | Optional (Phase 3) | PropStream — contact sales | ~$99/mo |
 
@@ -88,8 +88,7 @@ Used for the address autocomplete field in Step 1 and to resolve state/county/zi
    - Under **Application restrictions** → select **HTTP referrers**
    - Add your domain: `https://yourdomain.com/*` and `http://localhost:8888/*`
    - Under **API restrictions** → select **Restrict key** → check Places API + Geocoding API
-8. Add to `.env` as `GOOGLE_PLACES_KEY`
-9. Replace `__GOOGLE_PLACES_KEY__` in `index.html` with your actual key, or set it via a build step
+8. Add to `.env` as `GOOGLE_MAPS_API_KEY`
 
 > **Free tier:** Google gives $200/month in free credits, which covers ~40,000 autocomplete requests or ~100,000 geocode calls. More than enough for most use cases.
 
@@ -217,11 +216,26 @@ Results 6+ are blurred behind a paywall overlay. The "Start free trial" CTA show
 ANTHROPIC_API_KEY=sk-ant-...
 
 # Optional — address autocomplete + geocoding
-GOOGLE_PLACES_KEY=AIza...
+GOOGLE_MAPS_API_KEY=AIza...
 
 # Optional — AVM + sale history pre-fill (Rentcast)
 RENTCAST_KEY=
 
 # Optional — Phase 3 motivated seller directory
 PROPSTREAM_KEY=your-propstream-token
+
+# Auth / database
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_KEY=
+
+# Stripe
+STRIPE_SECRET_KEY=
+STRIPE_PUBLIC_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_HOMEOWNER_REPORT=
+STRIPE_PRICE_HOMEOWNER_YEARLY=
+STRIPE_PRICE_REALTOR_CREDIT_SINGLE=
+STRIPE_PRICE_REALTOR_CREDIT_BUNDLE=
+STRIPE_PRICE_REALTOR_UNLIMITED=
 ```

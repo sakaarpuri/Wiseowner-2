@@ -1,5 +1,21 @@
-// Creates a Stripe Checkout session for monthly or yearly plans.
+// Creates a Stripe Checkout session for homeowner and realtor purchases.
 // Uses raw fetch — no stripe npm package needed.
+
+const PRICE_ENV_BY_PURCHASE = {
+  homeowner_report: 'STRIPE_PRICE_HOMEOWNER_REPORT',
+  homeowner_yearly: 'STRIPE_PRICE_HOMEOWNER_YEARLY',
+  realtor_credit_single: 'STRIPE_PRICE_REALTOR_CREDIT_SINGLE',
+  realtor_credit_bundle: 'STRIPE_PRICE_REALTOR_CREDIT_BUNDLE',
+  realtor_unlimited: 'STRIPE_PRICE_REALTOR_UNLIMITED',
+};
+
+const PURCHASE_CONFIG = {
+  homeowner_report: { mode: 'payment', accountType: 'homeowner', creditAmount: 0 },
+  homeowner_yearly: { mode: 'subscription', accountType: 'homeowner', creditAmount: 0 },
+  realtor_credit_single: { mode: 'payment', accountType: 'realtor', creditAmount: 1, requiresUser: true },
+  realtor_credit_bundle: { mode: 'payment', accountType: 'realtor', creditAmount: 10, requiresUser: true },
+  realtor_unlimited: { mode: 'subscription', accountType: 'realtor', creditAmount: 0, requiresUser: true },
+};
 
 const stripeApi = async (endpoint, method = 'GET', params = null) => {
   const res = await fetch(`https://api.stripe.com/v1/${endpoint}`, {
@@ -15,7 +31,6 @@ const stripeApi = async (endpoint, method = 'GET', params = null) => {
   return data;
 };
 
-// Stripe expects nested params as: customer[metadata][foo]=bar
 function flattenParams(obj, prefix = '') {
   const flat = {};
   for (const [k, v] of Object.entries(obj)) {
@@ -30,11 +45,25 @@ function flattenParams(obj, prefix = '') {
           flat[`${key}[${i}]`] = item;
         }
       });
-    } else {
+    } else if (v !== undefined && v !== null) {
       flat[key] = v;
     }
   }
   return flat;
+}
+
+async function findOrCreateCustomer(email, userId, accountType) {
+  const search = await stripeApi(`customers/search?query=email:'${encodeURIComponent(email)}'`);
+  if (search.data && search.data.length > 0) {
+    return search.data[0];
+  }
+  return stripeApi('customers', 'POST', {
+    email,
+    metadata: {
+      supabase_user_id: userId || '',
+      account_type: accountType || '',
+    },
+  });
 }
 
 exports.handler = async function (event) {
@@ -43,10 +72,7 @@ exports.handler = async function (event) {
   }
 
   const stripeKey = process.env.STRIPE_SECRET_KEY;
-  const monthlyPriceId = process.env.STRIPE_MONTHLY_PRICE_ID;
-  const yearlyPriceId = process.env.STRIPE_YEARLY_PRICE_ID;
-
-  if (!stripeKey || !monthlyPriceId || !yearlyPriceId) {
+  if (!stripeKey) {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Stripe not fully configured' }),
@@ -60,53 +86,63 @@ exports.handler = async function (event) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { email, userId, plan, origin } = body;
-  if (!email || !userId || !['monthly', 'yearly'].includes(plan)) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'email, userId, and plan required' }) };
+  const { email, userId, purchaseType, origin, reportId } = body;
+  const config = PURCHASE_CONFIG[purchaseType];
+  if (!email || !config) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'email and purchaseType are required' }),
+    };
+  }
+  if (config.requiresUser && !userId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'This purchase requires a signed-in account' }),
+    };
   }
 
-  const baseUrl = origin || 'https://boisterous-brioche-7a63c3.netlify.app';
-  const successUrl = `${baseUrl}/?payment=success`;
-  const cancelUrl = `${baseUrl}/?payment=cancelled`;
+  const priceEnvName = PRICE_ENV_BY_PURCHASE[purchaseType];
+  const priceId = process.env[priceEnvName];
+  if (!priceId) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: `Missing ${priceEnvName}` }),
+    };
+  }
+
+  const baseUrl = origin || 'https://www.zamindaro.com';
+  const successUrl = `${baseUrl}/?payment=success&purchase_type=${encodeURIComponent(purchaseType)}&session_id={CHECKOUT_SESSION_ID}`;
+  const cancelUrl = `${baseUrl}/?payment=cancelled&purchase_type=${encodeURIComponent(purchaseType)}`;
 
   try {
-    // Find or create Stripe customer
-    const search = await stripeApi(`customers/search?query=email:'${encodeURIComponent(email)}'`);
-    let customer;
-    if (search.data && search.data.length > 0) {
-      customer = search.data[0];
-    } else {
-      customer = await stripeApi('customers', 'POST', {
-        email,
-        metadata: { supabase_user_id: userId },
-      });
-    }
+    const customer = await findOrCreateCustomer(email, userId, config.accountType);
+    const metadata = {
+      supabase_user_id: userId || '',
+      purchase_type: purchaseType,
+      account_type: config.accountType,
+      email,
+      credit_amount: String(config.creditAmount || 0),
+      report_id: reportId || '',
+    };
 
-    // Build session params based on plan
     const sessionParams = {
       customer: customer.id,
       success_url: successUrl,
       cancel_url: cancelUrl,
-      mode: 'subscription',
-      line_items: [
-        {
-          price: plan === 'yearly' ? yearlyPriceId : monthlyPriceId,
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        supabase_user_id: userId,
-        plan,
-      },
+      mode: config.mode,
+      line_items: [{ price: priceId, quantity: 1 }],
+      metadata,
       allow_promotion_codes: 'true',
+      customer_update: { address: 'auto', name: 'auto' },
     };
 
-    sessionParams.subscription_data = {
-      metadata: { supabase_user_id: userId, plan },
-    };
+    if (config.mode === 'subscription') {
+      sessionParams.subscription_data = {
+        metadata,
+      };
+    }
 
     const session = await stripeApi('checkout/sessions', 'POST', sessionParams);
-
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },

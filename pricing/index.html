@@ -4,11 +4,141 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pricing | zamindaro</title>
-  <meta name="description" content="See zamindaro plan options for agents, brokers, and homeowners who want the full report and interpretation.">
+  <meta name="description" content="Pricing for homeowners and real estate agents using zamindaro.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/guides/styles.css">
+  <style>
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.4rem;
+    }
+    .pricing-column {
+      background: rgba(255,250,244,0.94);
+      border: 1px solid rgba(115,100,80,0.14);
+      border-radius: 28px;
+      box-shadow: 0 16px 44px rgba(92,73,48,0.10);
+      padding: 1.8rem;
+    }
+    .pricing-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #9b6a55;
+      margin-bottom: 0.7rem;
+    }
+    .pricing-title {
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 2rem;
+      line-height: 1.08;
+      margin: 0 0 0.6rem;
+      color: #24392f;
+    }
+    .pricing-copy {
+      margin: 0 0 1.1rem;
+      color: #53645b;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+    .pricing-stack {
+      display: grid;
+      gap: 0.9rem;
+    }
+    .price-card {
+      border: 1px solid rgba(115,100,80,0.14);
+      border-radius: 22px;
+      padding: 1.1rem 1.15rem;
+      background: rgba(248,241,231,0.74);
+    }
+    .price-card.primary {
+      background: linear-gradient(180deg, rgba(244,224,214,0.88), rgba(255,248,241,0.96));
+      border-color: rgba(190,115,89,0.26);
+      box-shadow: 0 16px 38px rgba(181,94,71,0.10);
+    }
+    .price-card.secondary {
+      padding: 0.95rem 1rem;
+      background: rgba(251,248,243,0.92);
+    }
+    .price-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+    .price-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #24392f;
+    }
+    .price-amount {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #9b6a55;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .price-amount small {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #617069;
+      letter-spacing: 0;
+    }
+    .price-body {
+      margin: 0;
+      color: #52635b;
+      font-size: 0.94rem;
+      line-height: 1.65;
+    }
+    .price-list {
+      margin: 0.8rem 0 0;
+      padding-left: 1.1rem;
+      color: #43564b;
+      line-height: 1.7;
+      font-size: 0.93rem;
+    }
+    .breakeven {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 18px;
+      background: rgba(232,115,90,0.08);
+      border: 1px solid rgba(190,115,89,0.18);
+      color: #6d503e;
+      font-weight: 700;
+    }
+    .pricing-actions {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-top: 1.15rem;
+    }
+    .pricing-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 1.2rem;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 800;
+    }
+    .pricing-btn.primary {
+      background: #c9785e;
+      color: #fff9f3;
+      box-shadow: 0 12px 28px rgba(181,94,71,0.18);
+    }
+    .pricing-btn.secondary {
+      border: 1px solid rgba(115,100,80,0.15);
+      color: #24392f;
+      background: rgba(255,252,247,0.94);
+    }
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
   <div class="guide-shell">
@@ -19,36 +149,78 @@
 
     <section class="guide-hero">
       <div class="guide-kicker">Pricing</div>
-      <h1>Full report access for ongoing use.</h1>
-      <p class="guide-deck">Built for homeowners exploring a decision now, and for agents or brokers who want a reusable property-decision tool for clients.</p>
+      <h1>Choose the report flow that fits how you work.</h1>
+      <p class="guide-deck">Homeowners can unlock one clear answer without a subscription. Agents can choose credits or go unlimited for repeat client work.</p>
     </section>
 
     <section class="sample-section">
-      <div class="sample-grid">
-        <div class="sample-card">
-          <h3>Monthly</h3>
-          <p><strong>$7.99 / month</strong></p>
-          <p>Good if you want flexible access to the full report, interpretation, and tax detail without a longer commitment.</p>
-        </div>
-        <div class="sample-card">
-          <h3>Annual</h3>
-          <p><strong>$49 / year</strong></p>
-          <p>Better fit for repeat use, especially for agents and brokers running multiple scenarios over time.</p>
-        </div>
-      </div>
-    </section>
+      <div class="pricing-grid">
+        <article class="pricing-column">
+          <div class="pricing-kicker">Homeowner</div>
+          <h2 class="pricing-title">Free estimate first. Pay only if you want the full report.</h2>
+          <p class="pricing-copy">Run the full keep-vs-sell estimate for free. Upgrade only if you want interpretation, tax detail, and PDF export.</p>
+          <div class="pricing-stack">
+            <div class="price-card">
+              <div class="price-head">
+                <div class="price-name">Free</div>
+                <div class="price-amount">$0</div>
+              </div>
+              <p class="price-body">Numbers, charts, side-by-side comparison, and match score. No card required.</p>
+            </div>
+            <div class="price-card primary">
+              <div class="price-head">
+                <div class="price-name">$9 Report</div>
+                <div class="price-amount">$9 <small>one-time</small></div>
+              </div>
+              <p class="price-body">Unlock the plain-English interpretation, line-by-line tax breakdown, PDF export, and one rerun within 30 days.</p>
+            </div>
+            <div class="price-card secondary">
+              <div class="price-head">
+                <div class="price-name">$49 yearly</div>
+                <div class="price-amount">$49 <small>/ year</small></div>
+              </div>
+              <p class="price-body">A lighter annual option if you expect to revisit the report or rerun future property decisions.</p>
+            </div>
+          </div>
+          <div class="pricing-actions">
+            <a class="pricing-btn primary" href="/">Start free estimate</a>
+            <a class="pricing-btn secondary" href="/sample-report/">See sample report</a>
+          </div>
+        </article>
 
-    <section class="sample-section">
-      <h2 class="sample-section-title">What is included</h2>
-      <div class="sample-grid">
-        <div class="sample-card">
-          <h3>Plain-English interpretation</h3>
-          <p>Understand what the numbers actually imply, what tradeoffs stand out, and what to think through next.</p>
-        </div>
-        <div class="sample-card">
-          <h3>Full tax breakdown</h3>
-          <p>See the line-by-line sell-side tax estimate, including federal, state, and prior-rental effects where relevant.</p>
-        </div>
+        <article class="pricing-column">
+          <div class="pricing-kicker">Realtor</div>
+          <h2 class="pricing-title">Fast client-ready reports, with or without a subscription.</h2>
+          <p class="pricing-copy">Use credits if report volume is light. Go unlimited if you run these regularly for buyers, sellers, or listing conversations.</p>
+          <div class="pricing-stack">
+            <div class="price-card primary">
+              <div class="price-head">
+                <div class="price-name">$6 / report</div>
+                <div class="price-amount">$6</div>
+              </div>
+              <p class="price-body">One branded client report credit. Good for occasional use.</p>
+            </div>
+            <div class="price-card">
+              <div class="price-head">
+                <div class="price-name">10 for $55</div>
+                <div class="price-amount">$55</div>
+              </div>
+              <p class="price-body">Ten credits at about $5.50/report. Credits do not expire.</p>
+            </div>
+            <div class="price-card secondary">
+              <div class="price-head">
+                <div class="price-name">$39 / month unlimited</div>
+                <div class="price-amount">$39 <small>/ month</small></div>
+              </div>
+              <p class="price-body">Unlimited branded reports plus report history and a repeatable client workflow.</p>
+            </div>
+          </div>
+          <div class="breakeven">Unlimited pays off at 7 reports/month</div>
+          <div class="pricing-actions">
+            <a class="pricing-btn primary" href="/?auth=signup&account=realtor">Create agent account</a>
+            <a class="pricing-btn secondary" href="/sample-report/">See sample report</a>
+          </div>
+        </article>
       </div>
     </section>
 

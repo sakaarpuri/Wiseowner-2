@@ -103,6 +103,20 @@ header {
   white-space: nowrap;
 }
 .logo em { color: var(--green); font-style: normal; }
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1rem;
+}
+.site-nav a {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-mid);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-nav a:hover { color: var(--text); }
 .country-sel { margin-left: auto; }
 .country-sel .sel-wrap { position: relative; }
 .country-sel select {
@@ -805,6 +819,30 @@ select option { background: #1a2035; color: var(--text); }
   font-size: 0.82rem;
   color: var(--text-mid);
   line-height: 1.55;
+}
+.result-assumptions {
+  display: none;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.05rem;
+  background: rgba(249,244,235,0.82);
+  border: 1px solid rgba(121,103,84,0.12);
+  border-radius: 1.2rem;
+}
+.result-assumptions.show { display: block; }
+.result-assumptions h4 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+.result-assumptions p,
+.result-assumptions li {
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+.result-assumptions ul {
+  margin: 0.55rem 0 0;
+  padding-left: 1.1rem;
 }
 @media (max-width: 900px) {
   .report-hero-grid {
@@ -1881,12 +1919,14 @@ select option { background: #1a2035; color: var(--text); }
 .auth-tab.active { color: var(--green); border-bottom-color: var(--green); }
 .auth-field { margin-bottom: 1rem; }
 .auth-field label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-mid); margin-bottom: 0.4rem; letter-spacing: 0.3px; }
-.auth-field input {
+.auth-field input,
+.auth-field select {
   width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
   border-radius: 12px; padding: 0.75rem 1rem; font-size: 0.9rem; color: var(--text);
   font-family: 'Plus Jakarta Sans', sans-serif; transition: border-color 0.2s; box-sizing: border-box;
 }
-.auth-field input:focus { outline: none; border-color: rgba(74,222,128,0.5); }
+.auth-field input:focus,
+.auth-field select:focus { outline: none; border-color: rgba(74,222,128,0.5); }
 .auth-submit {
   width: 100%; background: linear-gradient(135deg, var(--green-d), var(--green));
   border: none; border-radius: 12px; padding: 0.85rem; font-size: 0.93rem;
@@ -1993,6 +2033,18 @@ select option { background: #1a2035; color: var(--text); }
 .gate-signin-link { font-size: 0.76rem; color: var(--text-muted); }
 .gate-signin-link span { color: var(--green); cursor: pointer; font-weight: 600; }
 .gate-signin-link span:hover { text-decoration: underline; }
+.realtor-upsell {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  margin-bottom: 0.9rem;
+}
+.realtor-upsell a {
+  color: var(--green);
+  font-weight: 700;
+  text-decoration: none;
+}
+.realtor-upsell a:hover { text-decoration: underline; }
 .premium-gate {
   display: none;
   background: rgba(255,252,247,0.96);
@@ -2758,6 +2810,14 @@ select option { background: #fffaf4; color: var(--text); }
     width: 100%;
     gap: 0.6rem;
   }
+  .site-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
   .logo-sub {
     font-size: 0.72rem;
     line-height: 1.35;
@@ -2780,6 +2840,12 @@ select option { background: #fffaf4; color: var(--text); }
 @media (max-width: 600px) {
   header {
     padding: 0.85rem 0.85rem 0.75rem;
+  }
+  .site-nav {
+    gap: 0.7rem 0.9rem;
+  }
+  .site-nav a {
+    font-size: 0.78rem;
   }
   .main {
     padding: 1.4rem 0.9rem 6rem;
@@ -3050,10 +3116,15 @@ select option { background: #fffaf4; color: var(--text); }
 
 <header>
   <div class="logo"><span class="logo-main">zamindaro</span></div>
+  <nav class="site-nav">
+    <a href="/" id="navPrimary" onclick="handleNavPrimary(event)">Start free</a>
+    <a href="/pricing/" id="navSecondary">Pricing</a>
+    <a href="#" id="navStatusLink" style="display:none" onclick="event.preventDefault()">Credits: 0</a>
+  </nav>
   <button class="dir-btn" id="dirNavBtn" onclick="showDirectory()" style="display:none">🔍 Find Deals</button>
   <div class="header-auth">
     <!-- Signed-out state -->
-    <button class="btn-signin" id="btnSignIn" onclick="showAuthModal('signup')">Start free</button>
+    <button class="btn-signin" id="btnSignIn" onclick="showAuthModal('signin')">Sign in</button>
     <!-- Signed-in state -->
     <div class="user-chip" id="userChip" onclick="toggleUserMenu(this)">
       <div class="uc-avatar" id="ucAvatar">?</div>
@@ -3062,6 +3133,7 @@ select option { background: #fffaf4; color: var(--text); }
         <span class="uc-plan free" id="ucPlan">Free</span>
       </div>
       <div class="user-menu">
+        <button class="um-item" onclick="event.stopPropagation();openAccountSettings()">⚙️ Account</button>
         <button class="um-item" onclick="event.stopPropagation();manageSubscription()">💳 Billing</button>
         <button class="um-item danger" onclick="event.stopPropagation();signOut()">→ Sign out</button>
       </div>
@@ -3147,7 +3219,7 @@ select option { background: #fffaf4; color: var(--text); }
         </div>
         <div class="ai-intro-card">
           <div class="ai-icon">🧾</div>
-          <div><strong>Free estimate — no card required.</strong><p>Premium interpretation available after.</p></div>
+          <div><strong>Free estimate, always.</strong><p>Plain-English report: $9 one-time. Realtor plans available on the pricing page.</p></div>
         </div>
       </div>
     </div>
@@ -3159,6 +3231,24 @@ select option { background: #fffaf4; color: var(--text); }
     <h2 class="heading">Start with the property</h2>
     <p class="subtext">We’ll use this to tailor the estimate and focus on the comparisons and tax rules that actually apply to your situation.</p>
     <div class="trust-strip">🔒 Private estimate only. Your numbers stay in your browser.</div>
+    <div class="card realtor-quick-card" id="realtorQuickCard" style="display:none">
+      <div class="card-title">⚡ Agent quick mode</div>
+      <p class="subtext" style="margin-bottom:1rem;">Use the short path for a fast client-ready estimate. We will fill the rest with transparent defaults and show the assumptions on the report.</p>
+      <div class="grid g2">
+        <div class="field">
+          <label>Mortgage balance (or $0 if paid off)</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="quickMortBal" class="has-pfx" placeholder="250,000" oninput="document.getElementById('mortBal').value=this.value"></div>
+        </div>
+        <div class="field">
+          <label>Estimated monthly rent</label>
+          <div class="wrap"><span class="pfx">$</span><input type="number" id="quickMonthRent" class="has-pfx" placeholder="3,200" oninput="document.getElementById('monthRent').value=this.value"></div>
+        </div>
+      </div>
+      <div class="btn-row" style="justify-content:flex-start;margin-top:1rem;">
+        <button class="btn-cta" onclick="runRealtorQuickEstimate()">Run 90-second estimate</button>
+        <button class="btn-secondary" onclick="disableRealtorQuickMode()">Use full mode instead</button>
+      </div>
+    </div>
 
     <div class="proptype-grid">
       <div class="proptype-btn selected" id="pt-primary" onclick="onPropTypeChange('primary',this)">
@@ -3609,13 +3699,14 @@ select option { background: #fffaf4; color: var(--text); }
     <div class="res-header"><h1>🏠 Your zamindaro Report</h1><p>Based on your numbers, US federal tax rules, and your state's rates. The final call is always yours.</p></div>
     <div class="report-hero" id="reportHero" style="display:none"></div>
     <div class="result-status" id="resultStatus"></div>
+    <div class="result-assumptions" id="resultAssumptions" style="display:none"></div>
     <div class="sc-grid" id="scGrid"></div>
     <div class="upgrade-banner" id="upgradeBanner">🎉 Welcome to Pro! Your full report is now unlocked.</div>
     <div class="premium-gate" id="premiumGate">
       <div class="premium-gate-head">
         <div class="gate-icon">🔓</div>
-        <div class="gate-title">Unlock the full report</div>
-        <div class="gate-desc">See what the math means in plain English and review the line-by-line tax detail behind the sell scenario.</div>
+        <div class="gate-title" id="premiumGateTitle">Unlock your full report</div>
+        <div class="gate-desc" id="premiumGateDesc">Get the plain-English interpretation, the full tax breakdown, and PDF export in one purchase.</div>
       </div>
       <div class="premium-feature-list">
         <div class="premium-feature">
@@ -3628,15 +3719,9 @@ select option { background: #fffaf4; color: var(--text); }
         </div>
       </div>
       <div class="premium-divider">Choose a plan</div>
-      <div class="gate-plans">
-        <div class="gate-plan" onclick="startCheckout('monthly')">
-          <div class="gp-price">$7.99</div><div class="gp-period">/ month</div>
-          <div class="gp-label">Monthly</div>
-        </div>
-        <div class="gate-plan" onclick="startCheckout('yearly')">
-          <div class="gp-price">$49</div><div class="gp-period">/ year</div>
-          <div class="gp-label">Annual</div>
-        </div>
+      <div class="gate-plans" id="gatePlans"></div>
+      <div class="realtor-upsell" id="realtorUpsell">
+        Are you a real estate agent? Get branded client reports from $6. <a href="/pricing/">See agent pricing →</a>
       </div>
       <div class="gate-signin-link">Already subscribed? <span onclick="showAuthModal('signin')">Sign in</span></div>
     </div>
@@ -4148,6 +4233,7 @@ function copyLink() {
 
 let cur=0;
 let lastResultSummary = null;
+let realtorQuickMode = false;
 function gv(id,fb=0){const e=document.getElementById(id);if(!e)return fb;const n=parseFloat(e.value);return isNaN(n)?fb:n;}
 function gs(id){const e=document.getElementById(id);return e?e.value:'';}
 function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
@@ -4453,6 +4539,72 @@ function toggleDisc(btn) {
   btn.classList.toggle('open', !open);
 }
 
+function showRealtorQuickCard() {
+  const card = document.getElementById('realtorQuickCard');
+  if (card) card.style.display = isRealtor() ? '' : 'none';
+}
+
+function disableRealtorQuickMode() {
+  realtorQuickMode = false;
+  showToast('Using full mode.');
+}
+
+function applyRealtorQuickDefaults() {
+  const curVal = gv('curVal', 0);
+  const maintenanceDefault = curVal > 0 ? Math.max(100, Math.round(curVal * 0.005 / 12)) : 225;
+  const defaults = {
+    agentComm: '5.5',
+    legalCosts: '2500',
+    vacRate: '5',
+    maint: String(maintenanceDefault),
+    apprec: '4',
+    annInc: '120000',
+    monthInc: '10000',
+    otherDebt: '0',
+    mgmtFee: '0',
+    llIns: document.getElementById('llIns')?.value || '150',
+    homeIns: document.getElementById('homeIns')?.value || '180',
+  };
+  Object.entries(defaults).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el && !el.value) el.value = value;
+  });
+  const heading = document.getElementById('fcBadge');
+  if (heading) syncForecast(document.getElementById('apprec')?.value || '4');
+}
+
+function runRealtorQuickEstimate() {
+  if (!currentUser || !isRealtor()) {
+    showAuthModal('signup', 'realtor');
+    return;
+  }
+  if (currentBilling?.tier !== 'realtor_unlimited' && Number(currentBilling?.creditsBalance || 0) < 1) {
+    showToast('⚠️ Buy a report credit or go unlimited to run the realtor quick mode.');
+    window.location.href = '/pricing/';
+    return;
+  }
+  realtorQuickMode = true;
+  document.getElementById('mortBal').value = document.getElementById('quickMortBal').value || document.getElementById('mortBal').value;
+  document.getElementById('monthRent').value = document.getElementById('quickMonthRent').value || document.getElementById('monthRent').value;
+  const required = [
+    ['curVal', 'Enter or autofill a current value first.'],
+    ['purPrice', 'Enter the purchase price first.'],
+    ['purYear', 'Enter the year bought first.'],
+    ['mortBal', 'Enter the mortgage balance first.'],
+    ['monthRent', 'Enter the estimated monthly rent first.'],
+  ];
+  for (const [id, msg] of required) {
+    const el = document.getElementById(id);
+    if (!el || !String(el.value || '').trim()) {
+      showToast(`⚠️ ${msg}`);
+      goToAndFocus(id === 'mortBal' || id === 'monthRent' ? (id === 'mortBal' ? 2 : 3) : 1, id);
+      return;
+    }
+  }
+  applyRealtorQuickDefaults();
+  calculate();
+}
+
 function goToAndFocus(step, fieldId, opts = {}) {
   goTo(step);
   if (opts.expandS121) {
@@ -4556,6 +4708,86 @@ function renderResultState(missingImportantInputs) {
     </div>`;
   improveEl.classList.remove('show');
   improveEl.innerHTML = '';
+}
+
+async function saveReportRecord(payload) {
+  if (!_sb || !currentUser || !isRealtor()) return;
+  try {
+    const { data, error } = await _sb.from('reports').insert({
+      owner_user_id: currentUser.id,
+      account_type: 'realtor',
+      address: document.getElementById('addrInput')?.value?.trim() || null,
+      state: gs('stateField') || null,
+      winner_key: payload.winnerKey,
+      keep_mode: payload.keepMode,
+      match_score: payload.matchScore,
+      inputs_json: payload.inputs,
+      outputs_json: payload.outputs,
+    }).select('id').single();
+    if (error) throw error;
+    return data?.id || null;
+  } catch (err) {
+    console.warn('Report save failed:', err.message);
+    return null;
+  }
+}
+
+async function consumeRealtorCredit() {
+  if (!_sb || !currentUser || !isRealtor() || currentBilling?.tier === 'realtor_unlimited') return;
+  const nextCredits = Math.max(0, Number(currentBilling?.creditsBalance || 0) - 1);
+  const { error } = await _sb
+    .from('billing_accounts')
+    .update({ credits_balance: nextCredits, updated_at: new Date().toISOString() })
+    .eq('user_id', currentUser.id);
+  if (error) throw error;
+  currentBilling = { ...currentBilling, creditsBalance: nextCredits };
+  updateAuthUI();
+}
+
+async function loadSavedReport(reportId) {
+  if (!_sb || !currentUser || !reportId) return false;
+  try {
+    const { data, error } = await _sb
+      .from('reports')
+      .select('*')
+      .eq('id', reportId)
+      .eq('owner_user_id', currentUser.id)
+      .maybeSingle();
+    if (error || !data) return false;
+
+    const inputs = data.inputs_json || {};
+    const fieldMap = {
+      propType: 'propType',
+      curVal: 'curVal',
+      purPrice: 'purPrice',
+      purYear: 'purYear',
+      mortBal: 'mortBal',
+      monthRent: 'monthRent',
+      annInc: 'annInc',
+      apprec: 'apprec',
+      hrz: 'horizon',
+      state: 'stateField',
+    };
+    Object.entries(fieldMap).forEach(([key, fieldId]) => {
+      const el = document.getElementById(fieldId);
+      const value = inputs[key];
+      if (!el || value === undefined || value === null || value === '') return;
+      el.value = value;
+      _dirtyFields.add(fieldId);
+    });
+
+    realtorQuickMode = !!inputs.realtorQuickMode;
+    if (realtorQuickMode) applyRealtorQuickDefaults();
+
+    _replayingSavedReport = true;
+    calculate();
+    setTimeout(() => { _replayingSavedReport = false; }, 2200);
+    showToast('Loaded saved report.');
+    return true;
+  } catch (err) {
+    console.warn('Saved report load failed:', err.message);
+    return false;
+  }
 }
 
 // Wire updatePreview to all form inputs/selects
@@ -4723,6 +4955,36 @@ function calculate(){
     futRent,
     futKeep,
   };
+  const resultPayload = {
+    winnerKey,
+    keepMode,
+    keepModeLabel,
+    matchScore: winnerKey === 'sell' ? sellScore : keepScore,
+    inputs: {
+      propType: gs('propType') || 'primary',
+      curVal,
+      purPrice,
+      purYear: gv('purYear', 0),
+      mortBal,
+      monthRent,
+      annInc,
+      apprec,
+      hrz,
+      realtorQuickMode,
+    },
+    outputs: {
+      netProc,
+      cgTax,
+      sellScore,
+      keepScore,
+      keepRentScore,
+      keepLiveScore,
+      keepCompositeValue,
+      futSell,
+      futRent,
+      futKeep,
+    },
+  };
 
   setTimeout(() => {
   hideCalcOverlay();
@@ -4732,6 +4994,28 @@ function calculate(){
   document.getElementById('results').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
   renderResultState(missingImportantInputs);
+  const resultAssumptions = document.getElementById('resultAssumptions');
+  if (resultAssumptions) {
+    if (realtorQuickMode && isRealtor()) {
+      resultAssumptions.classList.add('show');
+      resultAssumptions.style.display = 'block';
+      resultAssumptions.innerHTML = `
+        <h4>Assumptions used</h4>
+        <p>You ran the realtor quick mode. These defaults were used unless you changed them manually.</p>
+        <ul>
+          <li>Commission: 5.5%</li>
+          <li>Closing costs: $2,500</li>
+          <li>Vacancy: 5%</li>
+          <li>Maintenance: 0.5% of value / 12</li>
+          <li>Appreciation: 4% / year</li>
+          <li>Household income: $120,000</li>
+        </ul>`;
+    } else {
+      resultAssumptions.classList.remove('show');
+      resultAssumptions.style.display = 'none';
+      resultAssumptions.innerHTML = '';
+    }
+  }
 
   const rowsHtml=rows=>rows.map(r=>`<div class="sc-row"><span class="rl">${r.l}</span><span class="rv ${r.c}">${r.v}</span></div>`).join('');
   const reportHero = document.getElementById('reportHero');
@@ -4926,6 +5210,23 @@ function calculate(){
            <li>Review the tax implications of selling now versus later with a CPA, especially if primary-home exclusion or prior rental use is in play.</li>
          </ul>`;
   }
+  (async () => {
+    if (_replayingSavedReport) return;
+    const reportId = await saveReportRecord(resultPayload);
+    if (realtorQuickMode && isRealtor()) {
+      try {
+        await consumeRealtorCredit();
+      } catch (err) {
+        console.warn('Credit consumption failed:', err.message);
+      }
+    }
+    if (reportId) {
+      const dashStatus = document.getElementById('navStatusLink');
+      if (dashStatus && isRealtor() && currentBilling?.tier !== 'realtor_unlimited') {
+        dashStatus.textContent = `Credits: ${currentBilling?.creditsBalance || 0}`;
+      }
+    }
+  })();
 
   const prompt=`You are a helpful, warm US real estate and financial advisor. A homeowner used a property decision tool. Write a warm, plain-English 3-paragraph analysis. Be specific to their numbers — interpret what they actually mean, don't just list them. Be honest about tradeoffs. Reference US tax context (§121 exclusion, federal capital gains rate, NIIT, IRS rules, state taxes) where relevant. Do NOT give definitive tax or legal advice. End with one balanced, genuine closing thought.
 
@@ -5202,9 +5503,157 @@ updateDirLabel();
 
 let _sb = null;           // Supabase client
 let currentUser = null;   // Supabase user object
-let userPlan = 'free';    // 'free' | 'monthly' | 'yearly'
+let currentProfile = null;
+let currentBilling = null;
 let _publicCfg = null;
 let _mapsScriptRequested = false;
+let _replayingSavedReport = false;
+
+const GUEST_UNLOCK_KEY = 'zamindaro.guestUnlock';
+const PENDING_PROFILE_KEY = 'zamindaro.pendingProfile';
+const PURCHASE_CONFIG = {
+  homeowner_report: { accountType: 'homeowner', label: '$9 Report', premium: true },
+  homeowner_yearly: { accountType: 'homeowner', label: '$49 yearly', premium: true },
+  realtor_credit_single: { accountType: 'realtor', label: '$6/report', premium: true },
+  realtor_credit_bundle: { accountType: 'realtor', label: '10 for $55', premium: true },
+  realtor_unlimited: { accountType: 'realtor', label: '$39/month unlimited', premium: true },
+};
+
+function defaultProfile() {
+  return {
+    accountType: 'homeowner',
+    fullName: '',
+    brokerageName: '',
+    phone: '',
+    photoUrl: '',
+  };
+}
+
+function defaultBilling() {
+  return {
+    tier: 'free',
+    status: 'inactive',
+    creditsBalance: 0,
+    reportUnlockUntil: null,
+    homeownerRerunsRemaining: 0,
+    periodEnd: null,
+  };
+}
+
+function normalizeProfileRow(row) {
+  return {
+    accountType: row?.account_type || 'homeowner',
+    fullName: row?.full_name || '',
+    brokerageName: row?.brokerage_name || '',
+    phone: row?.phone || '',
+    photoUrl: row?.photo_url || '',
+  };
+}
+
+function normalizeBillingRow(row) {
+  return {
+    tier: row?.tier || 'free',
+    status: row?.status || 'inactive',
+    creditsBalance: Number(row?.credits_balance || 0),
+    reportUnlockUntil: row?.report_unlock_until || null,
+    homeownerRerunsRemaining: Number(row?.homeowner_reruns_remaining || 0),
+    periodEnd: row?.period_end || null,
+  };
+}
+
+function getGuestUnlock() {
+  try {
+    const raw = JSON.parse(sessionStorage.getItem(GUEST_UNLOCK_KEY) || localStorage.getItem(GUEST_UNLOCK_KEY) || 'null');
+    if (!raw) return null;
+    if (raw.expiresAt && new Date(raw.expiresAt).getTime() < Date.now()) {
+      sessionStorage.removeItem(GUEST_UNLOCK_KEY);
+      localStorage.removeItem(GUEST_UNLOCK_KEY);
+      return null;
+    }
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
+function setGuestUnlock(data) {
+  const serialized = JSON.stringify(data);
+  sessionStorage.setItem(GUEST_UNLOCK_KEY, serialized);
+  localStorage.setItem(GUEST_UNLOCK_KEY, serialized);
+}
+
+function clearGuestUnlock() {
+  sessionStorage.removeItem(GUEST_UNLOCK_KEY);
+  localStorage.removeItem(GUEST_UNLOCK_KEY);
+}
+
+function isRealtor() {
+  return currentProfile?.accountType === 'realtor';
+}
+
+function isSubscriptionActive() {
+  return ['active', 'trialing'].includes(currentBilling?.status);
+}
+
+function isPremiumUnlocked() {
+  const guestUnlock = getGuestUnlock();
+  if (guestUnlock?.active) return true;
+  if (!currentUser) return false;
+  if (!currentBilling) return false;
+  if (currentBilling.tier === 'homeowner_report') {
+    if (!currentBilling.reportUnlockUntil) return false;
+    return new Date(currentBilling.reportUnlockUntil).getTime() > Date.now();
+  }
+  if (currentBilling.tier === 'homeowner_yearly') {
+    return isSubscriptionActive();
+  }
+  if (currentBilling.tier === 'realtor_credit') {
+    return currentBilling.creditsBalance > 0;
+  }
+  if (currentBilling.tier === 'realtor_unlimited') {
+    return isSubscriptionActive();
+  }
+  return false;
+}
+
+function currentTierLabel() {
+  if (getGuestUnlock()?.purchaseType === 'homeowner_report') return 'Report';
+  if (getGuestUnlock()?.purchaseType === 'homeowner_yearly') return 'Yearly';
+  if (!currentBilling) return 'Free';
+  if (currentBilling.tier === 'homeowner_report') return 'Report';
+  if (currentBilling.tier === 'homeowner_yearly') return 'Yearly';
+  if (currentBilling.tier === 'realtor_credit') return `${currentBilling.creditsBalance} credits`;
+  if (currentBilling.tier === 'realtor_unlimited') return 'Unlimited';
+  return 'Free';
+}
+
+async function ensureProfileRecord(user, pendingProfile = null) {
+  if (!_sb || !user) return;
+  const payload = pendingProfile || defaultProfile();
+  try {
+    await _sb.from('profiles').upsert({
+      user_id: user.id,
+      account_type: payload.accountType || 'homeowner',
+      full_name: payload.fullName || null,
+      brokerage_name: payload.brokerageName || null,
+      phone: payload.phone || null,
+      photo_url: payload.photoUrl || null,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
+  } catch (err) {
+    console.warn('Profile upsert failed:', err.message);
+  }
+}
+
+async function uploadProfilePhoto(file) {
+  if (!_sb || !currentUser || !file) return '';
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const path = `${currentUser.id}/${Date.now()}.${ext}`;
+  const { error } = await _sb.storage.from('realtor-assets').upload(path, file, { upsert: true });
+  if (error) throw error;
+  const { data } = _sb.storage.from('realtor-assets').getPublicUrl(path);
+  return data?.publicUrl || '';
+}
 
 function loadGoogleMaps(apiKey) {
   if (!apiKey || _mapsScriptRequested || window.google?.maps?.places) {
@@ -5238,7 +5687,7 @@ async function initAuth() {
     const { data: { session } } = await _sb.auth.getSession();
     if (session) {
       currentUser = session.user;
-      await fetchUserPlan();
+      await fetchUserState();
     }
     updateAuthUI();
 
@@ -5248,13 +5697,20 @@ async function initAuth() {
         showAuthModal('recovery');
       } else if (event === 'SIGNED_IN') {
         currentUser = session.user;
-        await fetchUserPlan();
+        const pendingProfile = readPendingProfile();
+        if (pendingProfile) {
+          await ensureProfileRecord(currentUser, pendingProfile);
+          clearPendingProfile();
+        }
+        await fetchUserState();
         updateAuthUI();
         applyPaywall();
+        maybeOpenProfileSetup();
         hideAuthModal();
       } else if (event === 'SIGNED_OUT') {
         currentUser = null;
-        userPlan = 'free';
+        currentProfile = defaultProfile();
+        currentBilling = defaultBilling();
         updateAuthUI();
         applyPaywall();
       }
@@ -5262,62 +5718,174 @@ async function initAuth() {
 
     // Handle ?payment=success redirect from Stripe
     const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success' && currentUser) {
-      // Give webhook a moment to update, then re-fetch plan
-      setTimeout(async () => {
-        await fetchUserPlan();
-        updateAuthUI();
-        applyPaywall();
-        document.getElementById('upgradeBanner')?.classList.add('show');
-        history.replaceState({}, '', window.location.pathname);
-      }, 2000);
+    if (params.get('payment') === 'success') {
+      await handleCheckoutReturn(params);
     }
     if (params.get('payment') === 'cancelled') {
       history.replaceState({}, '', window.location.pathname);
+    }
+    const authParam = params.get('auth');
+    const accountParam = params.get('account');
+    if (authParam === 'signup' || authParam === 'signin') {
+      showAuthModal(authParam);
+      if (accountParam) {
+        const accountSelect = document.getElementById('authAccountType');
+        if (accountSelect) accountSelect.value = accountParam === 'realtor' ? 'realtor' : 'homeowner';
+        toggleAuthAccountFields();
+      }
+    }
+    const reportId = params.get('report');
+    if (reportId && currentUser) {
+      const opened = await loadSavedReport(reportId);
+      if (opened) history.replaceState({}, '', window.location.pathname);
     }
   } catch (e) {
     console.warn('Auth init failed:', e.message);
   }
 }
 
-// ── Fetch user plan from Supabase ──────────────────
-async function fetchUserPlan() {
-  if (!_sb || !currentUser) return;
+function readPendingProfile() {
   try {
-    const { data } = await _sb
-      .from('subscribers')
-      .select('plan, status')
-      .eq('user_id', currentUser.id)
-      .single();
-    userPlan = (data?.plan && ['active'].includes(data?.status)) ? data.plan : 'free';
+    return JSON.parse(localStorage.getItem(PENDING_PROFILE_KEY) || 'null');
   } catch {
-    userPlan = 'free';
+    return null;
+  }
+}
+
+function setPendingProfile(data) {
+  localStorage.setItem(PENDING_PROFILE_KEY, JSON.stringify(data));
+}
+
+function clearPendingProfile() {
+  localStorage.removeItem(PENDING_PROFILE_KEY);
+}
+
+async function fetchUserState() {
+  if (!_sb || !currentUser) return;
+  currentProfile = defaultProfile();
+  currentBilling = defaultBilling();
+  try {
+    const [{ data: profileRow }, { data: billingRow }] = await Promise.all([
+      _sb.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle(),
+      _sb.from('billing_accounts').select('*').eq('user_id', currentUser.id).maybeSingle(),
+    ]);
+    currentProfile = normalizeProfileRow(profileRow);
+    currentBilling = normalizeBillingRow(billingRow);
+  } catch (err) {
+    console.warn('User state fetch failed:', err.message);
+  }
+}
+
+async function handleCheckoutReturn(params) {
+  const sessionId = params.get('session_id');
+  const purchaseType = params.get('purchase_type');
+  if (!sessionId || !purchaseType) {
+    history.replaceState({}, '', window.location.pathname);
+    return;
+  }
+
+  try {
+    const res = await fetch(`/.netlify/functions/checkout-status?session_id=${encodeURIComponent(sessionId)}`);
+    const data = await res.json();
+    if (data.payment_status !== 'paid') {
+      history.replaceState({}, '', window.location.pathname);
+      return;
+    }
+
+    if (currentUser) {
+      setTimeout(async () => {
+        await fetchUserState();
+        updateAuthUI();
+        applyPaywall();
+        document.getElementById('upgradeBanner')?.classList.add('show');
+      }, 1800);
+    } else if (purchaseType === 'homeowner_report' || purchaseType === 'homeowner_yearly') {
+      const expiresAt = purchaseType === 'homeowner_yearly'
+        ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      setGuestUnlock({
+        active: true,
+        purchaseType,
+        email: data.customer_email,
+        expiresAt,
+        rerunsRemaining: purchaseType === 'homeowner_report' ? 1 : 999999,
+      });
+      updateAuthUI();
+      applyPaywall();
+      document.getElementById('upgradeBanner')?.classList.add('show');
+    }
+  } catch (err) {
+    console.warn('Checkout return handling failed:', err.message);
+  } finally {
+    history.replaceState({}, '', window.location.pathname);
   }
 }
 
 // ── Update header UI based on auth state ──────────
 function updateAuthUI() {
+  const navPrimary = document.getElementById('navPrimary');
+  const navSecondary = document.getElementById('navSecondary');
+  const navStatusLink = document.getElementById('navStatusLink');
   const btnSignIn = document.getElementById('btnSignIn');
   const userChip = document.getElementById('userChip');
   const ucAvatar = document.getElementById('ucAvatar');
   const ucEmail = document.getElementById('ucEmail');
   const ucPlan = document.getElementById('ucPlan');
 
+  const guestUnlock = getGuestUnlock();
   if (currentUser) {
     if (btnSignIn) btnSignIn.style.display = 'none';
     if (userChip) userChip.style.display = 'flex';
     const email = currentUser.email || '';
-    if (ucAvatar) ucAvatar.textContent = email.charAt(0).toUpperCase();
-    if (ucEmail) ucEmail.textContent = email;
+    const name = currentProfile?.fullName || email;
+    if (ucAvatar) ucAvatar.textContent = (currentProfile?.fullName || email).charAt(0).toUpperCase();
+    if (ucEmail) ucEmail.textContent = name;
     if (ucPlan) {
-      const isPaid = userPlan !== 'free';
-      ucPlan.textContent = userPlan === 'yearly' ? '📅 Annual' : userPlan === 'monthly' ? '⚡ Pro' : 'Free';
+      const isPaid = isPremiumUnlocked();
+      ucPlan.textContent = currentTierLabel();
       ucPlan.className = 'uc-plan' + (isPaid ? '' : ' free');
+    }
+    if (navPrimary) navPrimary.textContent = isRealtor() ? 'New estimate' : 'My report';
+    if (navPrimary) navPrimary.href = '/';
+    if (navSecondary) {
+      navSecondary.textContent = isRealtor() ? 'Dashboard' : 'Pricing';
+      navSecondary.href = isRealtor() ? '/dashboard/' : '/pricing/';
+    }
+    if (navStatusLink) {
+      if (isRealtor()) {
+        navStatusLink.style.display = '';
+        navStatusLink.textContent = currentBilling?.tier === 'realtor_unlimited'
+          ? 'Unlimited'
+          : `Credits: ${currentBilling?.creditsBalance || 0}`;
+      } else {
+        navStatusLink.style.display = 'none';
+      }
     }
   } else {
     if (btnSignIn) btnSignIn.style.display = '';
     if (userChip) userChip.style.display = 'none';
+    if (btnSignIn) btnSignIn.textContent = 'Sign in';
+    if (navPrimary) {
+      navPrimary.textContent = 'Start free';
+      navPrimary.href = '/';
+    }
+    if (navSecondary) {
+      navSecondary.textContent = 'Pricing';
+      navSecondary.href = '/pricing/';
+    }
+    if (navStatusLink) navStatusLink.style.display = 'none';
+    if (guestUnlock && ucPlan) {
+      ucPlan.textContent = currentTierLabel();
+    }
   }
+  updatePremiumGateUI();
+  showRealtorQuickCard();
+}
+
+function handleNavPrimary(event) {
+  if (currentUser) return;
+  event.preventDefault();
+  showAuthModal('signup');
 }
 
 // ── Apply / remove paywall overlays ───────────────
@@ -5325,18 +5893,67 @@ function applyPaywall() {
   const premiumGate = document.getElementById('premiumGate');
   const aiGate = document.getElementById('aiGate');
   const taxGate = document.getElementById('taxGate');
-  const isPaid = !!currentUser && userPlan !== 'free';
+  const isPaid = isPremiumUnlocked();
   if (premiumGate) premiumGate.classList.toggle('visible', !isPaid);
   if (aiGate) aiGate.classList.toggle('visible', !isPaid);
   if (taxGate) taxGate.classList.toggle('visible', !isPaid);
+  document.querySelectorAll('.print-btn').forEach((btn) => {
+    btn.style.display = isPaid ? '' : 'none';
+  });
+}
+
+function updatePremiumGateUI() {
+  const title = document.getElementById('premiumGateTitle');
+  const desc = document.getElementById('premiumGateDesc');
+  const plans = document.getElementById('gatePlans');
+  const realtorUpsell = document.getElementById('realtorUpsell');
+  if (!title || !desc || !plans || !realtorUpsell) return;
+
+  if (isRealtor()) {
+    title.textContent = 'Choose an agent report plan';
+    desc.textContent = 'Use credits for occasional client work or go unlimited if this is part of your regular agent workflow.';
+    realtorUpsell.style.display = 'none';
+    plans.innerHTML = `
+      <div class="gate-plan" onclick="startCheckout('realtor_credit_single')">
+        <div class="gp-price">$6</div><div class="gp-period">per report</div>
+        <div class="gp-label">Single credit</div>
+      </div>
+      <div class="gate-plan" onclick="startCheckout('realtor_credit_bundle')">
+        <div class="gp-price">$55</div><div class="gp-period">for 10</div>
+        <div class="gp-label">Credit bundle</div>
+      </div>
+      <div class="gate-plan" onclick="startCheckout('realtor_unlimited')">
+        <div class="gp-price">$39</div><div class="gp-period">/ month</div>
+        <div class="gp-label">Unlimited</div>
+      </div>`;
+    return;
+  }
+
+  title.textContent = 'Unlock your full report';
+  desc.textContent = 'Get the plain-English interpretation, the full tax breakdown, and PDF export in one purchase.';
+  realtorUpsell.style.display = '';
+  plans.innerHTML = `
+    <div class="gate-plan" onclick="startCheckout('homeowner_report')">
+      <div class="gp-price">$9</div><div class="gp-period">one-time</div>
+      <div class="gp-label">Report</div>
+    </div>
+    <div class="gate-plan" onclick="startCheckout('homeowner_yearly')">
+      <div class="gp-price">$49</div><div class="gp-period">/ year</div>
+      <div class="gp-label">Yearly</div>
+    </div>`;
 }
 
 // ── Auth modal ─────────────────────────────────────
-function showAuthModal(mode = 'signin') {
+function showAuthModal(mode = 'signin', presetAccountType = '') {
   const el = document.getElementById('authOverlay');
   if (!el) return;
   el.classList.add('show');
   switchAuthTab(mode);
+  if (presetAccountType) {
+    const accountType = document.getElementById('authAccountType');
+    if (accountType) accountType.value = presetAccountType;
+  }
+  toggleAuthAccountFields();
   setTimeout(() => document.getElementById(mode === 'recovery' ? 'authPassword' : 'authEmail')?.focus(), 100);
 }
 
@@ -5367,12 +5984,14 @@ function switchAuthTab(mode) {
   document.getElementById('authTabs').style.display = isRecovery ? 'none' : '';
   document.getElementById('authEmailWrap').style.display = isRecovery ? 'none' : '';
   document.getElementById('authConfirmWrap').style.display = (isSignup || isRecovery) ? '' : 'none';
+  document.getElementById('authAccountTypeWrap').style.display = isSignup ? '' : 'none';
+  document.getElementById('authFullNameWrap').style.display = isSignup ? '' : 'none';
   document.getElementById('authHelpRow').style.display = mode === 'signin' ? 'flex' : 'none';
   document.getElementById('authMagicBtn').style.display = mode === 'signin' ? '' : 'none';
   document.getElementById('authSub').textContent = isRecovery
     ? 'Choose a new password for your account'
     : isSignup
-      ? 'Create your account to save your report'
+      ? 'Create a homeowner or realtor account'
       : 'Sign in to unlock your full report';
   document.getElementById('authPasswordLabel').textContent = isRecovery ? 'New password' : 'Password';
   document.getElementById('authConfirmLabel').textContent = isRecovery ? 'Confirm new password' : 'Confirm password';
@@ -5383,6 +6002,13 @@ function switchAuthTab(mode) {
     : `Already have an account? <span onclick="switchAuthTab('signin')">Sign in</span>`;
   clearAuthMessage();
   document.getElementById('authOverlay').dataset.mode = mode;
+  toggleAuthAccountFields();
+}
+
+function toggleAuthAccountFields() {
+  const type = document.getElementById('authAccountType')?.value || 'homeowner';
+  const realtorFields = document.getElementById('authRealtorFields');
+  if (realtorFields) realtorFields.style.display = type === 'realtor' && document.getElementById('authOverlay').dataset.mode === 'signup' ? '' : 'none';
 }
 
 async function submitAuth() {
@@ -5391,12 +6017,20 @@ async function submitAuth() {
   const email = document.getElementById('authEmail').value.trim();
   const password = document.getElementById('authPassword').value;
   const confirm = document.getElementById('authConfirm').value;
+  const accountType = document.getElementById('authAccountType').value;
+  const fullName = document.getElementById('authFullName').value.trim();
+  const brokerageName = document.getElementById('authBrokerage').value.trim();
+  const phone = document.getElementById('authPhone').value.trim();
   const btn = document.getElementById('authSubmitBtn');
   if (mode !== 'recovery' && (!email || !password)) { setAuthMessage('Email and password are required.'); return; }
   if (mode === 'recovery' && !password) { setAuthMessage('Enter your new password.'); return; }
   if ((mode === 'signup' || mode === 'recovery') && password !== confirm) { setAuthMessage('Passwords do not match.'); return; }
   if ((mode === 'signup' || mode === 'recovery') && !isStrongPassword(password)) {
     setAuthMessage('Password must be at least 6 characters and include a number or symbol.');
+    return;
+  }
+  if (mode === 'signup' && !fullName) {
+    setAuthMessage('Enter your full name.');
     return;
   }
 
@@ -5407,7 +6041,32 @@ async function submitAuth() {
   try {
     let result;
     if (mode === 'signup') {
-      result = await _sb.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
+      const pendingProfile = {
+        accountType,
+        fullName,
+        brokerageName,
+        phone,
+        photoUrl: '',
+      };
+      setPendingProfile(pendingProfile);
+      result = await _sb.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: { full_name: fullName },
+        },
+      });
+      if (result.data?.session?.user) {
+        let photoUrl = '';
+        const photoFile = document.getElementById('authPhoto')?.files?.[0];
+        if (photoFile) {
+          currentUser = result.data.session.user;
+          photoUrl = await uploadProfilePhoto(photoFile);
+        }
+        await ensureProfileRecord(result.data.session.user, { ...pendingProfile, photoUrl });
+        clearPendingProfile();
+      }
     } else if (mode === 'recovery') {
       result = await _sb.auth.updateUser({ password });
     } else {
@@ -5494,6 +6153,7 @@ async function sendMagicLink() {
 
 async function signOut() {
   toggleUserMenu(null, true);
+  clearGuestUnlock();
   if (_sb) await _sb.auth.signOut();
 }
 
@@ -5513,26 +6173,41 @@ document.addEventListener('click', (e) => {
 
 function manageSubscription() {
   toggleUserMenu(null, true);
-  // For now: show upgrade modal or redirect to Stripe billing portal
-  // Stripe Customer Portal requires a separate serverless function — link to it here when ready
-  showToast('💳 Billing portal coming soon — email support to manage your plan.');
+  window.location.href = '/pricing/';
 }
 
 // ── Stripe checkout ────────────────────────────────
-async function startCheckout(plan) {
-  if (!currentUser) {
-    showAuthModal('signup');
-    return;
+async function startCheckout(purchaseType) {
+  const purchase = PURCHASE_CONFIG[purchaseType];
+  if (!purchase) return;
+
+  if (purchase.accountType === 'realtor') {
+    if (!currentUser) {
+      showAuthModal('signup', 'realtor');
+      return;
+    }
+    if (!isRealtor()) {
+      showToast('Sign in with a realtor account to buy agent credits or unlimited access.');
+      openAccountSettings();
+      return;
+    }
   }
+
+  let email = currentUser?.email || '';
+  if (!email) {
+    email = window.prompt('Enter your email for the receipt and unlock link:')?.trim() || '';
+    if (!email) return;
+  }
+
   showToast('⏳ Opening checkout…');
   try {
     const res = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: currentUser.email,
-        userId: currentUser.id,
-        plan,
+        email,
+        userId: currentUser?.id || null,
+        purchaseType,
         origin: window.location.origin,
       }),
     });
@@ -5544,6 +6219,94 @@ async function startCheckout(plan) {
     }
   } catch (e) {
     showToast('⚠️ Checkout failed: ' + e.message);
+  }
+}
+
+function maybeOpenProfileSetup() {
+  if (!currentUser) return;
+  if (!currentProfile?.fullName) {
+    openAccountSettings();
+  }
+}
+
+function openAccountSettings() {
+  if (!currentUser) {
+    showAuthModal('signin');
+    return;
+  }
+  toggleUserMenu(null, true);
+  document.getElementById('accountOverlay')?.classList.add('show');
+  document.getElementById('acctFullName').value = currentProfile?.fullName || '';
+  document.getElementById('acctBrokerage').value = currentProfile?.brokerageName || '';
+  document.getElementById('acctPhone').value = currentProfile?.phone || '';
+  const realtorOnly = document.querySelectorAll('.account-realtor-only');
+  realtorOnly.forEach((el) => {
+    el.style.display = isRealtor() ? '' : 'none';
+  });
+  document.getElementById('acctErr').textContent = '';
+}
+
+function hideAccountSettings() {
+  document.getElementById('accountOverlay')?.classList.remove('show');
+}
+
+async function saveAccountSettings() {
+  if (!_sb || !currentUser) return;
+  const fullName = document.getElementById('acctFullName').value.trim();
+  const brokerageName = document.getElementById('acctBrokerage').value.trim();
+  const phone = document.getElementById('acctPhone').value.trim();
+  const password = document.getElementById('acctPassword').value;
+  const confirm = document.getElementById('acctPasswordConfirm').value;
+  const errEl = document.getElementById('acctErr');
+  const btn = document.getElementById('acctSaveBtn');
+
+  errEl.textContent = '';
+  if (!fullName) {
+    errEl.textContent = 'Enter your full name.';
+    return;
+  }
+  if (password || confirm) {
+    if (password !== confirm) {
+      errEl.textContent = 'Passwords do not match.';
+      return;
+    }
+    if (!isStrongPassword(password)) {
+      errEl.textContent = 'Password must be at least 6 characters and include a number or symbol.';
+      return;
+    }
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  try {
+    let photoUrl = currentProfile?.photoUrl || '';
+    const photoFile = document.getElementById('acctPhoto')?.files?.[0];
+    if (photoFile) {
+      photoUrl = await uploadProfilePhoto(photoFile);
+    }
+    await ensureProfileRecord(currentUser, {
+      accountType: currentProfile?.accountType || 'homeowner',
+      fullName,
+      brokerageName,
+      phone,
+      photoUrl,
+    });
+    if (password) {
+      const { error } = await _sb.auth.updateUser({ password, data: { full_name: fullName } });
+      if (error) throw error;
+    } else {
+      const { error } = await _sb.auth.updateUser({ data: { full_name: fullName } });
+      if (error) throw error;
+    }
+    await fetchUserState();
+    updateAuthUI();
+    hideAccountSettings();
+    showToast('Account updated.');
+  } catch (err) {
+    errEl.textContent = err.message || 'Could not save your account right now.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save changes';
   }
 }
 
@@ -5582,6 +6345,31 @@ initAuth();
       <label id="authConfirmLabel">Confirm password</label>
       <input type="password" id="authConfirm" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')submitAuth()">
     </div>
+    <div class="auth-field" id="authAccountTypeWrap" style="display:none">
+      <label>I'm signing up as</label>
+      <select id="authAccountType" onchange="toggleAuthAccountFields()">
+        <option value="homeowner">A homeowner</option>
+        <option value="realtor">A real estate agent or professional</option>
+      </select>
+    </div>
+    <div class="auth-field" id="authFullNameWrap" style="display:none">
+      <label>Full name</label>
+      <input type="text" id="authFullName" placeholder="Jane Carter" autocomplete="name">
+    </div>
+    <div id="authRealtorFields" style="display:none">
+      <div class="auth-field">
+        <label>Brokerage name</label>
+        <input type="text" id="authBrokerage" placeholder="Northfield Realty" autocomplete="organization">
+      </div>
+      <div class="auth-field">
+        <label>Phone</label>
+        <input type="tel" id="authPhone" placeholder="(555) 123-4567" autocomplete="tel">
+      </div>
+      <div class="auth-field">
+        <label>Photo (optional)</label>
+        <input type="file" id="authPhoto" accept="image/*">
+      </div>
+    </div>
     <button class="auth-submit" id="authSubmitBtn" onclick="submitAuth()">Sign in</button>
     <button class="auth-alt" id="authMagicBtn" onclick="sendMagicLink()">Email me a sign-in link</button>
     <div class="auth-help" id="authHelpRow">
@@ -5590,6 +6378,40 @@ initAuth();
     </div>
     <div class="auth-err" id="authErr"></div>
     <div class="auth-switch" id="authSwitchText">New here? <span onclick="switchAuthTab('signup')">Create account</span></div>
+  </div>
+</div>
+
+<div class="auth-overlay" id="accountOverlay" onclick="if(event.target===this)hideAccountSettings()">
+  <div class="auth-modal account-modal">
+    <button class="auth-close" onclick="hideAccountSettings()">×</button>
+    <div class="auth-logo">⚙️ Account</div>
+    <div class="auth-sub" id="accountSub">Update your name, profile details, or password.</div>
+    <div class="auth-field">
+      <label>Full name</label>
+      <input type="text" id="acctFullName" placeholder="Jane Carter" autocomplete="name">
+    </div>
+    <div class="auth-field account-realtor-only" id="acctBrokerageWrap" style="display:none">
+      <label>Brokerage name</label>
+      <input type="text" id="acctBrokerage" placeholder="Northfield Realty" autocomplete="organization">
+    </div>
+    <div class="auth-field account-realtor-only" id="acctPhoneWrap" style="display:none">
+      <label>Phone</label>
+      <input type="tel" id="acctPhone" placeholder="(555) 123-4567" autocomplete="tel">
+    </div>
+    <div class="auth-field account-realtor-only" id="acctPhotoWrap" style="display:none">
+      <label>Photo (optional)</label>
+      <input type="file" id="acctPhoto" accept="image/*">
+    </div>
+    <div class="auth-field">
+      <label>New password</label>
+      <input type="password" id="acctPassword" placeholder="Leave blank to keep current password">
+    </div>
+    <div class="auth-field">
+      <label>Confirm new password</label>
+      <input type="password" id="acctPasswordConfirm" placeholder="••••••••">
+    </div>
+    <button class="auth-submit" id="acctSaveBtn" onclick="saveAccountSettings()">Save changes</button>
+    <div class="auth-err" id="acctErr"></div>
   </div>
 </div>
 </body>
