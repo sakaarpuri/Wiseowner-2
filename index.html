@@ -145,17 +145,34 @@ header {
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab {
-  padding: 0.8rem 0 0.9rem; font-size: 0.72rem; font-weight: 600;
-  color: var(--text-muted); border-bottom: 2px solid transparent;
+  padding: 0.72rem 0.9rem 0.82rem; font-size: 0.72rem; font-weight: 600;
+  color: var(--text-muted); border: 1px solid transparent; border-bottom: 2px solid transparent;
   white-space: nowrap; cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 0.4rem;
-  flex-shrink: 0;
+  flex-shrink: 0; border-radius: 999px; margin: 0.42rem 0 0.48rem;
 }
 .tab .ti { display: none; }
 .tab .tl { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.01em; }
-.tab.done { color: var(--green); }
-.tab.active { color: var(--green); border-bottom-color: var(--green); }
-.prog-wrap { height: 3px; background: var(--glass-border); position: absolute; bottom: 0; left: 0; right: 0; z-index: 1; }
+.tab.done {
+  color: var(--text-mid);
+  background: rgba(74,222,128,0.08);
+  border-color: rgba(74,222,128,0.14);
+}
+.tab.active {
+  color: var(--green);
+  border-color: rgba(74,222,128,0.18);
+  border-bottom-color: var(--green);
+  background: rgba(74,222,128,0.12);
+  box-shadow: 0 8px 18px rgba(38, 56, 47, 0.08);
+  transform: translateY(-1px);
+}
+.tab-complete-pulse { animation: tabPulse 0.5s ease; }
+@keyframes tabPulse {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-1px) scale(1.03); }
+  100% { transform: translateY(-1px) scale(1); }
+}
+.prog-wrap { height: 4px; background: var(--glass-border); position: absolute; bottom: 0; left: 0; right: 0; z-index: 1; }
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 0 8px rgba(74,222,128,0.5); }
 
 /* ── LAYOUT ── */
@@ -163,6 +180,39 @@ header {
 .step { display: none; }
 .step.active { display: block; animation: fadeUp 0.4s cubic-bezier(0.4,0,0.2,1); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.step.step-arrive .eyebrow,
+.step.step-arrive .heading,
+.step.step-arrive .card:first-of-type,
+.step.step-arrive .callout:first-of-type {
+  animation: stepReveal 0.28s cubic-bezier(0.2,0.8,0.2,1);
+}
+.step.step-arrive .heading::after {
+  content: '';
+  display: block;
+  width: 92px;
+  height: 3px;
+  border-radius: 999px;
+  margin-top: 0.55rem;
+  background: linear-gradient(90deg, var(--green), rgba(181,94,71,0.08));
+  transform-origin: left center;
+  animation: accentDraw 0.28s ease-out;
+}
+@keyframes stepReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes accentDraw {
+  from { opacity: 0; transform: scaleX(0.2); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+.next-ready {
+  animation: nextReady 0.32s ease;
+}
+@keyframes nextReady {
+  0% { transform: translateY(0); box-shadow: none; }
+  45% { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(181,94,71,0.18); }
+  100% { transform: translateY(0); box-shadow: none; }
+}
 
 /* ── TYPOGRAPHY ── */
 .eyebrow {
@@ -2284,6 +2334,13 @@ header,
 .tab.active {
   color: var(--green);
   border-bottom-color: var(--green);
+  background: rgba(181,94,71,0.12);
+  border-color: rgba(181,94,71,0.18);
+  box-shadow: 0 10px 24px rgba(100, 73, 53, 0.08);
+}
+.tab.done {
+  background: rgba(143, 117, 91, 0.08);
+  border-color: rgba(143, 117, 91, 0.14);
 }
 .prog-wrap {
   background: rgba(32,49,42,0.08);
@@ -2956,6 +3013,9 @@ select option { background: #fffaf4; color: var(--text); }
   }
   .tabs {
     top: 132px;
+    gap: 0.5rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
   .card,
   .addr-card,
@@ -2973,6 +3033,26 @@ select option { background: #fffaf4; color: var(--text); }
   .btn-row .btn-cta,
   .btn-row .btn-secondary {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step.active,
+  .step.step-arrive .eyebrow,
+  .step.step-arrive .heading,
+  .step.step-arrive .card:first-of-type,
+  .step.step-arrive .callout:first-of-type,
+  .step.step-arrive .heading::after,
+  .tab-complete-pulse,
+  .next-ready {
+    animation: none !important;
+  }
+  .tab,
+  .tab.active,
+  .btn-next,
+  .btn-cta {
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease !important;
+    transform: none !important;
   }
 }
 
@@ -4347,6 +4427,28 @@ function validateStep(n) {
   return ok;
 }
 
+function isStepCompleteEnough(n) {
+  const checks = {
+    1: [
+      { id:'curVal', test: v => v > 0 },
+      { id:'purPrice', test: v => v > 0 },
+    ],
+    2: [
+      { id:'mortBal', test: v => v >= 0 && !isNaN(v) },
+    ],
+    3: [
+      { id:'monthRent', test: v => v > 0 },
+    ],
+  };
+  const stepChecks = checks[n];
+  if (!stepChecks) return false;
+  return stepChecks.every(c => {
+    const el = document.getElementById(c.id);
+    const val = el ? parseFloat(el.value) : NaN;
+    return c.test(val);
+  });
+}
+
 // ===== COPY LINK =====
 function copyLink() {
   const url = window.location.href.split('?')[0];
@@ -4360,6 +4462,7 @@ function copyLink() {
 let cur=0;
 let lastResultSummary = null;
 let realtorQuickMode = false;
+const animatedCompletedSteps = new Set();
 function gv(id,fb=0){const e=document.getElementById(id);if(!e)return fb;const n=parseFloat(e.value);return isNaN(n)?fb:n;}
 function gs(id){const e=document.getElementById(id);return e?e.value:'';}
 function gc(id){const e=document.getElementById(id);return e?e.checked:false;}
@@ -4447,6 +4550,33 @@ function syncForecast(pct){
   updatePreview();
 }
 
+function maybeAnimateStepComplete(stepNum) {
+  if (stepNum < 1 || stepNum > LAST_STEP || animatedCompletedSteps.has(stepNum)) return;
+  if (!isStepCompleteEnough(stepNum)) return;
+  animatedCompletedSteps.add(stepNum);
+  const activeTab = document.querySelector(`.tab[data-s="${stepNum}"]`);
+  const activeStep = document.getElementById('step-' + stepNum);
+  const nextBtn = activeStep?.querySelector('.btn-next, .btn-cta');
+  activeTab?.classList.add('tab-complete-pulse');
+  nextBtn?.classList.add('next-ready');
+  setTimeout(() => activeTab?.classList.remove('tab-complete-pulse'), 520);
+  setTimeout(() => nextBtn?.classList.remove('next-ready'), 380);
+}
+
+function syncStepCompletionState(stepNum) {
+  if (stepNum < 1 || stepNum > LAST_STEP) return;
+  if (!isStepCompleteEnough(stepNum)) animatedCompletedSteps.delete(stepNum);
+}
+
+function triggerStepArrival(stepNum) {
+  const stepEl = document.getElementById('step-' + stepNum);
+  if (!stepEl) return;
+  stepEl.classList.remove('step-arrive');
+  void stepEl.offsetWidth;
+  stepEl.classList.add('step-arrive');
+  setTimeout(() => stepEl.classList.remove('step-arrive'), 360);
+}
+
 function goTo(n){
   // going forward: validate current step
   if(n > cur && !validateStep(cur)) return;
@@ -4471,6 +4601,7 @@ function goTo(n){
   window.scrollTo({top:0,behavior:'smooth'});
   updateProgressiveSections();
   updatePreview();
+  if (!onHome) triggerStepArrival(n);
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goTo(parseInt(t.dataset.s))));
 
@@ -4934,10 +5065,18 @@ async function loadSavedReport(reportId) {
 
 // Wire updatePreview to all form inputs/selects
 document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
-  el.addEventListener('input',updatePreview);
-  el.addEventListener('change',updatePreview);
-  el.addEventListener('input',updateProgressiveSections);
-  el.addEventListener('change',updateProgressiveSections);
+  el.addEventListener('input',() => {
+    updatePreview();
+    updateProgressiveSections();
+    syncStepCompletionState(cur);
+    maybeAnimateStepComplete(cur);
+  });
+  el.addEventListener('change',() => {
+    updatePreview();
+    updateProgressiveSections();
+    syncStepCompletionState(cur);
+    maybeAnimateStepComplete(cur);
+  });
   el.addEventListener('input',()=>el.classList.remove('prefilled-value'));
   el.addEventListener('change',()=>el.classList.remove('prefilled-value'));
 });
