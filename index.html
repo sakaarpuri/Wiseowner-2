@@ -247,6 +247,11 @@ input[type="number"], select {
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   outline: none; appearance: none;
 }
+.prefilled-value {
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text);
+  opacity: 1;
+}
 input[type="number"]:focus, select:focus {
   border-color: rgba(74,222,128,0.5);
   background: rgba(74,222,128,0.05);
@@ -1468,6 +1473,9 @@ select option { background: #1a2035; color: var(--text); }
 .field.autofill-hit select {
   border-color: rgba(48,88,71,0.32);
   box-shadow: 0 0 0 3px rgba(48,88,71,0.08);
+  color: var(--text) !important;
+  -webkit-text-fill-color: var(--text);
+  opacity: 1;
 }
 @keyframes autofill-pulse {
   0% { background-position: 100% 0; }
@@ -3406,7 +3414,7 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field" id="f-mortBal">
           <label>How much do you still owe?</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="mortBal" class="has-pfx" placeholder="420,000" onblur="blurCheck('mortBal', v=>v>=0&&!isNaN(v))"></div>
-          <span class="hint">Why we ask: this affects how much cash you would actually unlock if you sold.</span>
+          <span class="hint">Why we ask: this affects how much cash you would actually unlock if you sold. Enter $0 if the home is fully paid off.</span>
           <span class="err-msg">Enter your mortgage balance ($0 if it's paid off)</span>
         </div>
         <div class="field">
@@ -3582,10 +3590,10 @@ select option { background: #fffaf4; color: var(--text); }
 
     <div class="card">
       <div class="card-title">🏦 Monthly affordability</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">We use these to judge whether keeping the property feels realistic, so they are part of the core decision.</p>
+      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Skip for now if you want. These numbers help us pressure-test whether keeping the property feels comfortable month to month, but you can still get a result without them.</p>
       <div class="grid g2">
-        <div class="field" id="f-monthInc"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500" onblur="blurCheck('monthInc', v=>v>0)"></div><span class="hint">Why we ask: this shows whether keeping the home would feel comfortable month to month.</span><span class="err-msg">Enter household take-home income to continue</span></div>
-        <div class="field" id="f-otherDebt"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600" onblur="blurCheck('otherDebt', v=>v>=0&&!isNaN(v))"></div><span class="hint">Why we ask: this helps us judge how tight or flexible your monthly picture really is.</span><span class="err-msg">Enter your other monthly debt payments ($0 if none)</span></div>
+        <div class="field" id="f-monthInc"><label>Monthly take-home income (household)</label><div class="wrap"><span class="pfx">$</span><input type="number" id="monthInc" class="has-pfx" placeholder="8,500" onblur="blurCheck('monthInc', v=>v>0)"></div><span class="hint">Why we ask: this shows whether keeping the home would feel comfortable month to month. A rough number is fine.</span><span class="err-msg">Enter household take-home income to continue</span></div>
+        <div class="field" id="f-otherDebt"><label>Other monthly debt payments</label><div class="wrap"><span class="pfx">$</span><input type="number" id="otherDebt" class="has-pfx" placeholder="600" onblur="blurCheck('otherDebt', v=>v>=0&&!isNaN(v))"></div><span class="hint">Why we ask: this helps us judge how tight or flexible your monthly picture really is. Use $0 if none.</span><span class="err-msg">Enter your other monthly debt payments ($0 if none)</span></div>
       </div>
     </div>
 
@@ -3773,6 +3781,9 @@ select option { background: #fffaf4; color: var(--text); }
       </div>
     </div>
     <div class="next-steps" id="nextSteps"></div>
+    <div class="btn-row" style="margin-top:1rem;">
+      <button class="btn-secondary" onclick="editNumbers()">← Edit my numbers</button>
+    </div>
     <button class="restart-btn" onclick="restart()">← Start over with different numbers</button>
   </div>
 </div>
@@ -4014,6 +4025,7 @@ function safeSet(id, value) {
   const el = document.getElementById(id);
   if (!el) return;
   el.value = value;
+  el.classList.add('prefilled-value');
   markPrefillHit(id);
 }
 
@@ -4199,10 +4211,6 @@ function validateStep(n) {
     ],
     3: [
       { id:'monthRent', test: v => v > 0, msg: '👆 A rough rent estimate is needed to compare the keep path' },
-    ],
-    6: [
-      { id:'monthInc', test: v => v > 0, msg: '👆 Enter household take-home income so we can judge the keep path realistically' },
-      { id:'otherDebt', test: v => v >= 0 && !isNaN(v), msg: '👆 Enter other monthly debt payments — use $0 if none' },
     ],
   };
   const stepChecks = checks[n];
@@ -4666,6 +4674,15 @@ function buildMissingImportantInputs(ctx) {
     });
   }
 
+  if (!hasRawValue('monthInc') || !hasRawValue('otherDebt')) {
+    items.push({
+      label: 'Monthly affordability',
+      reason: 'These numbers help pressure-test whether the keep path feels comfortable in real life, not just on paper.',
+      step: 6,
+      fieldId: !hasRawValue('monthInc') ? 'monthInc' : 'otherDebt',
+    });
+  }
+
   return items;
 }
 
@@ -4794,6 +4811,8 @@ async function loadSavedReport(reportId) {
 document.querySelectorAll('#formMain input[type="number"],#formMain input[type="range"],#formMain select').forEach(el=>{
   el.addEventListener('input',updatePreview);
   el.addEventListener('change',updatePreview);
+  el.addEventListener('input',()=>el.classList.remove('prefilled-value'));
+  el.addEventListener('change',()=>el.classList.remove('prefilled-value'));
 });
 document.getElementById('stateField')?.addEventListener('change', () => updateOutlookSuggestion());
 
@@ -5294,6 +5313,15 @@ function restart(){
   document.getElementById('previewPanel').style.display='';
   document.getElementById('previewPill').style.display='';
   goTo(0);
+}
+
+function editNumbers(step = 1){
+  document.getElementById('results').style.display='none';
+  document.getElementById('formMain').style.display='block';
+  document.getElementById('previewPanel').style.display='';
+  document.getElementById('previewPill').style.display='';
+  goTo(step);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ══════════════════════════════════════
