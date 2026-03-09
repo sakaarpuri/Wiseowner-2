@@ -3584,8 +3584,8 @@ select option { background: #fffaf4; color: var(--text); }
   <!-- STEP 6: PERSONAL -->
   <div class="step" id="step-6">
     <div class="eyebrow">Step 6 of 6 — Last one!</div>
-    <h2 class="heading">Your monthly picture 💰</h2>
-    <p class="subtext">These last questions make sure the keep-vs-sell decision reflects what feels realistic month to month, not just the spreadsheet.</p>
+    <h2 class="heading">Your monthly financial picture 💰</h2>
+    <div class="callout forest" style="margin-bottom:1rem;"><span class="ci">💡</span><div><strong>Why this matters:</strong> these last questions make sure the keep-vs-sell decision reflects what feels realistic month to month, not just the spreadsheet.</div></div>
 
     <div class="card">
       <div class="card-title">🏦 Monthly affordability</div>
@@ -3636,16 +3636,6 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="gc-title">Minimize tax bill</div>
           <div class="gc-desc">Keeping IRS costs low is a priority</div>
         </div>
-      </div>
-    </div>
-
-    <div class="card optional">
-      <div class="card-title">🎛️ How do you feel about risk?</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:0.9rem;">Skip for now if you want. These are softer preference inputs.</p>
-      <div class="grid g2">
-        <div class="field"><label>Risk comfort level</label><select id="riskTol"><option value="low">Low — I'd rather play it safe</option><option value="medium" selected>Medium — balanced</option><option value="high">High — I'm comfortable with uncertainty</option></select></div>
-        <div class="field"><label>Emergency savings situation</label><select id="emergFund"><option value="strong">Solid — 6+ months of expenses saved</option><option value="ok" selected>OK — roughly 3 months</option><option value="weak">Tight — less than 3 months</option><option value="none">None right now</option></select></div>
-        <div class="field"><label>How soon do you need to decide?</label><select id="urgency"><option value="now">ASAP — decision is pressing</option><option value="months">Within a few months</option><option value="flexible" selected>No rush — just exploring</option></select></div>
       </div>
     </div>
 
@@ -4946,7 +4936,7 @@ function calculate(){
   const dti=monthInc>0?(totalMonthCost+otherDebt)/monthInc*100:0;
 
   const gCash=gc('g_cash'),gInc=gc('g_income'),gLong=gc('g_longterm'),gSimp=gc('g_simplify'),gStab=gc('g_stability'),gTax=gc('g_tax');
-  const risk=gs('riskTol'),emerg=gs('emergFund'),landlord=gs('landlordRdy'),urg=gs('urgency');
+  const risk=gs('riskTol')||'medium',emerg=gs('emergFund')||'ok',landlord=gs('landlordRdy'),urg=gs('urgency')||'flexible';
   const missingImportantInputs=buildMissingImportantInputs({
     propType: gs('propType') || 'primary',
     section121Excluded,
