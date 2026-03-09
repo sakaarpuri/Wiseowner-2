@@ -4238,6 +4238,29 @@ function dismissBanner() {
   document.getElementById('prefillBanner').classList.remove('loading');
 }
 
+function extractSaleYear(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === 'number') {
+    if (raw >= 1900 && raw <= 2100) return raw;
+    const ms = raw > 1e12 ? raw : raw > 1e9 ? raw * 1000 : raw;
+    const y = new Date(ms).getUTCFullYear();
+    return (y >= 1900 && y <= CURRENT_YEAR) ? y : null;
+  }
+  const text = String(raw).trim();
+  if (!text) return null;
+  const m = text.match(/\b(19|20)\d{2}\b/);
+  if (m) {
+    const y = Number(m[0]);
+    return (y >= 1900 && y <= CURRENT_YEAR) ? y : null;
+  }
+  const d = new Date(text);
+  if (!Number.isNaN(d.getTime())) {
+    const y = d.getUTCFullYear();
+    return (y >= 1900 && y <= CURRENT_YEAR) ? y : null;
+  }
+  return null;
+}
+
 function getOutlookSuggestion(state, city = '') {
   const cityKey = city ? `${city}`.trim().toLowerCase() + ',' + `${state}`.trim().toLowerCase() : '';
   return CITY_APPREC[cityKey] ?? MARKET_APPREC[state] ?? 3.5;
@@ -4377,10 +4400,8 @@ async function fetchPropertyData(address, geoData) {
       prefilledBits.push('estimated value');
     }
     if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; prefilledBits.push('price paid'); }
-    if (d.lastSaleDate) {
-      const yr = new Date(d.lastSaleDate).getFullYear();
-      if (yr > 1900) { safeSet('purYear', yr); prefilled = true; prefilledBits.push('purchase year'); }
-    }
+    const saleYear = Number(d.lastSaleYear) || extractSaleYear(d.lastSaleDate);
+    if (saleYear) { safeSet('purYear', saleYear); prefilled = true; prefilledBits.push('purchase year'); }
     if (d.propertyType) {
       const typeMap = {
         'Single Family': 'detached', 'Condo': 'condo', 'Townhouse': 'townhouse',
@@ -5779,7 +5800,8 @@ function renderPropCard(p, index) {
     return `<div class="prop-sig">${s.icon} ${s.label}<div class="prop-sig-tip">${s.tooltip}</div></div>`;
   }).join('');
 
-  const lastSale = p.lastSaleDate ? ` · bought ${p.lastSaleDate.slice(0,4)} for ${fmtVal(p.lastSalePrice)}` : '';
+  const saleYear = p.lastSaleYear || extractSaleYear(p.lastSaleDate);
+  const lastSale = saleYear ? ` · bought ${saleYear} for ${fmtVal(p.lastSalePrice)}` : '';
   const listing = p.lastListedPrice ? `Last listed ${fmtVal(p.lastListedPrice)}${p.daysOnMarket ? ` · ${p.daysOnMarket} days on market` : ''}${p.priceReductions > 0 ? ` · ${p.priceReductions} price cuts` : ''}` : 'Not currently listed';
 
   const inner = `

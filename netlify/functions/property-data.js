@@ -36,8 +36,29 @@ exports.handler = async function (event) {
 
   const fullAddress = [address, city, state, zip].filter(Boolean).join(", ");
 
+  function toSaleYear(raw) {
+    if (raw === null || raw === undefined) return null;
+    if (typeof raw === "number") {
+      // Some providers return unix seconds, ms, or year-only integers.
+      if (raw >= 1900 && raw <= 2100) return raw;
+      const ms = raw > 1e12 ? raw : raw > 1e9 ? raw * 1000 : raw;
+      const y = new Date(ms).getUTCFullYear();
+      return y >= 1900 && y <= 2100 ? y : null;
+    }
+    const txt = String(raw).trim();
+    if (!txt) return null;
+    const m = txt.match(/\b(19|20)\d{2}\b/);
+    if (m) return Number(m[0]);
+    const d = new Date(txt);
+    if (!Number.isNaN(d.getTime())) {
+      const y = d.getUTCFullYear();
+      if (y >= 1900 && y <= 2100) return y;
+    }
+    return null;
+  }
+
   function pickSaleInfo(property) {
-    if (!property) return { lastSalePrice: null, lastSaleDate: null };
+    if (!property) return { lastSalePrice: null, lastSaleDate: null, lastSaleYear: null };
 
     const directPrice =
       property.lastSalePrice ??
@@ -51,10 +72,6 @@ exports.handler = async function (event) {
       property.lastSale?.date ??
       null;
 
-    if (directPrice || directDate) {
-      return { lastSalePrice: directPrice ?? null, lastSaleDate: directDate ?? null };
-    }
-
     const history =
       property.saleHistory ??
       property.salesHistory ??
@@ -62,27 +79,33 @@ exports.handler = async function (event) {
       property.transactions ??
       [];
 
+    let latest = null;
     if (Array.isArray(history) && history.length) {
       const sorted = [...history]
         .filter(Boolean)
         .sort((a, b) => new Date(b.date || b.saleDate || b.recordingDate || 0) - new Date(a.date || a.saleDate || a.recordingDate || 0));
-      const latest = sorted[0];
-      return {
-        lastSalePrice:
-          latest?.price ??
-          latest?.salePrice ??
-          latest?.amount ??
-          latest?.value ??
-          null,
-        lastSaleDate:
-          latest?.date ??
-          latest?.saleDate ??
-          latest?.recordingDate ??
-          null,
-      };
+      latest = sorted[0] || null;
     }
 
-    return { lastSalePrice: null, lastSaleDate: null };
+    const historyPrice =
+      latest?.price ??
+      latest?.salePrice ??
+      latest?.amount ??
+      latest?.value ??
+      null;
+    const historyDate =
+      latest?.date ??
+      latest?.saleDate ??
+      latest?.recordingDate ??
+      latest?.year ??
+      latest?.saleYear ??
+      null;
+
+    const lastSalePrice = directPrice ?? historyPrice ?? null;
+    const lastSaleDate = directDate ?? historyDate ?? null;
+    const lastSaleYear = toSaleYear(lastSaleDate) ?? toSaleYear(latest?.year ?? latest?.saleYear ?? null);
+
+    return { lastSalePrice, lastSaleDate, lastSaleYear: lastSaleYear ?? null };
   }
 
   try {
@@ -157,6 +180,7 @@ exports.handler = async function (event) {
       rentRangeHigh:   rentRangeHigh                         ?? null,
       lastSalePrice:   saleInfo.lastSalePrice                 ?? null,
       lastSaleDate:    saleInfo.lastSaleDate                  ?? null,
+      lastSaleYear:    saleInfo.lastSaleYear                  ?? null,
       propertyType:    property?.propertyType                 ?? null,
       bedrooms:        property?.bedrooms                     ?? null,
       bathrooms:       property?.bathrooms                    ?? null,
