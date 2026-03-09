@@ -947,6 +947,41 @@ select option { background: #1a2035; color: var(--text); }
 .report-hero-note strong {
   color: var(--text);
 }
+.report-hero.report-reveal-enter {
+  animation: verdictReveal 0.52s cubic-bezier(0.2, 0.85, 0.2, 1);
+}
+@keyframes verdictReveal {
+  0% { opacity: 0; transform: translateY(12px) scale(0.985); }
+  55% { opacity: 1; transform: translateY(0) scale(1.008); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.report-reveal-hidden {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+.report-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.dep-explain {
+  font-size: 0.96rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+  line-height: 1.7;
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid rgba(121,103,84,0.12);
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+}
+.dep-callout {
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.dep-callout strong {
+  font-size: 0.95rem;
+}
 .result-assumptions {
   display: none;
   margin-bottom: 1.25rem;
@@ -3044,7 +3079,8 @@ select option { background: #fffaf4; color: var(--text); }
   .step.step-arrive .callout:first-of-type,
   .step.step-arrive .heading::after,
   .tab-complete-pulse,
-  .next-ready {
+  .next-ready,
+  .report-hero.report-reveal-enter {
     animation: none !important;
   }
   .tab,
@@ -3053,6 +3089,12 @@ select option { background: #fffaf4; color: var(--text); }
   .btn-cta {
     transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease !important;
     transform: none !important;
+  }
+  .report-reveal-hidden,
+  .report-reveal-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 
@@ -3640,7 +3682,7 @@ select option { background: #fffaf4; color: var(--text); }
 
     <div class="card" id="depCard" style="display:none">
       <div class="card-title">🧮 Depreciation (Schedule E) — only needed if relevant</div>
-      <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.55;">US landlords can deduct the building's depreciation each year on <strong>IRS Schedule E</strong>. Residential buildings depreciate over 27.5 years — it reduces your taxable rental income on paper, but the IRS recaptures it at sale (see §1250).</p>
+      <p class="dep-explain">US landlords can deduct the building's depreciation each year on <strong>IRS Schedule E</strong>. Residential buildings depreciate over 27.5 years — it reduces your taxable rental income on paper, but the IRS recaptures it at sale (see §1250).</p>
       <div class="grid g2">
         <div class="field">
           <label>Estimated building value (not land)</label>
@@ -3654,7 +3696,7 @@ select option { background: #fffaf4; color: var(--text); }
           <div class="explain">Why we ask: this helps estimate the paper deduction landlords often claim each year. Leave at $0 if you are unsure and we will keep the estimate simple.</div>
         </div>
       </div>
-      <div class="callout info"><span class="ci">⚠️</span><div><strong>Depreciation recapture:</strong> The IRS taxes recaptured depreciation at 25% (§1250) when you sell — even if you didn't claim it. This is separate from capital gains tax. Talk to a CPA before deciding whether to claim it.</div></div>
+      <div class="callout info dep-callout"><span class="ci">⚠️</span><div><strong>Depreciation recapture:</strong> The IRS taxes recaptured depreciation at 25% (§1250) when you sell — even if you didn't claim it. This is separate from capital gains tax. Talk to a CPA before deciding whether to claim it.</div></div>
     </div>
 
     <div class="card">
@@ -4206,21 +4248,29 @@ function animateApprecTo(target) {
   if (!apprecEl) return;
   if (_apprecAnimFrame) cancelAnimationFrame(_apprecAnimFrame);
   const start = parseFloat(apprecEl.value || '4');
-  const delta = target - start;
+  const delta = start - target;
   if (Math.abs(delta) < 0.05) {
     apprecEl.value = String(target);
     syncForecast(target);
     return;
   }
   const startTime = performance.now();
-  const duration = 450;
+  const duration = 760;
   const tick = now => {
     const p = Math.min(1, (now - startTime) / duration);
-    const eased = 1 - Math.pow(1 - p, 3);
-    const next = start + delta * eased;
+    // Damped settle: move toward the suggestion with a small visible wobble.
+    const damping = Math.exp(-6 * p);
+    const oscillation = Math.cos(10 * p);
+    let next = target + (delta * damping * oscillation);
+    next = Math.max(-2, Math.min(10, next));
     apprecEl.value = next.toFixed(1);
     syncForecast(next);
-    if (p < 1) _apprecAnimFrame = requestAnimationFrame(tick);
+    if (p < 1) {
+      _apprecAnimFrame = requestAnimationFrame(tick);
+    } else {
+      apprecEl.value = target.toFixed(1);
+      syncForecast(target);
+    }
   };
   _apprecAnimFrame = requestAnimationFrame(tick);
 }
@@ -5082,6 +5132,43 @@ document.querySelectorAll('#formMain input[type="number"],#formMain input[type="
 });
 document.getElementById('stateField')?.addEventListener('change', () => updateOutlookSuggestion(gs('stateField') || 'TX', ''));
 
+function revealFullReportAfterVerdict() {
+  const revealTargets = [
+    '#resultStatus',
+    '#resultAssumptions',
+    '#scGrid',
+    '.upgrade-banner',
+    '#premiumGate',
+    '.gate-wrap',
+    '.sec',
+    '#insGrid',
+    '.charts',
+    '#cmpTable',
+    '#resultGuide',
+    '#resultImprove',
+    '.share-bar',
+    '.disc-wrap',
+    '#nextSteps',
+    '.btn-row[style*="margin-top:1rem"]',
+    '.restart-btn',
+  ];
+
+  const nodes = Array.from(document.querySelectorAll(revealTargets.join(','))).filter(Boolean);
+  nodes.forEach(node => {
+    node.classList.remove('report-reveal-visible');
+    node.classList.add('report-reveal-hidden');
+  });
+
+  setTimeout(() => {
+    nodes.forEach((node, idx) => {
+      setTimeout(() => {
+        node.classList.remove('report-reveal-hidden');
+        node.classList.add('report-reveal-visible');
+      }, idx * 45);
+    });
+  }, 420);
+}
+
 function calculate(){
   if(!validateStep(LAST_STEP)) return; // final check — shouldn't be needed but safety net
   showCalcOverlay();
@@ -5341,6 +5428,9 @@ function calculate(){
           <div class="report-hero-note"><strong>The rest of the report starts below.</strong> It shows the alternative path, tax math, charts, and next steps.</div>
         </div>
       </div>`;
+    reportHero.classList.remove('report-reveal-enter');
+    void reportHero.offsetWidth;
+    reportHero.classList.add('report-reveal-enter');
   }
 
   document.getElementById('scGrid').innerHTML=`
@@ -5473,6 +5563,7 @@ function calculate(){
            <li>Review the tax implications of selling now versus later with a CPA, especially if primary-home exclusion or prior rental use is in play.</li>
          </ul>`;
   }
+  revealFullReportAfterVerdict();
   (async () => {
     if (_replayingSavedReport) return;
     const reportId = await saveReportRecord(resultPayload);
