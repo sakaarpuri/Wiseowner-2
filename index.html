@@ -4464,7 +4464,7 @@ async function fetchPropertyData(address, geoData) {
       safeSet('dprBuildVal', buildEst, true);
       syncBuildingVal('dprBuildVal', buildEst);
       const valueHint = document.getElementById('curValHint');
-      if (valueHint) valueHint.textContent = 'Estimated by Rentcast AVM using local market data and similar nearby properties. Adjust if you have a newer appraisal or stronger local comp info.';
+      if (valueHint) valueHint.textContent = 'Estimated from local market data and similar nearby properties. Adjust if you have a newer appraisal or stronger local comp info.';
       const comps = document.getElementById('valueComps');
       if (comps) {
         const compRows = Array.isArray(d.valueComps) ? d.valueComps.slice(0, 3) : [];
@@ -4490,7 +4490,7 @@ async function fetchPropertyData(address, geoData) {
       safeSet('monthRent', Math.round(d.estimatedRent), true);
       prefilled = true;
       prefilledBits.push('rent estimate');
-      // Update hint to show Rentcast range
+      // Update hint to show the estimate range
       const hint = document.getElementById('rentHint');
       if (hint) {
         const lo = d.rentRangeLow  ? '$' + Math.round(d.rentRangeLow).toLocaleString()  : null;
