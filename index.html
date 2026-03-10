@@ -322,6 +322,24 @@ select option { background: #1a2035; color: var(--text); }
 }
 .explain a { color: var(--green); font-weight: 600; text-decoration: none; }
 .explain a:hover { text-decoration: underline; }
+.comps-snapshot {
+  margin-top: 0.52rem;
+  padding: 0.58rem 0.72rem;
+  border: 1px solid rgba(121,103,84,0.14);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.5);
+  font-size: 0.73rem;
+  line-height: 1.56;
+  color: var(--text-mid);
+  display: none;
+}
+.comps-snapshot.show { display: block; }
+.comps-snapshot strong { color: var(--text); }
+.comps-list {
+  margin: 0.32rem 0 0;
+  padding-left: 1rem;
+}
+.comps-list li { margin: 0.17rem 0; }
 
 /* ── FORECAST SLIDER ── */
 #apprec[type="range"] {
@@ -1304,7 +1322,7 @@ select option { background: #1a2035; color: var(--text); }
 }
 .ai-hdr { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.3rem; }
 .ai-hdr .ao { font-size: 2rem; line-height: 1; }
-.ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--green); }
+.ai-hdr h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.38rem; font-weight: 800; color: var(--green); letter-spacing: -0.01em; }
 .ai-body { font-size: 0.93rem; color: var(--text-mid); line-height: 1.85; }
 .ai-body p { margin-bottom: 0.9rem; }
 .ai-body p:last-child { margin-bottom: 0; }
@@ -3489,7 +3507,8 @@ select option { background: #fffaf4; color: var(--text); }
         <div class="field" id="f-curVal">
           <label>What do you think it's worth today?</label>
           <div class="wrap"><span class="pfx">$</span><input type="number" id="curVal" class="has-pfx" placeholder="750,000" onblur="blurCheck('curVal', v=>v>0)"></div>
-          <span class="hint">A rough estimate is fine. Use a recent appraisal, local comps, or your best informed guess.</span>
+          <span class="hint" id="curValHint">A rough estimate is fine. Use a recent appraisal, local comps, or your best informed guess.</span>
+          <div class="comps-snapshot" id="valueComps"></div>
           <span class="err-msg">Please enter a property value to continue</span>
         </div>
         <div class="field" id="f-purPrice">
@@ -4179,6 +4198,7 @@ if (purYearInput) purYearInput.max = String(CURRENT_YEAR);
 let _apprecTouched = false;
 let _locationContext = { state: gs('stateField') || 'TX', city: '' };
 let _apprecAnimFrame = null;
+let _lastAddressLookupKey = '';
 
 // Track which fields the user has manually touched so we never overwrite them
 const _dirtyFields = new Set();
@@ -4189,6 +4209,7 @@ const _dirtyFields = new Set();
 });
 document.getElementById('apprec')?.addEventListener('input', () => { _apprecTouched = true; });
 const PREFILL_FIELD_IDS = ['curVal', 'purPrice', 'purYear', 'stateField', 'propCat', 'monthRent', 'maint', 'legalCosts', 'dprBuildVal'];
+const ADDRESS_PREFILL_IDS = ['curVal', 'purPrice', 'purYear', 'propCat', 'monthRent', 'maint', 'legalCosts', 'dprBuildVal'];
 
 function setPrefillBanner(message, loading = false) {
   const banner = document.getElementById('prefillBanner');
@@ -4224,13 +4245,42 @@ function markPrefillHit(id) {
   field._prefillTimer = setTimeout(() => field.classList.remove('autofill-hit'), 2200);
 }
 
-function safeSet(id, value) {
-  if (_dirtyFields.has(id) || value == null) return;
+function safeSet(id, value, force = false) {
+  if (!force && _dirtyFields.has(id)) return;
+  if (value == null) return;
   const el = document.getElementById(id);
   if (!el) return;
   el.value = value;
   el.classList.add('prefilled-value');
   markPrefillHit(id);
+}
+
+function normalizeAddressLookupKey(address, geoData = {}) {
+  return [
+    String(address || '').trim().toLowerCase(),
+    String(geoData.city || '').trim().toLowerCase(),
+    String(geoData.state || '').trim().toLowerCase(),
+    String(geoData.zip || '').trim(),
+  ].join('|');
+}
+
+function prepareAddressPrefillForLookup(lookupKey) {
+  if (!lookupKey || lookupKey === _lastAddressLookupKey) return;
+  _lastAddressLookupKey = lookupKey;
+  ADDRESS_PREFILL_IDS.forEach((id) => {
+    _dirtyFields.delete(id);
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = '';
+    el.classList.remove('prefilled-value');
+  });
+  const comps = document.getElementById('valueComps');
+  if (comps) {
+    comps.classList.remove('show');
+    comps.textContent = '';
+  }
+  const valueHint = document.getElementById('curValHint');
+  if (valueHint) valueHint.textContent = 'A rough estimate is fine. Use a recent appraisal, local comps, or your best informed guess.';
 }
 
 function dismissBanner() {
@@ -4346,6 +4396,13 @@ function initAutocomplete() {
       return;
     }
 
+    const streetAddress = place.formatted_address.split(',')[0]?.trim() || place.formatted_address;
+    const lookupKey = normalizeAddressLookupKey(streetAddress, {
+      city: getComp(['locality', 'sublocality', 'postal_town'], false),
+      state: getComp(['administrative_area_level_1'], true),
+      zip: getComp(['postal_code'], false),
+    });
+    prepareAddressPrefillForLookup(lookupKey);
     startPrefillLoading();
     const geoData = {
       state:  getComp(['administrative_area_level_1'], true),  // "TX"
@@ -4353,12 +4410,22 @@ function initAutocomplete() {
       zip:    getComp(['postal_code'], false),
     };
 
-    if (geoData.state) safeSet('stateField', geoData.state);
+    if (geoData.state) safeSet('stateField', geoData.state, true);
     updateOutlookSuggestion(geoData.state || gs('stateField') || 'TX', geoData.city || '');
 
-    const streetAddress = place.formatted_address.split(',')[0]?.trim() || place.formatted_address;
     fetchPropertyData(streetAddress, geoData);
   });
+}
+
+function mapPropertyCategory(propertyTypeRaw = '') {
+  const t = String(propertyTypeRaw || '').trim().toLowerCase();
+  if (!t) return null;
+  if (t.includes('town')) return 'townhouse';
+  if (t.includes('condo') || t.includes('apartment') || t.includes('flat') || t.includes('co-op') || t.includes('coop')) return 'condo';
+  if (t.includes('multi') || t.includes('duplex') || t.includes('triplex') || t.includes('fourplex') || t.includes('quad')) return 'multi';
+  if (t.includes('semi')) return 'semi';
+  if (t.includes('single') || t.includes('detached') || t.includes('sfr') || t.includes('house')) return 'detached';
+  return null;
 }
 
 async function fetchPropertyData(address, geoData) {
@@ -4384,34 +4451,43 @@ async function fetchPropertyData(address, geoData) {
     let prefilled = false;
     const prefilledBits = [];
     if (d.estimatedValue) {
-      safeSet('curVal', Math.round(d.estimatedValue));
+      safeSet('curVal', Math.round(d.estimatedValue), true);
       // Closing costs: ~1% of home value capped at $3k
-      safeSet('legalCosts', Math.round(Math.min(d.estimatedValue * 0.01, 3000)));
+      safeSet('legalCosts', Math.round(Math.min(d.estimatedValue * 0.01, 3000)), true);
       // Maintenance: conservative starter estimate
       const maintEst = Math.max(100, Math.min(600, Math.round(d.estimatedValue * 0.005 / 12)));
-      safeSet('maint', maintEst);
+      safeSet('maint', maintEst, true);
       const maintHint = document.getElementById('maintHint');
       if (maintHint) maintHint.textContent = `We use a conservative starter estimate for upkeep ($${maintEst.toLocaleString()}/mo). Adjust it if you know your property runs higher or lower.`;
       // Auto-suggest building value (75% of property = typical structure/land split)
       const buildEst = Math.round(d.estimatedValue * 0.75);
-      safeSet('dprBuildVal', buildEst);
+      safeSet('dprBuildVal', buildEst, true);
       syncBuildingVal('dprBuildVal', buildEst);
+      const valueHint = document.getElementById('curValHint');
+      if (valueHint) valueHint.textContent = 'Estimated by Rentcast AVM using local market data and similar nearby properties. Adjust if you have a newer appraisal or stronger local comp info.';
+      const comps = document.getElementById('valueComps');
+      if (comps) {
+        const compRows = Array.isArray(d.valueComps) ? d.valueComps.slice(0, 3) : [];
+        if (compRows.length) {
+          comps.classList.add('show');
+          comps.innerHTML = `<strong>Recent nearby comp sales used in estimate:</strong><ul class="comps-list">${compRows.map(c => `<li>${c.address || 'Nearby comp'} — $${Math.round(c.price || 0).toLocaleString()}${c.saleYear ? ` (${c.saleYear})` : ''}</li>`).join('')}</ul>`;
+        } else {
+          comps.classList.remove('show');
+          comps.textContent = '';
+        }
+      }
       prefilled = true;
       prefilledBits.push('estimated value');
     }
-    if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice)); prefilled = true; prefilledBits.push('price paid'); }
+    if (d.lastSalePrice)  { safeSet('purPrice', Math.round(d.lastSalePrice), true); prefilled = true; prefilledBits.push('price paid'); }
     const saleYear = Number(d.lastSaleYear) || extractSaleYear(d.lastSaleDate);
-    if (saleYear) { safeSet('purYear', saleYear); prefilled = true; prefilledBits.push('purchase year'); }
+    if (saleYear) { safeSet('purYear', saleYear, true); prefilled = true; prefilledBits.push('purchase year'); }
     if (d.propertyType) {
-      const typeMap = {
-        'Single Family': 'detached', 'Condo': 'condo', 'Townhouse': 'townhouse',
-        'Multi Family': 'multi', 'Apartment': 'condo',
-      };
-      const mapped = typeMap[d.propertyType];
-      if (mapped) { safeSet('propCat', mapped); prefilled = true; prefilledBits.push('property type'); }
+      const mapped = mapPropertyCategory(d.propertyType);
+      if (mapped) { safeSet('propCat', mapped, true); prefilled = true; prefilledBits.push('property type'); }
     }
     if (d.estimatedRent) {
-      safeSet('monthRent', Math.round(d.estimatedRent));
+      safeSet('monthRent', Math.round(d.estimatedRent), true);
       prefilled = true;
       prefilledBits.push('rent estimate');
       // Update hint to show Rentcast range

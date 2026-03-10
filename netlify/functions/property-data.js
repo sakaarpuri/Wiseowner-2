@@ -57,6 +57,33 @@ exports.handler = async function (event) {
     return null;
   }
 
+  function normalizeComp(comp) {
+    if (!comp) return null;
+    const price =
+      comp.price ??
+      comp.salePrice ??
+      comp.lastSalePrice ??
+      comp.value ??
+      comp.amount ??
+      null;
+    if (!price || !Number.isFinite(Number(price))) return null;
+    const saleDate =
+      comp.saleDate ??
+      comp.lastSaleDate ??
+      comp.date ??
+      comp.recordingDate ??
+      comp.closedDate ??
+      null;
+    const fallbackAddress = [comp.streetAddress, comp.city, comp.state, comp.zipCode].filter(Boolean).join(", ");
+    const address = comp.formattedAddress ?? comp.address ?? (fallbackAddress || null);
+    return {
+      address,
+      price: Number(price),
+      saleDate: saleDate ?? null,
+      saleYear: toSaleYear(saleDate),
+    };
+  }
+
   function pickSaleInfo(property) {
     if (!property) return { lastSalePrice: null, lastSaleDate: null, lastSaleYear: null };
 
@@ -146,9 +173,27 @@ exports.handler = async function (event) {
     ]);
 
     let estimatedValue = null;
+    let valueComps = [];
     if (avmRes.ok) {
       const avmData = await avmRes.json();
       estimatedValue = avmData.price ?? avmData.value ?? null;
+      const rawComps =
+        avmData.comparables ??
+        avmData.comps ??
+        avmData.comparableSales ??
+        avmData.recentSales ??
+        [];
+      if (Array.isArray(rawComps)) {
+        valueComps = rawComps
+          .map(normalizeComp)
+          .filter(Boolean)
+          .sort((a, b) => {
+            const ad = new Date(a.saleDate || 0).getTime() || 0;
+            const bd = new Date(b.saleDate || 0).getTime() || 0;
+            return bd - ad;
+          })
+          .slice(0, 5);
+      }
     } else if (avmRes.status !== 404) {
       console.warn("Rentcast AVM endpoint:", avmRes.status);
     }
@@ -175,6 +220,7 @@ exports.handler = async function (event) {
     // ── 3. Map to our standard shape ──
     const data = {
       estimatedValue:  estimatedValue                         ?? null,
+      valueComps:      valueComps                             ?? [],
       estimatedRent:   estimatedRent                          ?? null,
       rentRangeLow:    rentRangeLow                           ?? null,
       rentRangeHigh:   rentRangeHigh                         ?? null,
