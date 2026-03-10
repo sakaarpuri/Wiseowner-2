@@ -5904,6 +5904,9 @@ const PURCHASE_CONFIG = {
   realtor_unlimited: { accountType: 'realtor', label: '$39/month unlimited', premium: true },
 };
 
+// Temporary business override: keep homeowner premium content open.
+const HOMEOWNER_GATE_PAUSED = true;
+
 function defaultProfile() {
   return {
     accountType: 'homeowner',
@@ -5981,6 +5984,7 @@ function isSubscriptionActive() {
 }
 
 function isPremiumUnlocked() {
+  if (HOMEOWNER_GATE_PAUSED && !isRealtor()) return true;
   const guestUnlock = getGuestUnlock();
   if (guestUnlock?.active) return true;
   if (!currentUser) return false;
